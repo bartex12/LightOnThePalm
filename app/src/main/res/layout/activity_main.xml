@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/bLed12"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Rainbow"
+        app:layout_constraintBottom_toTopOf="@+id/bLed22"
+        app:layout_constraintEnd_toEndOf="@+id/bLed22"
+        app:layout_constraintStart_toStartOf="@+id/bLed22" />
+
+    <Button
+        android:id="@+id/bLed22"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Cyan"
+        app:layout_constraintBottom_toTopOf="@+id/bLed32"
+        app:layout_constraintEnd_toEndOf="@+id/bLed32"
+        app:layout_constraintStart_toEndOf="@+id/bLed31" />
+
+    <Button
+        android:id="@+id/bLed32"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Magenta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bLed31" />
+
+    <Button
+        android:id="@+id/bSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Save Ip"
+        app:layout_constraintEnd_toEndOf="@+id/edIp"
+        app:layout_constraintStart_toStartOf="@+id/edIp"
+        app:layout_constraintTop_toBottomOf="@+id/edIp" />
+
+    <Button
+        android:id="@+id/bLed31"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bLed32"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bLed21"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Flame"
+        app:layout_constraintBottom_toTopOf="@+id/bLed31"
+        app:layout_constraintEnd_toEndOf="@+id/bLed31"
+        app:layout_constraintStart_toStartOf="@+id/bLed31" />
+
+    <Button
+        android:id="@+id/bLed11"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Pride"
+        app:layout_constraintBottom_toTopOf="@+id/bLed21"
+        app:layout_constraintEnd_toEndOf="@+id/bLed21"
+        app:layout_constraintStart_toStartOf="@+id/bLed21" />
+
+    <EditText
+        android:id="@+id/edIp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="Ip address"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/status"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/bLed11"
+        app:layout_constraintEnd_toEndOf="@+id/bLed12"
+        app:layout_constraintStart_toStartOf="@+id/bLed11" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
