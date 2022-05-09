@@ -2,5 +2,12 @@
     <string name="app_name">AdressLentaWiFi</string>
     <string name="_0_u00b0c">0 °C</string>
     <string name="led1_on">LED1: ON</string>
-    <string name="status">Статус</string>
+    <string name="status">IP адрес</string>
+    <string name="no_data">Нет данных.</string>
+    <string name="save_ip">Save Ip</string>
+    <string name="staticColors">Статические цвета</string>
+    <string name="flame">Пламя</string>
+    <string name="pride">Радуга с затуханием</string>
+    <string name="rainbow">Динамическая радуга</string>
+
 </resources>

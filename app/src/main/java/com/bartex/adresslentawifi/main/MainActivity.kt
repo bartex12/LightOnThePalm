@@ -1,12 +1,19 @@
-package com.bartex.adresslentawifi
+package com.bartex.adresslentawifi.main
 
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bartex.adresslentawifi.ListOfEffects
+import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.RvAdapter
+import com.bartex.adresslentawifi.StaticColorsActivity
 import com.bartex.adresslentawifi.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -22,6 +29,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var pref: SharedPreferences
     private val client = OkHttpClient()
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
+    private var rvAdapter: RvAdapter? = null
 
     companion object{
         const val TAG = "33333"
@@ -34,14 +45,37 @@ class MainActivity : AppCompatActivity() {
         pref = getSharedPreferences("MyPref", MODE_PRIVATE)
         onClickSaveIp()
         getIp()
-        binding.apply {
-            bLed11.setOnClickListener(onClickListener())
-            bLed12.setOnClickListener(onClickListener())
-            bLed21.setOnClickListener(onClickListener())
-            bLed22.setOnClickListener(onClickListener())
-            bLed31.setOnClickListener(onClickListener())
-            bLed32.setOnClickListener(onClickListener())
+
+        viewModel.loadData()
+        viewModel.getListOfEffects().observe(this, Observer{
+            renderData(it)
+        })
+        initAdapter()
+
+    }
+
+    private fun initAdapter()  =
+        with(binding){
+            rvEffects.layoutManager = LinearLayoutManager(this@MainActivity)
+            rvAdapter =  RvAdapter(getOnClickListener())
+            rvEffects.adapter = rvAdapter
         }
+
+
+
+    private fun getOnClickListener(): RvAdapter.OnItemClickListener =
+        object :RvAdapter.OnItemClickListener{
+            override fun onClick(item: ListOfEffects) {
+                when(item.name){
+                    getString(R.string.staticColors)->
+                        startActivity(Intent(this@MainActivity, StaticColorsActivity::class.java))
+                    //todo добавить на каждую строку
+                }
+            }
+
+        }
+    private fun renderData(data: List<ListOfEffects>?) {
+        data?. let{ rvAdapter?.listOfEffects = it}
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -52,19 +86,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.sync) post("off")
         return true
-    }
-
-    private fun onClickListener(): View.OnClickListener{
-        return View.OnClickListener {
-            when(it.id){
-                R.id.bLed11 -> { post("pride") }
-                R.id.bLed21 -> { post("flame") }
-                R.id.bLed31 -> { post("blue") }
-                R.id.bLed12 -> { post("rainbow") }
-                R.id.bLed22 -> { post("cyan") }
-                R.id.bLed32 -> { post("magenta") }
-            }
-        }
     }
 
     private fun getIp() = with(binding){
@@ -100,7 +121,6 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread {
                         val text = array?.get(0)
                         val status = array?.get(1)
-                        binding.tvStatus.text =String.format("%s%s",text,status)
                     }
                 }
             }catch (i: IOException){

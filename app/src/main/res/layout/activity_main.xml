@@ -4,108 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".main.MainActivity">
 
-    <Button
-        android:id="@+id/bLed12"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Rainbow"
-        app:layout_constraintBottom_toTopOf="@+id/bLed22"
-        app:layout_constraintEnd_toEndOf="@+id/bLed22"
-        app:layout_constraintStart_toStartOf="@+id/bLed22" />
-
-    <Button
-        android:id="@+id/bLed22"
+    <TextView
+        android:id="@+id/edIp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Cyan"
-        app:layout_constraintBottom_toTopOf="@+id/bLed32"
-        app:layout_constraintEnd_toEndOf="@+id/bLed32"
-        app:layout_constraintStart_toEndOf="@+id/bLed31" />
-
-    <Button
-        android:id="@+id/bLed32"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Magenta"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:text="@string/status"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bLed31" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/bSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Save Ip"
+        android:text="@string/save_ip"
         app:layout_constraintEnd_toEndOf="@+id/edIp"
         app:layout_constraintStart_toStartOf="@+id/edIp"
         app:layout_constraintTop_toBottomOf="@+id/edIp" />
 
-    <Button
-        android:id="@+id/bLed31"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_effects"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Blue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/bLed32"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/bLed21"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Flame"
-        app:layout_constraintBottom_toTopOf="@+id/bLed31"
-        app:layout_constraintEnd_toEndOf="@+id/bLed31"
-        app:layout_constraintStart_toStartOf="@+id/bLed31" />
-
-    <Button
-        android:id="@+id/bLed11"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Pride"
-        app:layout_constraintBottom_toTopOf="@+id/bLed21"
-        app:layout_constraintEnd_toEndOf="@+id/bLed21"
-        app:layout_constraintStart_toStartOf="@+id/bLed21" />
-
-    <EditText
-        android:id="@+id/edIp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Ip address"
-        android:inputType="textPersonName"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/bSave" />
 
     <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:id="@+id/empty_view_effects"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/status"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/bLed11"
-        app:layout_constraintEnd_toEndOf="@+id/bLed12"
-        app:layout_constraintStart_toStartOf="@+id/bLed11" />
-
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:text="@string/no_data"
+        tools:visibility = "gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
