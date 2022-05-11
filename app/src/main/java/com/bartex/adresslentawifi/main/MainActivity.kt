@@ -67,9 +67,13 @@ class MainActivity : AppCompatActivity() {
         object :RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
                 when(item.name){
-                    getString(R.string.staticColors)->
+                    getString(R.string.staticColors) -> {
+                        post("cyan")
                         startActivity(Intent(this@MainActivity, StaticColorsActivity::class.java))
-                    //todo добавить на каждую строку
+                    }
+                    getString(R.string.flame) -> post("flame")
+                    getString(R.string.pride) -> post("pride")
+                    getString(R.string.rainbow) -> post("rainbow")
                 }
             }
 
