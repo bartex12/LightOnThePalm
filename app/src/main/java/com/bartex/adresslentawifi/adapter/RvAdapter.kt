@@ -1,12 +1,14 @@
-package com.bartex.adresslentawifi
+package com.bartex.adresslentawifi.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bartex.adresslentawifi.entity.ListOfEffects
+import com.bartex.adresslentawifi.R
 
-class RvAdapter(val listener:OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
+class RvAdapter(val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
 
     var listOfEffects:List<ListOfEffects> = listOf()
     set(value) {
@@ -15,7 +17,7 @@ class RvAdapter(val listener:OnItemClickListener):RecyclerView.Adapter<RvAdapter
     }
 
     interface OnItemClickListener{
-        fun onClick(item:ListOfEffects)
+        fun onClick(item: ListOfEffects)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +36,7 @@ class RvAdapter(val listener:OnItemClickListener):RecyclerView.Adapter<RvAdapter
    inner class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.name)
 
-        fun bind(itemView:ListOfEffects){
+        fun bind(itemView: ListOfEffects){
             name.text = itemView.name
 
             this.itemView.setOnClickListener {

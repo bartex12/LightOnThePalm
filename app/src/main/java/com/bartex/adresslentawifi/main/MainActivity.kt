@@ -10,10 +10,10 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bartex.adresslentawifi.ListOfEffects
+import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.RvAdapter
-import com.bartex.adresslentawifi.StaticColorsActivity
+import com.bartex.adresslentawifi.adapter.RvAdapter
+import com.bartex.adresslentawifi.staticcolor.StaticColorsRvActivity
 import com.bartex.adresslentawifi.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -64,12 +64,12 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
-        object :RvAdapter.OnItemClickListener{
+        object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
                 when(item.name){
                     getString(R.string.staticColors) -> {
                         post("cyan")
-                        startActivity(Intent(this@MainActivity, StaticColorsActivity::class.java))
+                        startActivity(Intent(this@MainActivity, StaticColorsRvActivity::class.java))
                     }
                     getString(R.string.flame) -> post("flame")
                     getString(R.string.pride) -> post("pride")

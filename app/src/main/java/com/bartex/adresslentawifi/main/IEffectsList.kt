@@ -1,6 +1,6 @@
 package com.bartex.adresslentawifi.main
 
-import com.bartex.adresslentawifi.ListOfEffects
+import com.bartex.adresslentawifi.entity.ListOfEffects
 
 interface IEffectsList {
     fun getList():MutableList<ListOfEffects>

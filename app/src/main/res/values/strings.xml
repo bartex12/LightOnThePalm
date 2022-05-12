@@ -10,4 +10,23 @@
     <string name="pride">Радуга с затуханием</string>
     <string name="rainbow">Динамическая радуга</string>
 
+    <string name="_1">#F44336</string>
+    <string name="_2">#E91E63</string>
+    <string name="_3">#9C27B0</string>
+    <string name="_4">#673AB7</string>
+    <string name="_5">#3949AB</string>
+    <string name="_6">#1E88E5</string>
+    <string name="_7">#039BE5</string>
+    <string name="_8">#00ACC1</string>
+    <string name="_9">#00897B</string>
+    <string name="_10">#43A047</string>
+    <string name="_11">#7CB342</string>
+    <string name="_12">#C0CA33</string>
+    <string name="_13">#FDD835</string>
+    <string name="_14">#FFB300</string>
+    <string name="_15">#FB8C00</string>
+    <string name="_16">#F4511E</string>
+    <string name="_17">#FFFFFF</string>
+    <string name="_18">#000000</string>
+
 </resources>

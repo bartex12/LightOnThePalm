@@ -1,7 +1,7 @@
 package com.bartex.adresslentawifi.main
 
 import android.app.Application
-import com.bartex.adresslentawifi.ListOfEffects
+import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.R
 
 class EffectsListImpl(private val application: Application) : IEffectsList {

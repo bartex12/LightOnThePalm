@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.bartex.adresslentawifi.ListOfEffects
+import com.bartex.adresslentawifi.entity.ListOfEffects
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
