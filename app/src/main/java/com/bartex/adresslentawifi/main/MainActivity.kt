@@ -20,7 +20,7 @@ import okhttp3.Request
 import java.io.IOException
 //приложение для управления адресной лентой с несколькими эффектами
 // библиотека ESP8266WiFi + режим STA
-//приложение андроид F:\AndroidStudioProjects\Android11_SelfLearning\EspWiFiNeco ветка adressLent
+//приложение андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi ветка listMVVM
 //скетч для esp F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_003Esp_WiFi_6Knobs_sketch_may08b
 //варианты - бег строка , pride, flame, синий, циан, маджента, радуга
 
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         const val TAG = "33333"
+        const val IP = "IP"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,8 +69,9 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(item: ListOfEffects) {
                 when(item.name){
                     getString(R.string.staticColors) -> {
-                        post("cyan")
-                        startActivity(Intent(this@MainActivity, StaticColorsRvActivity::class.java))
+                        val intent = Intent(this@MainActivity, StaticColorsRvActivity::class.java)
+                        intent.putExtra(IP, "http://${binding.edIp.text}")
+                        startActivity(intent)
                     }
                     getString(R.string.flame) -> post("flame")
                     getString(R.string.pride) -> post("pride")
