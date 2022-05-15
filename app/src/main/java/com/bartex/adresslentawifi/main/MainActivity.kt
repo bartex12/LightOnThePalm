@@ -18,11 +18,12 @@ import com.bartex.adresslentawifi.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
-//приложение для управления адресной лентой с несколькими эффектами
-// библиотека ESP8266WiFi + режим STA
-//приложение андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi ветка listMVVM
-//скетч для esp F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_003Esp_WiFi_6Knobs_sketch_may08b
-//варианты - бег строка , pride, flame, синий, циан, маджента, радуга
+//управление адресной лентой через NodeMCU с WiFi в режиме STA
+//две библиотеки, + режим STA     статич цвета - через параметры достаём цвет
+//в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
+// код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка listMVVM
+// скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_005EspWiFi_2lib_STA_sketch_may14a
+//варианты - бег строка , pride, flame, статич цвета
 
 class MainActivity : AppCompatActivity() {
     private lateinit var request: Request
@@ -126,7 +127,6 @@ class MainActivity : AppCompatActivity() {
                     val array = resultText?.split(",")
                     runOnUiThread {
                         val text = array?.get(0)
-                        val status = array?.get(1)
                     }
                 }
             }catch (i: IOException){

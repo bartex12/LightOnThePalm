@@ -60,9 +60,24 @@ class StaticColorsRvActivity : AppCompatActivity() {
               binding.tvCodeColor.text =  item.color
                 Log.d(TAG, "getOnClickListener: ${item.color}   ${item.text}")
                 when(item.text.toInt()){
-                   1-> post("cyan")
-                   2-> post("magenta")
-                   3-> post("blue")
+                   1-> post("static?color=0xF44336")
+                   2-> post("static?color=0xE91E63")
+                   3-> post("static?color=0x9C27B0")
+                   4-> post("static?color=0x673AB7")
+                   5-> post("static?color=0x3949AB")
+                   6-> post("static?color=0x1E88E5")
+                   7-> post("static?color=0x039BE5")
+                   8-> post("static?color=0x00ACC1")
+                   9-> post("static?color=0x00897B")
+                   10-> post("static?color=0x43A047")
+                   11-> post("static?color=0x7CB342")
+                   12-> post("static?color=0xC0CA33")
+                   13-> post("static?color=0xFDD835")
+                   14-> post("static?color=0xFFB300")
+                   15-> post("static?color=0xFB8C00")
+                   16-> post("static?color=0xF4511E")
+                   17-> post("static?color=0xFFFFFF")
+                    18-> post("static?color=0x000000")
                 }
             }
         }
@@ -80,7 +95,6 @@ class StaticColorsRvActivity : AppCompatActivity() {
                     val array = resultText?.split(",")
                     runOnUiThread {
                         val text = array?.get(0)
-                        val status = array?.get(1)
                     }
                 }
             }catch (i: IOException){
