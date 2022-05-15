@@ -60,24 +60,24 @@ class StaticColorsRvActivity : AppCompatActivity() {
               binding.tvCodeColor.text =  item.color
                 Log.d(TAG, "getOnClickListener: ${item.color}   ${item.text}")
                 when(item.text.toInt()){
-                   1-> post("static?color=0xF44336")
-                   2-> post("static?color=0xE91E63")
-                   3-> post("static?color=0x9C27B0")
-                   4-> post("static?color=0x673AB7")
-                   5-> post("static?color=0x3949AB")
-                   6-> post("static?color=0x1E88E5")
-                   7-> post("static?color=0x039BE5")
-                   8-> post("static?color=0x00ACC1")
-                   9-> post("static?color=0x00897B")
-                   10-> post("static?color=0x43A047")
-                   11-> post("static?color=0x7CB342")
-                   12-> post("static?color=0xC0CA33")
-                   13-> post("static?color=0xFDD835")
-                   14-> post("static?color=0xFFB300")
-                   15-> post("static?color=0xFB8C00")
-                   16-> post("static?color=0xF4511E")
-                   17-> post("static?color=0xFFFFFF")
-                    18-> post("static?color=0x000000")
+                   1-> post("static?color=0xFF0000") //Red
+                   2-> post("static?color=0xFF4500") //OrangeRed
+                   3-> post("static?color=0xFFA500") //Orange
+                   4-> post("static?color=0xFFD700") //Gold
+                   5-> post("static?color=0xFFFF00") //Yellow
+                   6-> post("static?color=0x7FFF00") //Chartreuse
+                   7-> post("static?color=0x00FF00") //Lime
+                   8-> post("static?color=0x00FF7F") //SpringGreen
+                   9-> post("static?color=0x00FFFF") //Cyan
+                   10-> post("static?color=0x00BFFF") //DeepSkyBlue
+                   11-> post("static?color=0x1E90FF") //DodgerBlue
+                   12-> post("static?color=0x0000CD") //MediumBlue
+                   13-> post("static?color=0x0000FF") //Blue
+                   14-> post("static?color=0xEE82EE") //Violet
+                   15-> post("static?color=0xFF00FF") //Magenta
+                   16-> post("static?color=0xFF1493") //DeepPink
+                   17-> post("static?color=0xFFFFFF") //White
+                    18-> post("static?color=0x000000") //Black
                 }
             }
         }
