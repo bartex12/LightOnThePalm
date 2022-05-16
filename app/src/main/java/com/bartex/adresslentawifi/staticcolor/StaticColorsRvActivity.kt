@@ -1,7 +1,9 @@
 package com.bartex.adresslentawifi.staticcolor
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,20 +30,61 @@ class StaticColorsRvActivity : AppCompatActivity() {
     }
     private lateinit var request: Request
     private val client = OkHttpClient()
+    private var color:String? = "0x00FFFF"
+    var brightness:String? = "5"
+    private lateinit var pref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStaticColorsRvBinding.inflate(layoutInflater)
         setContentView(binding.root)
         intent.getStringExtra(MainActivity.IP)?. let{extraIp = it }
+        pref = getSharedPreferences("MyPref", MODE_PRIVATE)
+        getColorAndBrightness()
 
         initAdapter()
+        initSeekBar()
 
         viewModel.loadStaticColors()
         viewModel.getStaticColors().observe(this, Observer { 
             renderData(it)
-            Log.d(TAG, "onCreate: $it")
+            //Log.d(TAG, "onCreate: $it")
         })
+    }
+
+    private fun getColorAndBrightness() {
+        color = pref.getString("color", "0x00FFFF")
+        brightness = pref.getString("brightness", "5")
+        binding.seekBarStatic.progress = Integer.parseInt(brightness!!)
+        post("static?color=$color&brightness=$brightness")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val editor = pref.edit()
+        editor.putString("color", color)
+        editor.putString("brightness", brightness)
+        editor.apply()
+    }
+
+    private fun initSeekBar() {
+        binding.seekBarStatic.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
+                override fun onStartTrackingTouch(p0: SeekBar?) {}
+                override fun onStopTrackingTouch(p0: SeekBar?) {
+                    brightness = setBrightness()
+                    post("static?color=$color&brightness=$brightness")
+                }
+            }
+        )
+    }
+    private fun setBrightness(): String {
+        var br = binding.seekBarStatic.progress
+        if (br < 5) {
+            br = 5;binding.seekBarStatic.progress = 5
+        }
+        return br.toString()
     }
 
     private fun renderData(data: List<ButtonColor>?) {
@@ -57,28 +100,29 @@ class StaticColorsRvActivity : AppCompatActivity() {
     private fun getOnClickListener(): StaticColorAdapter.OnItemClickListener =
         object : StaticColorAdapter.OnItemClickListener{
             override fun onClick(item: ButtonColor) {
-              binding.tvCodeColor.text =  item.color
-                Log.d(TAG, "getOnClickListener: ${item.color}   ${item.text}")
+                //Log.d(TAG, "getOnClickListener: ${item.color}   ${item.text}")
+                brightness = setBrightness()
                 when(item.text.toInt()){
-                   1-> post("static?color=0xFF0000") //Red
-                   2-> post("static?color=0xFF4500") //OrangeRed
-                   3-> post("static?color=0xFFA500") //Orange
-                   4-> post("static?color=0xFFD700") //Gold
-                   5-> post("static?color=0xFFFF00") //Yellow
-                   6-> post("static?color=0x7FFF00") //Chartreuse
-                   7-> post("static?color=0x00FF00") //Lime
-                   8-> post("static?color=0x00FF7F") //SpringGreen
-                   9-> post("static?color=0x00FFFF") //Cyan
-                   10-> post("static?color=0x00BFFF") //DeepSkyBlue
-                   11-> post("static?color=0x1E90FF") //DodgerBlue
-                   12-> post("static?color=0x0000CD") //MediumBlue
-                   13-> post("static?color=0x0000FF") //Blue
-                   14-> post("static?color=0xEE82EE") //Violet
-                   15-> post("static?color=0xFF00FF") //Magenta
-                   16-> post("static?color=0xFF1493") //DeepPink
-                   17-> post("static?color=0xFFFFFF") //White
-                    18-> post("static?color=0x000000") //Black
+                   1->  color="0xFF0000"   //Red
+                   2->  color="0xFF4500"   //OrangeRed
+                   3->  color="0xFFA500"   //Orange
+                   4->  color="0xFFD700"   //Gold
+                   5->  color="0xFFFF00"   //Yellow
+                   6->  color="0x7FFF00"   //Chartreuse
+                   7->  color="0x00FF00"   //Lime
+                   8->  color="0x00FF7F"   //SpringGreen
+                   9->  color="0x00FFFF"   //Cyan
+                   10-> color="0x00BFFF"   //DeepSkyBlue
+                   11-> color="0x1E90FF"   //DodgerBlue
+                   12-> color="0x0000CD"   //MediumBlue
+                   13-> color="0x0000FF"   //Blue
+                   14-> color="0xEE82EE"   //Violet
+                   15-> color="0xFF00FF"   //Magenta
+                   16-> color="0xFF1493"   //DeepPink
+                   17-> color="0xFFFFFF"   //White
+                   18-> color="0x000000"  //Black
                 }
+                post("static?color=$color&brightness=$brightness")
             }
         }
 
