@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.adapter.RvAdapter
 import com.bartex.adresslentawifi.staticcolor.StaticColorsRvActivity
 import com.bartex.adresslentawifi.databinding.ActivityMainBinding
@@ -25,7 +26,7 @@ import java.io.IOException
 // скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_005EspWiFi_2lib_STA_sketch_may14a
 //варианты - бег строка , pride, flame, статич цвета
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Server.MessageListener {
     private lateinit var request: Request
     private lateinit var binding: ActivityMainBinding
     private lateinit var pref: SharedPreferences
@@ -67,20 +68,22 @@ class MainActivity : AppCompatActivity() {
             rvEffects.adapter = rvAdapter
         }
 
-
-
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
+                val baseUrl = getString(R.string.baseUrl, binding.edIp.text)
                 when(item.name){
                     getString(R.string.staticColors) -> {
                         val intent = Intent(this@MainActivity, StaticColorsRvActivity::class.java)
-                        intent.putExtra(IP, "http://${binding.edIp.text}")
+                        intent.putExtra(IP, baseUrl)
                         startActivity(intent)
                     }
-                    getString(R.string.flame) -> post("flame")
-                    getString(R.string.pride) -> post("pride")
-                    getString(R.string.rainbow) -> post("rainbow")
+                    getString(R.string.flame) ->
+                        Server(baseUrl, getString(R.string._flame),this@MainActivity ).start()
+                    getString(R.string.pride) ->
+                        Server(baseUrl, getString(R.string._pride),this@MainActivity ).start()
+                    getString(R.string.rainbow) ->
+                        Server(baseUrl, getString(R.string._rainbow),this@MainActivity ).start()
                 }
             }
 
@@ -136,5 +139,11 @@ class MainActivity : AppCompatActivity() {
             }catch (i: IOException){
             }
         }.start()
+    }
+
+    override fun onMessage(message: String) {
+        runOnUiThread {
+            Log.d(TAG, "MainActivity onMessage message= $message")
+        }
     }
 }
