@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         post("brightness") //яркость=50 - это установлено в скетче ардуино
-        //Log.d(TAG, "MainActivity onResume")
     }
 
     private fun initAdapter()  =
