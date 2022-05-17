@@ -35,4 +35,6 @@
     <string name="_flame">flame</string>
     <string name="_pride">pride</string>
     <string name="_rainbow">rainbow</string>
+    <string name="playOfColors">Игра цвета</string>
+    <string name="_play">play</string>
 </resources>

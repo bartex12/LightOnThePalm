@@ -78,6 +78,8 @@ class MainActivity : AppCompatActivity(), Server.MessageListener {
                         intent.putExtra(IP, baseUrl)
                         startActivity(intent)
                     }
+                    getString(R.string.playOfColors) ->
+                        Server(baseUrl, getString(R.string._play),this@MainActivity ).start()
                     getString(R.string.flame) ->
                         Server(baseUrl, getString(R.string._flame),this@MainActivity ).start()
                     getString(R.string.pride) ->
