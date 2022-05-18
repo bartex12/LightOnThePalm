@@ -56,4 +56,31 @@
     <string name="_rainbow">rainbow</string>
     <string name="playOfColors">Игра цвета</string>
     <string name="_play">play</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="list">Список</string>
+    <string name="details">Детали</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="textview">TextView</string>
+    <string name="todo">imag From Internet</string>
+    <string name="name_000">Name 000</string>
+    <string name="employeeName">employeeName</string>
+    <string name="frag_det">Фрагмент детализации</string>
+
+    <string name="statesOfWorld">Страны мира</string>
+    <string name="quiz">Викторина</string>
+    <string name="settings">Настройки</string>
+    <string name="help">Справка</string>
+    <string name="addition">Дополнительно</string>
+    <string name="share">Поделиться</string>
+    <string name="send">Оценить</string>
 </resources>
