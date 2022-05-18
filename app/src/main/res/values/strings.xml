@@ -10,26 +10,45 @@
     <string name="pride">Радуга с затуханием</string>
     <string name="rainbow">Динамическая радуга</string>
 
-    <string name="_1"> #FF0000</string>   //Red
-    <string name="_2"> #FF4500</string>   //OrangeRed
-    <string name="_3"> #FFA500</string>   //Orange
-    <string name="_4"> #FFD700</string>   //Gold
-    <string name="_5"> #FFFF00</string>   //Yellow
-    <string name="_6"> #7FFF00</string>   //Chartreuse
-    <string name="_7"> #00FF00</string>   //Lime
-    <string name="_8"> #00FF7F</string>   //SpringGreen
-    <string name="_9"> #00FFFF</string>   //Cyan
-    <string name="_10">#00BFFF</string>   //DeepSkyBlue
-    <string name="_11">#1E90FF</string>   //DodgerBlue
-    <string name="_12">#0000CD</string>   //MediumBlue
-    <string name="_13">#0000FF</string>   //Blue
-    <string name="_14">#EE82EE</string>   //Violet
-    <string name="_15">#FF00FF</string>   //Magenta
-    <string name="_16">#FF1493</string>   //DeepPink
-    <string name="_17">#FFFFFF</string>   //White
-    <string name="_18">#000000</string>   //Black
+    <string name="_1"> #FF0000</string>
+    //Red
+    <string name="_2"> #FF4500</string>
+    //OrangeRed
+    <string name="_3"> #FFA500</string>
+    //Orange
+    <string name="_4"> #FFD700</string>
+    //Gold
+    <string name="_5"> #FFFF00</string>
+    //Yellow
+    <string name="_6"> #7FFF00</string>
+    //Chartreuse
+    <string name="_7"> #00FF00</string>
+    //Lime
+    <string name="_8"> #00FF7F</string>
+    //SpringGreen
+    <string name="_9"> #00FFFF</string>
+    //Cyan
+    <string name="_10">#00BFFF</string>
+    //DeepSkyBlue
+    <string name="_11">#1E90FF</string>
+    //DodgerBlue
+    <string name="_12">#0000CD</string>
+    //MediumBlue
+    <string name="_13">#0000FF</string>
+    //Blue
+    <string name="_14">#EE82EE</string>
+    //Violet
+    <string name="_15">#FF00FF</string>
+    //Magenta
+    <string name="_16">#FF1493</string>
+    //DeepPink
+    <string name="_17">#FFFFFF</string>
+    //White
+    <string name="_18">#000000</string>
+    //Black
 
-    <string name="post">static?color=%1$s&amp;brightness=%2$s</string>
+    <string name="postStaticColors">static?color=%1$s&amp;brightness=%2$s</string>
+    <string name="postPlayColors">play?speed=%1$s&amp;brightness=%2$s</string>
     <string name="baseUrl">http://%1$s</string>
 
     <string name="_flame">flame</string>

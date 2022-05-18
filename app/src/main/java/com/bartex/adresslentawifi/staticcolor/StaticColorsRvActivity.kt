@@ -16,7 +16,6 @@ import com.bartex.adresslentawifi.entity.ButtonColor
 import com.bartex.adresslentawifi.main.MainActivity
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.IOException
 
 class StaticColorsRvActivity : AppCompatActivity(), Server.MessageListener {
 
@@ -30,12 +29,9 @@ class StaticColorsRvActivity : AppCompatActivity(), Server.MessageListener {
     private val viewModel: StaticColorsRvViewModel by lazy {
         ViewModelProvider(this).get(StaticColorsRvViewModel::class.java)
     }
-    private lateinit var request: Request
-    private val client = OkHttpClient()
     private var color:String? = "0x00FFFF"
     var brightness:String? = "5"
     private lateinit var pref: SharedPreferences
-    private lateinit var server: Server
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +55,7 @@ class StaticColorsRvActivity : AppCompatActivity(), Server.MessageListener {
         brightness = pref.getString("brightness", "5")
         binding.seekBarStatic.progress = Integer.parseInt(brightness!!)
 
-        Server(extraIp, getString(R.string.post,color, brightness), this).start()
+        Server(extraIp, getString(R.string.postStaticColors,color, brightness), this).start()
     }
 
     override fun onPause() {
@@ -78,7 +74,7 @@ class StaticColorsRvActivity : AppCompatActivity(), Server.MessageListener {
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = setBrightness()
 
-                    Server(extraIp, getString(R.string.post,color, brightness),
+                    Server(extraIp, getString(R.string.postStaticColors,color, brightness),
                         this@StaticColorsRvActivity).start()
                 }
             }
@@ -87,7 +83,8 @@ class StaticColorsRvActivity : AppCompatActivity(), Server.MessageListener {
     private fun setBrightness(): String {
         var br = binding.seekBarStatic.progress
         if (br < 5) {
-            br = 5;binding.seekBarStatic.progress = 5
+            br = 5
+            binding.seekBarStatic.progress = 5
         }
         return br.toString()
     }
@@ -108,7 +105,7 @@ class StaticColorsRvActivity : AppCompatActivity(), Server.MessageListener {
                 brightness = setBrightness()
                 color = item.color.replace("#", "0x")
 
-                Server(extraIp, getString(R.string.post,color, brightness),
+                Server(extraIp, getString(R.string.postStaticColors,color, brightness),
                     this@StaticColorsRvActivity ).start()
             }
         }

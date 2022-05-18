@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdressLentaWiFi">
         <activity
+            android:name=".dynamiccolor.DynamicColorsActivity"
+            android:exported="false" />
+        <activity
             android:name=".staticcolor.StaticColorsRvActivity"
             android:exported="false" />
         <activity
@@ -23,9 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".StaticColorsActivity"
-            android:exported="true" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

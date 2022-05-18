@@ -10,6 +10,7 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bartex.adresslentawifi.dynamiccolor.DynamicColorsActivity
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
@@ -78,8 +79,12 @@ class MainActivity : AppCompatActivity(), Server.MessageListener {
                         intent.putExtra(IP, baseUrl)
                         startActivity(intent)
                     }
-                    getString(R.string.playOfColors) ->
-                        Server(baseUrl, getString(R.string._play),this@MainActivity ).start()
+                    getString(R.string.playOfColors) ->{
+                        val intent = Intent(this@MainActivity, DynamicColorsActivity::class.java)
+                        intent.putExtra(IP, baseUrl)
+                        startActivity(intent)
+                    }
+                        //Server(baseUrl, getString(R.string._play),this@MainActivity ).start()
                     getString(R.string.flame) ->
                         Server(baseUrl, getString(R.string._flame),this@MainActivity ).start()
                     getString(R.string.pride) ->
