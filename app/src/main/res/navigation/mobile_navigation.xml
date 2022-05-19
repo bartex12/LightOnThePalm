@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mobile_navigation">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/listFragment">
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.bartex.adresslentawifi.list.ListFragment"
+        android:label="ListFragment" />
+    <fragment
+        android:id="@+id/staticColorFragment"
+        android:name="com.bartex.adresslentawifi.staticcolor.StaticColorFragment"
+        android:label="StaticColorFragment" />
+    <fragment
+        android:id="@+id/dynamicColorsFragment"
+        android:name="com.bartex.adresslentawifi.dynamiccolor.DynamicColorsFragment"
+        android:label="fragment_dinamic_colors"
+        tools:layout="@layout/fragment_dinamic_colors" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.bartex.adresslentawifi.main
+package com.bartex.adresslentawifi.list
 
 import android.app.Application
 import com.bartex.adresslentawifi.entity.ListOfEffects

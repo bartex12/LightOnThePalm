@@ -83,4 +83,8 @@
     <string name="addition">Дополнительно</string>
     <string name="share">Поделиться</string>
     <string name="send">Оценить</string>
+    <string name="choose_br">Выберите яркость</string>
+    <string name="choose_color">Выберите цвет</string>
+    <string name="choose_speed">Выберите скорость</string>
+    <string name="play_of_color">Игра цвета - плавные переливы</string>
 </resources>

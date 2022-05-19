@@ -1,4 +1,4 @@
-package com.bartex.adresslentawifi.main
+package com.bartex.adresslentawifi.list
 
 import com.bartex.adresslentawifi.entity.ListOfEffects
 

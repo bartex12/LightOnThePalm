@@ -10,12 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AdressLentaWiFi">
-        <activity
-            android:name=".dynamiccolor.DynamicColorsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".staticcolor.StaticColorsRvActivity"
-            android:exported="false" />
+
         <activity
             android:name=".main.MainActivity"
             android:exported="true"

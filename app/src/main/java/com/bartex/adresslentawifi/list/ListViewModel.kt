@@ -1,15 +1,17 @@
-package com.bartex.adresslentawifi.main
+package com.bartex.adresslentawifi.list
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.bartex.adresslentawifi.App
 import com.bartex.adresslentawifi.entity.ListOfEffects
+import com.bartex.adresslentawifi.list.EffectsListImpl
+import com.bartex.adresslentawifi.list.IEffectsList
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class ListViewModel:ViewModel() {
 
     private val listOfEffects = MutableLiveData<List<ListOfEffects>>()
-    private val mainRepo:IEffectsList =  EffectsListImpl(application)
+    private val mainRepo: IEffectsList =  EffectsListImpl(App.instance)
 
     fun getListOfEffects(): LiveData<List<ListOfEffects>> {
         return listOfEffects
