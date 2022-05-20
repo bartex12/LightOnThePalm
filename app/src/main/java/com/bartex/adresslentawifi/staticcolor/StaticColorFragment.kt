@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,12 +21,17 @@ import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.COLOR
+import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
+import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
 
 class StaticColorFragment: Fragment(), Server.MessageListener {
 
     private lateinit var baseUrl:String
+    private  var nameOfEffect:String = ""
+    private  var keyWord:String = ""
+    private lateinit var name:TextView
     private lateinit var adapter: StaticColorAdapter
     private val viewModel: StaticColorsViewModel by lazy {
         ViewModelProvider(this).get(StaticColorsViewModel::class.java)
@@ -35,6 +41,13 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     private lateinit var pref: SharedPreferences
     private lateinit var seekBarStatic: SeekBar
     private lateinit var rvColors: RecyclerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getString(BASE_URL)?. let{baseUrl = it }
+        arguments?.getString(ITEM_NAME)?. let{nameOfEffect = it }
+        arguments?.getString(KEY_WORD)?. let{keyWord = it }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +60,6 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.getString(BASE_URL)?. let{baseUrl = it }
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
 
         initViews(view)
@@ -81,7 +93,7 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
                 brightness = setBrightness()
                 color = item.color.replace("#", "0x")
 
-                Server(baseUrl, getString(R.string.postStaticColors,color, brightness),
+                Server(baseUrl, getString(R.string.postStatic, keyWord, color, brightness),
                     this@StaticColorFragment ).start()
             }
         }
@@ -98,7 +110,7 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = setBrightness()
 
-                    Server(baseUrl, getString(R.string.postStaticColors,color, brightness),
+                    Server(baseUrl,  getString(R.string.postStatic, keyWord, color, brightness),
                         this@StaticColorFragment).start()
                 }
             }
@@ -119,12 +131,14 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         brightness = pref.getString(BRIGHTNESS, "5")
         seekBarStatic.progress = Integer.parseInt(brightness!!)
 
-        Server(baseUrl, getString(R.string.postStaticColors,color, brightness), this).start()
+        Server(baseUrl,  getString(R.string.postStatic, keyWord, color, brightness), this).start()
     }
 
     private fun initViews(view: View) {
         seekBarStatic = view.findViewById(R.id.seekBarStatic)
         rvColors = view.findViewById(R.id.rvColors)
+        name = view.findViewById(R.id.tvName)
+        name.text = nameOfEffect
     }
 
     override fun onMessage(message: String) {

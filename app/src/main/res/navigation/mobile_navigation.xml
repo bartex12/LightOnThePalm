@@ -17,4 +17,8 @@
         android:name="com.bartex.adresslentawifi.dynamiccolor.DynamicColorsFragment"
         android:label="fragment_dinamic_colors"
         tools:layout="@layout/fragment_dinamic_colors" />
+    <fragment
+        android:id="@+id/testColorFragment"
+        android:name="com.bartex.adresslentawifi.TestColorFragment"
+        android:label="TestColorFragment" />
 </navigation>

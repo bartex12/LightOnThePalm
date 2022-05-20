@@ -9,21 +9,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.PLAY_BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.PLAY_SPEED
 import com.bartex.adresslentawifi.constants.Constants.TAG
 
 class DynamicColorsFragment : Fragment(), Server.MessageListener{
+    private  var nameOfEffect:String = ""
+    private  var keyWord:String = ""
+    private lateinit var name: TextView
     private var brightness:String? = "50"
     private var speed:String? = "200"
     private lateinit var baseUrl:String
     private lateinit var pref: SharedPreferences
     private lateinit var seekBarPlayBrightness: SeekBar
     private lateinit var seekBarPlaySpeed: SeekBar
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getString(BASE_URL)?. let{baseUrl = it }
+        arguments?.getString(Constants.ITEM_NAME)?. let{nameOfEffect = it }
+        arguments?.getString(Constants.KEY_WORD)?. let{keyWord = it }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +48,6 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.getString(BASE_URL)?. let{baseUrl = it }
         pref = requireActivity().getSharedPreferences("MyPref", MODE_PRIVATE)
 
         initViews(view)
@@ -44,13 +55,15 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         initSeekBarBrightness()
         initSeekBarSpeed()
 
-        Server(baseUrl, getString(R.string.postPlayColors,speed, brightness),
+        Server(baseUrl,  getString(R.string.post, keyWord, speed, brightness),
             this@DynamicColorsFragment).start()
     }
 
     private fun initViews(view: View) {
         seekBarPlayBrightness = view.findViewById(R.id.seekBarPlayBrightness)
         seekBarPlaySpeed = view.findViewById(R.id.seekBarPlaySpeed)
+        name = view.findViewById(R.id.tvVariantPlay)
+        name.text = nameOfEffect
     }
 
     override fun onPause() {
@@ -67,7 +80,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         brightness = pref.getString(PLAY_BRIGHTNESS, "50")
         seekBarPlayBrightness.progress = Integer.parseInt(brightness!!)
 
-        Server(baseUrl, getString(R.string.postPlayColors, speed, brightness),
+        Server(baseUrl, getString(R.string.post, keyWord, speed, brightness),
             this@DynamicColorsFragment).start()
     }
 
@@ -79,7 +92,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = getBrightness()
                     speed = getSpeed()
-                    Server(baseUrl, getString(R.string.postPlayColors, speed, brightness),
+                    Server(baseUrl,  getString(R.string.post, keyWord, speed, brightness),
                         this@DynamicColorsFragment).start()
                 }
             }
@@ -103,7 +116,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     speed = getSpeed()
                     brightness = getBrightness()
-                    Server(baseUrl, getString(R.string.postPlayColors,speed, brightness),
+                    Server(baseUrl, getString(R.string.post, keyWord, speed, brightness),
                         this@DynamicColorsFragment).start()
                 }
             }

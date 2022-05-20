@@ -20,10 +20,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewChooseBrightness2" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSpeedTest" />
 
     <TextView
-        android:id="@+id/textViewChooseBrightness2"
+        android:id="@+id/tvSpeedTest"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/seekBarPlayBrightness" />
 
     <TextView
-        android:id="@+id/textViewChooseBrightness"
+        android:id="@+id/tvBrightnessPlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -49,7 +49,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/tvVariantPlay" />
 
     <SeekBar
         android:id="@+id/seekBarPlayBrightness"
@@ -64,10 +64,10 @@
         android:thumb="@drawable/custom_thumb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewChooseBrightness" />
+        app:layout_constraintTop_toBottomOf="@+id/tvBrightnessPlay" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvVariantPlay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

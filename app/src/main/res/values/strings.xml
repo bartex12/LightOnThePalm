@@ -6,9 +6,32 @@
     <string name="no_data">Нет данных.</string>
     <string name="save_ip">Сохранить Ip</string>
     <string name="staticColors">Статические цвета</string>
+    <string name="playOfColors">Игра цвета</string>
     <string name="flame">Пламя</string>
     <string name="pride">Радуга с затуханием</string>
     <string name="rainbow">Динамическая радуга</string>
+    <string name="rainbow_bias">Радуга со смещением</string>
+    <string name="random_color">Случайные цвета</string>
+    <string name="test">Проверка</string>
+
+    <string name="baseUrl">http://%1$s</string>
+    <string name="postStaticColors">static?color=%1$s&amp;brightness=%2$s</string>
+    <string name="postPlayColors">play?speed=%1$s&amp;brightness=%2$s</string>
+    <string name="postTestColors">test?speed=%1$s&amp;brightness=%2$s</string>
+    <string name="postRainbowBiasColors">rainbowBias?speed=%1$s&amp;brightness=%2$s</string>
+    <string name="postRainbowColors">rainbow?speed=%1$s&amp;brightness=%2$s</string>
+    <string name="postRandomColors">random?speed=%1$s&amp;brightness=%2$s</string>
+
+    <string name="postStatic">%1$s?color=%2$s&amp;brightness=%3$s</string>
+    <string name="post">%1$s?speed=%2$s&amp;brightness=%3$s</string>
+
+    <string name="_static">static</string>
+    <string name="_play">play</string>
+    <string name="_flame">flame</string>
+    <string name="_pride">pride</string>
+    <string name="_rainbow">rainbow</string>
+    <string name="_rainbowBias">rainbowBias</string>
+    <string name="_random">random</string>
 
     <string name="_1"> #FF0000</string>
     //Red
@@ -47,16 +70,6 @@
     <string name="_18">#000000</string>
     //Black
 
-    <string name="postStaticColors">static?color=%1$s&amp;brightness=%2$s</string>
-    <string name="postPlayColors">play?speed=%1$s&amp;brightness=%2$s</string>
-    <string name="baseUrl">http://%1$s</string>
-
-    <string name="_flame">flame</string>
-    <string name="_pride">pride</string>
-    <string name="_rainbow">rainbow</string>
-    <string name="playOfColors">Игра цвета</string>
-    <string name="_play">play</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -87,4 +100,6 @@
     <string name="choose_color">Выберите цвет</string>
     <string name="choose_speed">Выберите скорость</string>
     <string name="play_of_color">Игра цвета - плавные переливы</string>
+    <string name="vartest">вариант- тест</string>
+    <string name="name_of_effect">Название эффекта</string>
 </resources>

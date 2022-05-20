@@ -22,6 +22,8 @@ import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.adapter.RvAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
+import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
+import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 
@@ -110,19 +112,43 @@ class ListFragment : Fragment(), Server.MessageListener {
                 val baseUrl = getString(R.string.baseUrl, edIp.text)
                 when(item.name){
                     getString(R.string.staticColors) -> {
-                        val bundle = bundleOf(BASE_URL to baseUrl) //так проще
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._static)) //так проще
                         navController.navigate(R.id.staticColorFragment, bundle)
                     }
                     getString(R.string.playOfColors) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl) //так проще
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                             KEY_WORD to getString(R.string._play))
                         navController.navigate(R.id.dynamicColorsFragment, bundle)
                     }
+                    
                     getString(R.string.flame) ->
                         Server(baseUrl, getString(R.string._flame),this@ListFragment).start()
-                    getString(R.string.pride) ->
-                        Server(baseUrl, getString(R.string._pride),this@ListFragment ).start()
-                    getString(R.string.rainbow) ->
-                        Server(baseUrl, getString(R.string._rainbow),this@ListFragment ).start()
+
+                    getString(R.string.pride) ->{
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._pride))
+                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                    }
+                    getString(R.string.rainbow) ->{
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._rainbow))
+                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                    }
+                    getString(R.string.rainbow_bias) ->{
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._rainbowBias))
+                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                    }
+                    getString(R.string.random_color) ->{
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._random))
+                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                    }
+                    getString(R.string.test) ->{
+                        val bundle = bundleOf(BASE_URL to baseUrl)
+                        navController.navigate(R.id.testColorFragment, bundle)
+                    }
                 }
             }
         }
