@@ -9,7 +9,7 @@
     <string name="playOfColors">Игра цвета</string>
     <string name="flame">Пламя</string>
     <string name="pride">Радуга с затуханием</string>
-    <string name="rainbow">Динамическая радуга</string>
+    <string name="rainbow">Скользящая радуга</string>
     <string name="rainbow_bias">Радуга со смещением</string>
     <string name="random_color">Случайные цвета</string>
     <string name="test">Проверка</string>

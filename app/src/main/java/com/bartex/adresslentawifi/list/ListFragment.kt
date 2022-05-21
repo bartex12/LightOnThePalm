@@ -121,7 +121,7 @@ class ListFragment : Fragment(), Server.MessageListener {
                              KEY_WORD to getString(R.string._play))
                         navController.navigate(R.id.dynamicColorsFragment, bundle)
                     }
-                    
+
                     getString(R.string.flame) ->
                         Server(baseUrl, getString(R.string._flame),this@ListFragment).start()
 
