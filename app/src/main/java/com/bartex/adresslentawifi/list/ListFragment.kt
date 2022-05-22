@@ -122,8 +122,11 @@ class ListFragment : Fragment(), Server.MessageListener {
                         navController.navigate(R.id.dynamicColorsFragment, bundle)
                     }
 
-                    getString(R.string.flame) ->
-                        Server(baseUrl, getString(R.string._flame),this@ListFragment).start()
+                    getString(R.string.flame) ->{
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._flame))
+                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                    }
 
                     getString(R.string.pride) ->{
                         val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
@@ -146,7 +149,8 @@ class ListFragment : Fragment(), Server.MessageListener {
                         navController.navigate(R.id.dynamicColorsFragment, bundle)
                     }
                     getString(R.string.test) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl)
+                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+                            KEY_WORD to getString(R.string._test))
                         navController.navigate(R.id.testColorFragment, bundle)
                     }
                 }

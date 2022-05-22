@@ -60,7 +60,7 @@ class TestColorFragment: Fragment(), Server.MessageListener{
 
     private fun getSpeedAndBrightness() {
         speed = pref.getString(TEST_SPEED, "200")
-        seekBarTestSpeed.progress = Integer.parseInt(speed!!)
+        seekBarTestSpeed.progress =seekBarTestSpeed.max - Integer.parseInt(speed!!)
         brightness = pref.getString(TEST_BRIGHTNESS, "50")
         seekBarTestBrightness.progress = Integer.parseInt(brightness!!)
 
@@ -108,12 +108,12 @@ class TestColorFragment: Fragment(), Server.MessageListener{
     }
 
     private fun getSpeed(): String {
-        var br = seekBarTestSpeed.progress
-        if (br < 10) {
-            br = 10
-            seekBarTestBrightness.progress = 10
+        var sp = seekBarTestSpeed.max - seekBarTestSpeed.progress
+        if (sp < 5) {
+            sp = 5
+            seekBarTestSpeed.progress = seekBarTestSpeed.max - 5
         }
-        return br.toString()
+        return sp.toString()
     }
 
     override fun onMessage(message: String) {
