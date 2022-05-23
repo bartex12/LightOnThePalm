@@ -1,37 +1,40 @@
 <resources>
-    <string name="app_name">AdressLentaWiFi</string>
+    <string name="app_name">Свет на ладони</string>
     <string name="_0_u00b0c">0 °C</string>
     <string name="led1_on">LED1: ON</string>
     <string name="status">IP адрес</string>
     <string name="no_data">Нет данных.</string>
     <string name="save_ip">Сохранить Ip</string>
+
     <string name="staticColors">Статические цвета</string>
-    <string name="playOfColors">Игра цвета</string>
+    <string name="playOfColors">Плавные переливы</string>
+    <string name="playOfColorsFlash">Плавные переливы с блёстками</string>
     <string name="flame">Пламя</string>
     <string name="pride">Радуга с затуханием</string>
     <string name="rainbow">Скользящая радуга</string>
     <string name="rainbow_bias">Радуга со смещением</string>
-    <string name="random_color">Случайные цвета</string>
+    <string name="rainbow_flash">Радуга с блёстками</string>
+    <string name="random_color">Цветное конфетти</string>
+    <string name="random_color_fade">Цветное конфетти с затуханием</string>
+    <string name="northern_lights">Северное сияние</string>
     <string name="test">Проверка</string>
 
     <string name="baseUrl">http://%1$s</string>
-    <string name="postStaticColors">static?color=%1$s&amp;brightness=%2$s</string>
-    <string name="postPlayColors">play?speed=%1$s&amp;brightness=%2$s</string>
-    <string name="postTestColors">test?speed=%1$s&amp;brightness=%2$s</string>
-    <string name="postRainbowBiasColors">rainbowBias?speed=%1$s&amp;brightness=%2$s</string>
-    <string name="postRainbowColors">rainbow?speed=%1$s&amp;brightness=%2$s</string>
-    <string name="postRandomColors">random?speed=%1$s&amp;brightness=%2$s</string>
-
     <string name="postStatic">%1$s?color=%2$s&amp;brightness=%3$s</string>
     <string name="post">%1$s?speed=%2$s&amp;brightness=%3$s</string>
 
     <string name="_static">static</string>
     <string name="_play">play</string>
+    <string name="_playFlash">playFlash</string>
     <string name="_flame">flame</string>
     <string name="_pride">pride</string>
     <string name="_rainbow">rainbow</string>
     <string name="_rainbowBias">rainbowBias</string>
+    <string name="_rainbowFlash">rainbowFlash</string>
     <string name="_random">random</string>
+    <string name="_randomFade">randomFade</string>
+    <string name="_northernLights">northernLights</string>
+    <string name="_test">test</string>
 
     <string name="_1"> #FF0000</string>
     //Red
@@ -72,8 +75,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Cвет на ладони</string>
+    <string name="nav_header_subtitle">Управление адресной светодиодной лентой</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -102,5 +105,6 @@
     <string name="play_of_color">Игра цвета - плавные переливы</string>
     <string name="vartest">вариант- тест</string>
     <string name="name_of_effect">Название эффекта</string>
-    <string name="_test">test</string>
+
+
 </resources>

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
@@ -26,12 +27,16 @@ import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
+import com.bartex.adresslentawifi.main.MainActivity
 
 class ListFragment : Fragment(), Server.MessageListener {
 
     lateinit var navController: NavController
     private val listViewModel: ListViewModel by lazy {
-        ViewModelProvider(this).get(ListViewModel::class.java)
+        ViewModelProvider(this)[ListViewModel::class.java]
+    }
+    private val sharedViewModel: SharedViewModel by lazy {
+        ViewModelProvider(this)[SharedViewModel::class.java]
     }
     private var rvAdapter: RvAdapter? = null
     private  lateinit var rvEffects: RecyclerView
@@ -46,10 +51,8 @@ class ListFragment : Fragment(), Server.MessageListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "ListFragment onViewCreated ")
+        
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
-
-
         navController = Navigation.findNavController(view)
 
         initViews(view)
@@ -60,6 +63,10 @@ class ListFragment : Fragment(), Server.MessageListener {
         listViewModel.loadData()
         listViewModel.getListOfEffects().observe(this, {
             renderData(it)
+        })
+
+        sharedViewModel.getToolbarTitle().observe(this, {
+            (activity as MainActivity).supportActionBar?.title = it
         })
 }
 
@@ -109,53 +116,53 @@ class ListFragment : Fragment(), Server.MessageListener {
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
+                sharedViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = getString(R.string.baseUrl, edIp.text)
                 when(item.name){
                     getString(R.string.staticColors) -> {
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._static)) //так проще
-                        navController.navigate(R.id.staticColorFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._static),R.id.staticColorFragment)
                     }
                     getString(R.string.playOfColors) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                             KEY_WORD to getString(R.string._play))
-                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._play),R.id.dynamicColorsFragment)
                     }
-
+                    getString(R.string.playOfColorsFlash) ->{
+                        navigateTo(baseUrl,item,getString(R.string._playFlash),R.id.dynamicColorsFragment)
+                    }
                     getString(R.string.flame) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._flame))
-                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._flame),R.id.dynamicColorsFragment)
                     }
-
                     getString(R.string.pride) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._pride))
-                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._pride),R.id.dynamicColorsFragment)
                     }
                     getString(R.string.rainbow) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._rainbow))
-                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._rainbow),R.id.dynamicColorsFragment)
                     }
                     getString(R.string.rainbow_bias) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._rainbowBias))
-                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._rainbowBias),R.id.dynamicColorsFragment)
+                    }
+                    getString(R.string.rainbow_flash) ->{
+                        navigateTo(baseUrl,item,getString(R.string._rainbowFlash),R.id.dynamicColorsFragment)
                     }
                     getString(R.string.random_color) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._random))
-                        navController.navigate(R.id.dynamicColorsFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._random),R.id.dynamicColorsFragment)
+                    }
+                    getString(R.string.random_color_fade) ->{
+                        navigateTo(baseUrl,item,getString(R.string._randomFade),R.id.dynamicColorsFragment)
+                    }
+                    getString(R.string.northern_lights) ->{
+                        navigateTo(baseUrl,item,getString(R.string._northernLights),R.id.dynamicColorsFragment)
                     }
                     getString(R.string.test) ->{
-                        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
-                            KEY_WORD to getString(R.string._test))
-                        navController.navigate(R.id.testColorFragment, bundle)
+                        navigateTo(baseUrl,item,getString(R.string._test),R.id.testColorFragment)
                     }
                 }
             }
         }
+
+    private  fun navigateTo(baseUrl:String, item: ListOfEffects,keyword:String, frag:Int ){
+        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name, KEY_WORD to keyword)
+        navController.navigate(frag, bundle)
+    }
 
     override fun onMessage(message: String) {
         requireActivity().runOnUiThread {

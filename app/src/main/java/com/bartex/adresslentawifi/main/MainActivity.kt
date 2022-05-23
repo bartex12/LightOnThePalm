@@ -1,16 +1,18 @@
 package com.bartex.adresslentawifi.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.SharedViewModel
 import com.google.android.material.navigation.NavigationView
 
 //управление адресной лентой через NodeMCU с WiFi в режиме STA
@@ -28,6 +30,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var  appBarConfiguration:AppBarConfiguration
+    private val sharedViewModel by lazy{
+        ViewModelProvider(this)[SharedViewModel::class.java]
+    }
+    private  var toolbarTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,28 +44,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //находим NavController
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        //задаём шрифт и размер для title тулбара
         toolbar.setTitleTextAppearance(this, R.style.ToolbarTitleStyle)
-        toolbar.title = "Мир цвета"
-        //поддержка экшенбара для создания строки поиска
+        //поддержка экшенбара
         setSupportActionBar(toolbar)
-        //отключаем показ заголовка
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        //отключаем показ заголовка - если будет свой
+        //supportActionBar?.setDisplayShowTitleEnabled(false)
         appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
             //Отображать кнопку навигации как гамбургер , когда она не отображается как кнопка вверх
             .setOpenableLayout(drawerLayout)
             .build()
         //обработка событий экшенбара -гамбургер, кнопка вверх
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
-
         //слушатель меню шторки -для обработки пунктов шторки
         navView.setNavigationItemSelectedListener(this)
 
-    }
-
-    private fun initViews() {
-        toolbar = findViewById(R.id.toolbar)
-        drawerLayout = findViewById(R.id.drawer_layout)
-        navView = findViewById(R.id.nav_view)
     }
 
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
@@ -67,6 +66,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 ||super.onSupportNavigateUp()
+    }
+
+    private fun initViews() {
+        toolbar = findViewById(R.id.toolbar)
+
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
     }
 
     //меню шторки

@@ -1,6 +1,5 @@
 package com.bartex.adresslentawifi.dynamiccolor
 
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -11,36 +10,28 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
+import com.bartex.adresslentawifi.App
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
-import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
-import com.bartex.adresslentawifi.constants.Constants.FLAME_BRIGHTNESS
-import com.bartex.adresslentawifi.constants.Constants.FLAME_SPEED
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
-import com.bartex.adresslentawifi.constants.Constants.PLAY_BRIGHTNESS
-import com.bartex.adresslentawifi.constants.Constants.PLAY_SPEED
-import com.bartex.adresslentawifi.constants.Constants.PRIDE_BRIGHTNESS
-import com.bartex.adresslentawifi.constants.Constants.PRIDE_SPEED
-import com.bartex.adresslentawifi.constants.Constants.RAINBOW_BIAS_BRIGHTNESS
-import com.bartex.adresslentawifi.constants.Constants.RAINBOW_BIAS_SPEED
-import com.bartex.adresslentawifi.constants.Constants.RAINBOW_BRIGHTNESS
-import com.bartex.adresslentawifi.constants.Constants.RAINBOW_SPEED
-import com.bartex.adresslentawifi.constants.Constants.RANDOM_COLOR_BRIGHTNESS
-import com.bartex.adresslentawifi.constants.Constants.RANDOM_COLOR_SPEED
 import com.bartex.adresslentawifi.constants.Constants.TAG
 
 class DynamicColorsFragment : Fragment(), Server.MessageListener{
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
-    private lateinit var name: TextView
     private var brightness:String? = "50"
     private var speed:String? = "200"
     private lateinit var baseUrl:String
     private lateinit var pref: SharedPreferences
     private lateinit var seekBarPlayBrightness: SeekBar
     private lateinit var seekBarPlaySpeed: SeekBar
+    private val dynamicColorViewModel: DynamicColorViewModel by lazy{
+        ViewModelProvider(this).get(DynamicColorViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +51,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pref = requireActivity().getSharedPreferences("MyPref", MODE_PRIVATE)
+        pref = PreferenceManager.getDefaultSharedPreferences(App.instance)
 
         initViews(view)
         getSpeedAndBrightness()
@@ -71,6 +62,11 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
             this@DynamicColorsFragment).start()
     }
 
+    override fun onPause() {
+        super.onPause()
+        dynamicColorViewModel.saveSpeedBrightness(nameOfEffect,speed,brightness)
+    }
+
     private fun initViews(view: View) {
         seekBarPlayBrightness = view.findViewById(R.id.seekBarPlayBrightness)
         seekBarPlaySpeed = view.findViewById(R.id.seekBarPlaySpeed)
@@ -79,64 +75,13 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
             seekBarPlaySpeed.visibility = View.GONE
             view.findViewById<TextView>(R.id.tvSpeed).visibility = View.GONE
         }
-        name = view.findViewById(R.id.tvVariantPlay)
-        name.text = nameOfEffect
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val editor = pref.edit()
-        when(nameOfEffect){
-            requireActivity().getString(R.string.playOfColors) -> {
-                editor.putString(PLAY_SPEED, speed)
-                editor.putString(PLAY_BRIGHTNESS, brightness)
-            }
-                requireActivity().getString(R.string.flame) ->{
-                    editor.putString(FLAME_SPEED, speed)
-                    editor.putString(FLAME_BRIGHTNESS, brightness)
-                }
-            requireActivity().getString(R.string.rainbow) ->{
-                editor.putString(RAINBOW_SPEED, speed)
-                editor.putString(RAINBOW_BRIGHTNESS, brightness)
-            }
-            requireActivity().getString(R.string.pride) ->{
-                editor.putString(PRIDE_SPEED, speed)
-                editor.putString(PRIDE_BRIGHTNESS, brightness)
-            }
-            requireActivity().getString(R.string.rainbow_bias) ->{
-                editor.putString(RAINBOW_BIAS_SPEED, speed)
-                editor.putString(RAINBOW_BIAS_BRIGHTNESS, brightness)
-            }
-            requireActivity().getString(R.string.random_color) -> {
-                editor.putString(RANDOM_COLOR_SPEED, speed)
-                editor.putString(RANDOM_COLOR_BRIGHTNESS, brightness)
-            }
-        }
-        editor.apply()
-        Log.d(TAG, "DynamicColorsFragment onPause nameOfEffect= $nameOfEffect $speed $brightness")
     }
 
     private fun getSpeedAndBrightness() {
-        speed = when(nameOfEffect){
-            requireActivity().getString(R.string.playOfColors) -> pref.getString(PLAY_SPEED, "200")
-            requireActivity().getString(R.string.flame) -> pref.getString(FLAME_SPEED, "200")
-            requireActivity().getString(R.string.rainbow) -> pref.getString(RAINBOW_SPEED, "200")
-            requireActivity().getString(R.string.pride) -> pref.getString(PRIDE_SPEED, "200")
-            requireActivity().getString(R.string.rainbow_bias) -> pref.getString(RAINBOW_BIAS_SPEED, "200")
-            requireActivity().getString(R.string.random_color) -> pref.getString(RANDOM_COLOR_SPEED, "200")
-            else ->  pref.getString(PLAY_SPEED, "200")
-        }
+        speed =  dynamicColorViewModel.getSpeed(nameOfEffect)
         seekBarPlaySpeed.progress = seekBarPlaySpeed.max - Integer.parseInt(speed!!) //преобразуем шкалу
 
-        brightness = when(nameOfEffect){
-            requireActivity().getString(R.string.playOfColors) -> pref.getString(PLAY_BRIGHTNESS, "50")
-            requireActivity().getString(R.string.flame) -> pref.getString(FLAME_BRIGHTNESS, "50")
-            requireActivity().getString(R.string.rainbow) -> pref.getString(RAINBOW_BRIGHTNESS, "50")
-            requireActivity().getString(R.string.pride) -> pref.getString(PRIDE_BRIGHTNESS, "50")
-            requireActivity().getString(R.string.rainbow_bias) -> pref.getString(RAINBOW_BIAS_BRIGHTNESS, "50")
-            requireActivity().getString(R.string.random_color) -> pref.getString(RANDOM_COLOR_BRIGHTNESS, "50")
-            else ->  pref.getString(PLAY_BRIGHTNESS, "50")
-        }
+        brightness = dynamicColorViewModel.getBrightness(nameOfEffect)
         seekBarPlayBrightness.progress = Integer.parseInt(brightness!!)
         Log.d(TAG, "DynamicColorsFragment getSpeedAndBrightness speed= $speed brightness = $brightness")
 

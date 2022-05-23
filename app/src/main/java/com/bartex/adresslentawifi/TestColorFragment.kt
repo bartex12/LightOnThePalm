@@ -17,9 +17,18 @@ class TestColorFragment: Fragment(), Server.MessageListener{
     private var brightness:String? = "50"
     private var speed:String? = "200"
     private lateinit var baseUrl:String
+    private  var nameOfEffect:String = ""
+    private  var keyWord:String = ""
     private lateinit var pref: SharedPreferences
     private lateinit var seekBarTestBrightness:SeekBar
     private lateinit var seekBarTestSpeed: SeekBar
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getString(Constants.BASE_URL)?. let{baseUrl = it }
+        arguments?.getString(Constants.ITEM_NAME)?. let{nameOfEffect = it }
+        arguments?.getString(Constants.KEY_WORD)?. let{keyWord = it }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +41,6 @@ class TestColorFragment: Fragment(), Server.MessageListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.getString(Constants.BASE_URL)?. let{baseUrl = it }
         pref = requireActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE)
 
         initView(view)
@@ -40,7 +48,7 @@ class TestColorFragment: Fragment(), Server.MessageListener{
         initSeekBarBrightness()
         initSeekBarSpeed()
 
-        Server(baseUrl, getString(R.string.postTestColors,speed, brightness),
+        Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
             this@TestColorFragment).start()
     }
 
@@ -48,7 +56,6 @@ class TestColorFragment: Fragment(), Server.MessageListener{
         seekBarTestBrightness = view.findViewById(R.id.seekBarBri)
         seekBarTestSpeed = view.findViewById(R.id.seekBarSp)
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -64,7 +71,7 @@ class TestColorFragment: Fragment(), Server.MessageListener{
         brightness = pref.getString(TEST_BRIGHTNESS, "50")
         seekBarTestBrightness.progress = Integer.parseInt(brightness!!)
 
-        Server(baseUrl, getString(R.string.postTestColors, speed, brightness),
+        Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
             this@TestColorFragment).start()
     }
 
@@ -76,7 +83,8 @@ class TestColorFragment: Fragment(), Server.MessageListener{
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = getBrightness()
                     speed = getSpeed()
-                    Server(baseUrl, getString(R.string.postTestColors, speed, brightness),
+
+                    Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
                         this@TestColorFragment).start()
                 }
             }
@@ -100,7 +108,8 @@ class TestColorFragment: Fragment(), Server.MessageListener{
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     speed = getSpeed()
                     brightness = getBrightness()
-                    Server(baseUrl, getString(R.string.postTestColors,speed, brightness),
+
+                    Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
                         this@TestColorFragment).start()
                 }
             }

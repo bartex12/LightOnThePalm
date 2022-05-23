@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bartex.adresslentawifi.App
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.entity.ListOfEffects
-import com.bartex.adresslentawifi.list.EffectsListImpl
-import com.bartex.adresslentawifi.list.IEffectsList
 
 class ListViewModel:ViewModel() {
 
@@ -20,4 +19,5 @@ class ListViewModel:ViewModel() {
     fun loadData(){
         listOfEffects.value = mainRepo.getList()
     }
+
 }
