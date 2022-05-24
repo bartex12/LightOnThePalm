@@ -7,7 +7,7 @@
     tools:context=".staticcolor.StaticColorFragment">
 
     <SeekBar
-        android:id="@+id/seekBarStatic"
+        android:id="@+id/seekBarBrRun"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,10 +20,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvBrightnessTest" />
+        app:layout_constraintTop_toBottomOf="@+id/tvBrRun" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvColors"
+        android:id="@+id/rvColorsRun"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,10 +32,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewChooseColor" />
+        app:layout_constraintTop_toBottomOf="@+id/tvColorRun" />
 
     <TextView
-        android:id="@+id/tvBrightnessTest"
+        android:id="@+id/tvBrRun"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -47,10 +47,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvColors" />
+        app:layout_constraintTop_toBottomOf="@+id/rvColorsRun" />
 
     <TextView
-        android:id="@+id/textViewChooseColor"
+        android:id="@+id/tvColorRun"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

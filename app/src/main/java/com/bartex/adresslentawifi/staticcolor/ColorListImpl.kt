@@ -28,4 +28,15 @@ class ColorListImpl(private val instance: App): IColorList {
             ButtonColor(instance.resources.getString(R.string._18),"18")
         )
     }
+
+    override fun getShortList(): MutableList<ButtonColor> {
+        return mutableListOf(
+            ButtonColor(instance.resources.getString(R.string._1),"1"),
+            ButtonColor(instance.resources.getString(R.string._5),"5"),
+            ButtonColor(instance.resources.getString(R.string._7),"7"),
+            ButtonColor(instance.resources.getString(R.string._13),"13"),
+            ButtonColor(instance.resources.getString(R.string._15),"15"),
+            ButtonColor(instance.resources.getString(R.string._17),"17"),
+        )
+    }
 }

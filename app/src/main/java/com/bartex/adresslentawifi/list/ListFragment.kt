@@ -51,7 +51,7 @@ class ListFragment : Fragment(), Server.MessageListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
 
@@ -127,6 +127,9 @@ class ListFragment : Fragment(), Server.MessageListener {
                     }
                     getString(R.string.playOfColorsFlash) ->{
                         navigateTo(baseUrl,item,getString(R.string._playFlash),R.id.dynamicColorsFragment)
+                    }
+                    getString(R.string.running_lights) ->{
+                        navigateTo(baseUrl,item,getString(R.string._runningLights),R.id.runningColorsFragment)
                     }
                     getString(R.string.flame) ->{
                         navigateTo(baseUrl,item,getString(R.string._flame),R.id.dynamicColorsFragment)

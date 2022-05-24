@@ -143,8 +143,8 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     }
 
     private fun initViews(view: View) {
-        seekBarStatic = view.findViewById(R.id.seekBarStatic)
-        rvColors = view.findViewById(R.id.rvColors)
+        seekBarStatic = view.findViewById(R.id.seekBarBrRun)
+        rvColors = view.findViewById(R.id.rvColorsRun)
     }
 
     override fun onMessage(message: String) {

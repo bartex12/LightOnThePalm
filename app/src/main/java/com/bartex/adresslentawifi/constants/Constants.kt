@@ -6,11 +6,14 @@ object Constants {
     const val BASE_URL  = "BASE_URL"
     const val ITEM_NAME  = "ITEM_NAME"
     const val KEY_WORD  = "KEY_WORD"
+    const val NUMBER_LED  = "NUMBER_LED"
+    const val COLOR_RUN  = "COLOR_RUN"
 
 
     const val COLOR  = "color"
     const val PLAY_SPEED  = "playSpeed"
     const val PLAY_FLASH_SPEED  = "PLAY_FLASH_SPEED"
+    const val RUNNING_SPEED  = "RUNNING_SPEED"
     const val FLAME_SPEED  = "FLAME_SPEED"
     const val RAINBOW_SPEED  = "RAINBOW_SPEED"
     const val RAINBOW_BIAS_SPEED  = "RAINBOW_BIAS_SPEED"
@@ -24,6 +27,7 @@ object Constants {
     const val BRIGHTNESS  = "brightness"
     const val PLAY_BRIGHTNESS  = "playBrightness"
     const val PLAY_FLASH_BRIGHTNESS  = "PLAY_FLASH_BRIGHTNESS"
+    const val RUNNING_BRIGHTNESS  = "RUNNING_BRIGHTNESS"
     const val FLAME_BRIGHTNESS  = "FLAME_BRIGHTNESS"
     const val RAINBOW_BRIGHTNESS  = "RAINBOW_BRIGHTNESS"
     const val RAINBOW_BIAS_BRIGHTNESS  = "RAINBOW_BIAS_BRIGHTNESS"

@@ -10,6 +10,7 @@ class EffectsListImpl(private val application: Application) : IEffectsList {
             ListOfEffects(application.resources.getString(R.string.staticColors)),
             ListOfEffects(application.resources.getString(R.string.playOfColors)),
             ListOfEffects(application.resources.getString(R.string.playOfColorsFlash)),
+            ListOfEffects(application.resources.getString(R.string.running_lights)),
             ListOfEffects(application.resources.getString(R.string.flame)),
             ListOfEffects(application.resources.getString(R.string.rainbow)) ,
             ListOfEffects(application.resources.getString(R.string.pride)),
@@ -17,8 +18,8 @@ class EffectsListImpl(private val application: Application) : IEffectsList {
             ListOfEffects(application.resources.getString(R.string.rainbow_flash)),
             ListOfEffects(application.resources.getString(R.string.random_color)),
             ListOfEffects(application.resources.getString(R.string.random_color_fade)),
-            ListOfEffects(application.resources.getString(R.string.northern_lights))/*,
-            ListOfEffects(application.resources.getString(R.string.test))*/
+            ListOfEffects(application.resources.getString(R.string.northern_lights)),
+            ListOfEffects(application.resources.getString(R.string.test))
         )
     }
 }

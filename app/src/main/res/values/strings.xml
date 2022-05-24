@@ -17,11 +17,15 @@
     <string name="random_color">Цветное конфетти</string>
     <string name="random_color_fade">Цветное конфетти с затуханием</string>
     <string name="northern_lights">Северное сияние</string>
+    <string name="running_lights">Бегущие огни</string>
+
     <string name="test">Проверка</string>
 
     <string name="baseUrl">http://%1$s</string>
     <string name="postStatic">%1$s?color=%2$s&amp;brightness=%3$s</string>
     <string name="post">%1$s?speed=%2$s&amp;brightness=%3$s</string>
+    <string name=
+        "postRun">%1$s?speed=%2$s&amp;brightness=%3$s&amp;numbers=%4$s&amp;color=%5$s</string>
 
     <string name="_static">static</string>
     <string name="_play">play</string>
@@ -34,6 +38,7 @@
     <string name="_random">random</string>
     <string name="_randomFade">randomFade</string>
     <string name="_northernLights">northernLights</string>
+    <string name="_runningLights">runningLights</string>
     <string name="_test">test</string>
 
     <string name="_1"> #FF0000</string>
@@ -102,6 +107,7 @@
     <string name="choose_br">Выберите яркость</string>
     <string name="choose_color">Выберите цвет</string>
     <string name="choose_speed">Выберите скорость</string>
+    <string name="choose_number">Выберите количество точек</string>
     <string name="play_of_color">Игра цвета - плавные переливы</string>
     <string name="vartest">вариант- тест</string>
     <string name="name_of_effect">Название эффекта</string>

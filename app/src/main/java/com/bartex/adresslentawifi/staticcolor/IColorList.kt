@@ -5,4 +5,5 @@ import com.bartex.adresslentawifi.entity.ListOfEffects
 
 interface IColorList {
     fun getList():MutableList<ButtonColor>
+    fun getShortList():MutableList<ButtonColor>
 }

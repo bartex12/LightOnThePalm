@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.setTitleTextAppearance(this, R.style.ToolbarTitleStyle)
         //поддержка экшенбара
         setSupportActionBar(toolbar)
-        //отключаем показ заголовка - если будет свой
+        //отключаем показ заголовка - если будет свой - у нас своего textView нет
         //supportActionBar?.setDisplayShowTitleEnabled(false)
         appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
             //Отображать кнопку навигации как гамбургер , когда она не отображается как кнопка вверх

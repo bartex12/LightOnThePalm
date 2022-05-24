@@ -7,7 +7,7 @@
     tools:context=".dynamiccolor.DynamicColorsFragment">
 
     <SeekBar
-        android:id="@+id/seekBarPlaySpeed"
+        android:id="@+id/seekBarSpeedRun"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,10 +20,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSpeedRun" />
 
     <TextView
-        android:id="@+id/tvSpeed"
+        android:id="@+id/tvSpeedRun"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

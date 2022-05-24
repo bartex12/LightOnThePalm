@@ -26,10 +26,10 @@ class Server(
             if(response.isSuccessful){
                 val resultText = response.body()?.string()
                 Log.d(TAG, "Server resultText = $resultText")
-                val array = resultText?.split(",")
-                array?.get(0)?. let{listener.onMessage(it)}
+                resultText?. let{listener.onMessage(it)}
             }
         }catch (i: IOException){
+            Log.d(TAG, "Server IOException = ${i.message}")
         }
     }
     interface MessageListener{

@@ -26,7 +26,6 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     private var brightness:String? = "50"
     private var speed:String? = "200"
     private lateinit var baseUrl:String
-    private lateinit var pref: SharedPreferences
     private lateinit var seekBarPlayBrightness: SeekBar
     private lateinit var seekBarPlaySpeed: SeekBar
     private val dynamicColorViewModel: DynamicColorViewModel by lazy{
@@ -51,8 +50,6 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pref = PreferenceManager.getDefaultSharedPreferences(App.instance)
-
         initViews(view)
         getSpeedAndBrightness()
         initSeekBarBrightness()
@@ -69,11 +66,11 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
     private fun initViews(view: View) {
         seekBarPlayBrightness = view.findViewById(R.id.seekBarPlayBrightness)
-        seekBarPlaySpeed = view.findViewById(R.id.seekBarPlaySpeed)
+        seekBarPlaySpeed = view.findViewById(R.id.seekBarSpeedRun)
         //если пламя, только яркость
         if (nameOfEffect == requireActivity().getString(R.string.flame) ){
             seekBarPlaySpeed.visibility = View.GONE
-            view.findViewById<TextView>(R.id.tvSpeed).visibility = View.GONE
+            view.findViewById<TextView>(R.id.tvSpeedRun).visibility = View.GONE
         }
     }
 
