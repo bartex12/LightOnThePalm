@@ -1,6 +1,5 @@
 package com.bartex.adresslentawifi.dynamiccolor
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,8 +10,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
-import com.bartex.adresslentawifi.App
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -29,7 +26,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     private lateinit var seekBarPlayBrightness: SeekBar
     private lateinit var seekBarPlaySpeed: SeekBar
     private val dynamicColorViewModel: DynamicColorViewModel by lazy{
-        ViewModelProvider(this).get(DynamicColorViewModel::class.java)
+        ViewModelProvider(this)[DynamicColorViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +41,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_dinamic_colors,container, false )
+        return inflater.inflate(R.layout.fragment_dynamics,container, false )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,8 +62,8 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     }
 
     private fun initViews(view: View) {
-        seekBarPlayBrightness = view.findViewById(R.id.seekBarPlayBrightness)
-        seekBarPlaySpeed = view.findViewById(R.id.seekBarSpeedRun)
+        seekBarPlayBrightness = view.findViewById(R.id.seekBarBrDin)
+        seekBarPlaySpeed = view.findViewById(R.id.seekBarSpDin)
         //если пламя, только яркость
         if (nameOfEffect == requireActivity().getString(R.string.flame) ){
             seekBarPlaySpeed.visibility = View.GONE
