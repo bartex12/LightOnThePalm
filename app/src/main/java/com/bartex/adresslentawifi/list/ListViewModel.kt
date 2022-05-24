@@ -12,7 +12,7 @@ class ListViewModel:ViewModel() {
 
     private val listOfEffects = MutableLiveData<List<ListOfEffects>>()
     private val mainRepo: IEffectsList =  EffectsListImpl(App.instance)
-    private val toolbarTitle = MutableLiveData<String>("Цвет на ладони")
+    private val toolbarTitle = MutableLiveData<String>("Свет на ладони")
 
     fun getListOfEffects(): LiveData<List<ListOfEffects>> {
         return listOfEffects
