@@ -6,7 +6,6 @@
     <string name="no_data">Нет данных.</string>
     <string name="save_ip">Сохранить Ip</string>
 
-    <string name="date">8:00–8:45</string>
     <string name="name_eff">Название</string>
     <string name="description">Описание</string>
 
@@ -45,46 +44,28 @@
     <string name="_runningLights">runningLights</string>
     <string name="_test">test</string>
 
-    <string name="_1"> #FF0000</string>
-    //Red
-    <string name="_2"> #FF4500</string>
-    //OrangeRed
-    <string name="_3"> #FFA500</string>
-    //Orange
-    <string name="_4"> #FFD700</string>
-    //Gold
-    <string name="_5"> #FFFF00</string>
-    //Yellow
-    <string name="_6"> #7FFF00</string>
-    //Chartreuse
-    <string name="_7"> #00FF00</string>
-    //Lime
-    <string name="_8"> #00FF7F</string>
-    //SpringGreen
-    <string name="_9"> #00FFFF</string>
-    //Cyan
-    <string name="_10">#00BFFF</string>
-    //DeepSkyBlue
-    <string name="_11">#1E90FF</string>
-    //DodgerBlue
-    <string name="_12">#0000CD</string>
-    //MediumBlue
-    <string name="_13">#0000FF</string>
-    //Blue
-    <string name="_14">#EE82EE</string>
-    //Violet
-    <string name="_15">#FF00FF</string>
-    //Magenta
-    <string name="_16">#FF1493</string>
-    //DeepPink
-    <string name="_17">#FFFFFF</string>
-    //White
-    <string name="_18">#000000</string>
-    //Black
+    <string name="_1"> #FF0000</string>//Red
+    <string name="_2"> #FF4500</string>//OrangeRed
+    <string name="_3"> #FFA500</string>//Orange
+    <string name="_4"> #FFD700</string>//Gold
+    <string name="_5"> #FFFF00</string>//Yellow
+    <string name="_6"> #7FFF00</string>//Chartreuse
+    <string name="_7"> #00FF00</string> //Lime
+    <string name="_8"> #00FF7F</string>//SpringGreen
+    <string name="_9"> #00FFFF</string>//Cyan
+    <string name="_10">#00BFFF</string> //DeepSkyBlue
+    <string name="_11">#1E90FF</string>//DodgerBlue
+    <string name="_12">#0000CD</string>//MediumBlue
+    <string name="_13">#0000FF</string>//Blue
+    <string name="_14">#EE82EE</string>//Violet
+    <string name="_15">#FF00FF</string> //Magenta
+    <string name="_16">#FF1493</string>//DeepPink
+    <string name="_17">#FFFFFF</string> //White
+    <string name="_18">#000000</string>//Black
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Cвет на ладони</string>
+    <string name="nav_header_title">Свет на ладони</string>
     <string name="nav_header_subtitle">Управление адресной светодиодной лентой</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -96,7 +77,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="textview">TextView</string>
-    <string name="todo">imag From Internet</string>
+    <string name="todo">image From Internet</string>
     <string name="name_000">Name 000</string>
     <string name="employeeName">employeeName</string>
     <string name="frag_det">Фрагмент детализации</string>
@@ -108,12 +89,11 @@
     <string name="addition">Дополнительно</string>
     <string name="share">Поделиться</string>
     <string name="send">Оценить</string>
-    <string name="choose_br">Выберите яркость</string>
-    <string name="choose_color">Выберите цвет</string>
-    <string name="choose_speed">Выберите скорость</string>
-    <string name="choose_number">Выберите количество точек</string>
-    <string name="play_of_color">Игра цвета - плавные переливы</string>
-    <string name="vartest">вариант- тест</string>
+    <string name="choose_br">Яркость</string>
+    <string name="choose_color">Цвет</string>
+    <string name="choose_speed">Скорость</string>
+    <string name="choose_number">Количество точек</string>
+    <string name="var_test">вариант- тест</string>
     <string name="name_of_effect">Название эффекта</string>
 
 

@@ -11,7 +11,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
-import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
@@ -34,9 +32,6 @@ class ListFragment : Fragment(), Server.MessageListener {
     lateinit var navController: NavController
     private val listViewModel: ListViewModel by lazy {
         ViewModelProvider(this)[ListViewModel::class.java]
-    }
-    private val sharedViewModel: SharedViewModel by lazy {
-        ViewModelProvider(this)[SharedViewModel::class.java]
     }
     private var rvAdapter: RvAdapter? = null
     private  lateinit var rvEffects: RecyclerView
@@ -65,7 +60,7 @@ class ListFragment : Fragment(), Server.MessageListener {
             renderData(it)
         })
         //следим за изменением заголовка тулбара и показываем новый заголовок
-        sharedViewModel.getToolbarTitle().observe(this, {
+        listViewModel.getToolbarTitle().observe(this, {
             (activity as MainActivity).supportActionBar?.title = it
         })
 }
@@ -116,7 +111,7 @@ class ListFragment : Fragment(), Server.MessageListener {
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
-                sharedViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
+                listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = getString(R.string.baseUrl, edIp.text)
                 when(item.name){
                     getString(R.string.staticColors) -> {

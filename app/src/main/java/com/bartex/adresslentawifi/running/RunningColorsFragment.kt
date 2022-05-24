@@ -49,7 +49,7 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_running_colors, container, false)
+        return inflater.inflate(R.layout.fragment_running, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +78,6 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         runningViewModel.saveSpeedBrightness(nameOfEffect, progress, brightness)
         runningViewModel.saveNumbers(nameOfEffect, number)
         runningViewModel.saveColor(nameOfEffect, color)
-
     }
 
     private fun renderData(data: List<ButtonColor>?) {
@@ -101,12 +100,12 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         }
 
     private fun initViews(view: View) {
-        rvColors = view.findViewById(R.id.rvColorsRun)
-        seekBarRunBrightness = view.findViewById(R.id.seekBarBrRun)
+        rvColors = view.findViewById(R.id.rvColorsRunning)
+        seekBarRunBrightness = view.findViewById(R.id.seekBarBrRunning)
         seekBarRunBrightness.max = 255
-        seekBarRunSpeed = view.findViewById(R.id.seekBarSpeedRun)
+        seekBarRunSpeed = view.findViewById(R.id.seekBarSpeedRunning)
         seekBarRunSpeed.max = 70
-        seekBarRunNumber = view.findViewById(R.id.seekBarRunNumber)
+        seekBarRunNumber = view.findViewById(R.id.seekBarNumberRunning)
         seekBarRunNumber.max = 10
     }
 

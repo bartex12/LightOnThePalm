@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
-import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.BRIGHTNESS
@@ -33,9 +32,7 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     private val viewModel: StaticColorsViewModel by lazy {
         ViewModelProvider(this).get(StaticColorsViewModel::class.java)
     }
-    private val sharedViewModel: SharedViewModel by lazy {
-        ViewModelProvider(this)[SharedViewModel::class.java]
-    }
+
     private var color:String? = "0x00FFFF"
     var brightness:String? = "5"
     private lateinit var pref: SharedPreferences
@@ -54,7 +51,7 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_static_colors, container, false)
+        return inflater.inflate(R.layout.fragment_static, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,14 +68,6 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         viewModel.getStaticColors().observe(this, {
             renderData(it)
         })
-        //добираемся из фрагмента до тулбара MainActivity и пишем заголовок
-        //(activity as MainActivity).supportActionBar?.title = SharedViewModel().toolbarTitle.value
-//        sharedViewModel.getToolbarTitle().observe(this, {
-//            (activity as MainActivity).supportActionBar?.title = it
-//            Log.d(TAG, "StaticColorFragment onViewCreated toolbarTitle = $it")
-//        })
-        //(activity as MainActivity).supportActionBar?.title = nameOfEffect
-        //Log.d(TAG, "StaticColorFragment onViewCreated toolbarTitle = ${sharedViewModel.getToolbarTitle().value}")
     }
 
     override fun onPause() {
@@ -143,8 +132,8 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     }
 
     private fun initViews(view: View) {
-        seekBarStatic = view.findViewById(R.id.seekBarBrRun)
-        rvColors = view.findViewById(R.id.rvColorsRun)
+        seekBarStatic = view.findViewById(R.id.seekBarBrStat)
+        rvColors = view.findViewById(R.id.rvColorsStat)
     }
 
     override fun onMessage(message: String) {

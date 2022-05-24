@@ -35,7 +35,6 @@ class StaticColorAdapter(val listener: OnItemClickListener):RecyclerView.Adapter
 
     inner class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
         private val buttonColor: AppCompatButton = itemView.findViewById(R.id.but1)
-
         fun bind(itemBut: ButtonColor){
             buttonColor.setBackgroundColor(Color.parseColor(itemBut.color))
             buttonColor.text = itemBut.text

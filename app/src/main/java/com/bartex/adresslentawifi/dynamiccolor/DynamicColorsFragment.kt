@@ -63,11 +63,11 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
     private fun initViews(view: View) {
         seekBarPlayBrightness = view.findViewById(R.id.seekBarBrDin)
-        seekBarPlaySpeed = view.findViewById(R.id.seekBarSpDin)
-        //если пламя, только яркость
+        seekBarPlaySpeed = view.findViewById(R.id.seekBarBrStat)
+        //если пламя, оставляем только яркость
         if (nameOfEffect == requireActivity().getString(R.string.flame) ){
             seekBarPlaySpeed.visibility = View.GONE
-            view.findViewById<TextView>(R.id.tvSpeedRun).visibility = View.GONE
+            view.findViewById<TextView>(R.id.tvBrStat).visibility = View.GONE
         }
     }
 

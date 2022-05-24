@@ -6,11 +6,12 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/but1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="0"
+        android:gravity="center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

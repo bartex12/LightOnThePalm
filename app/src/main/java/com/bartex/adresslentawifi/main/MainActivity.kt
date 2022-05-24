@@ -6,21 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.SharedViewModel
 import com.google.android.material.navigation.NavigationView
 
 //управление адресной лентой через NodeMCU с WiFi в режиме STA
-//две библиотеки, + режим STA     статич цвета - через параметры достаём цвет
+//две библиотеки, + режим STA через параметры достаём цвет, яркость, скорость, количество точек
 //в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
 // код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка listMVVM_GoogleNavigation
-// скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_005EspWiFi_2lib_STA_sketch_may14a
-//варианты - бег строка , pride, flame, статич цвета
+// скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_006EspWiFi_2lib_STA_EVERY_sketch_may22a
+//варианты - бег строка , pride, flame, статич цвета,конфетти,радуги
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
@@ -30,14 +28,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var  appBarConfiguration:AppBarConfiguration
-    private val sharedViewModel by lazy{
-        ViewModelProvider(this)[SharedViewModel::class.java]
-    }
-    private  var toolbarTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
 
         initViews()
@@ -78,7 +71,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //меню шторки
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         //todo
-
         // Выделяем выбранный пункт меню в шторке
         item.isChecked = true
         drawerLayout.closeDrawer(GravityCompat.START)

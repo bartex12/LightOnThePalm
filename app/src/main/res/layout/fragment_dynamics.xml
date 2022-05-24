@@ -11,9 +11,9 @@
         android:id="@+id/cardViewBr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:clipToPadding="false"
         app:cardBackgroundColor="@color/colorSecondaryBlack"
         app:cardCornerRadius="@dimen/cardCornerRadius"
@@ -25,6 +25,23 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <SeekBar
+                android:id="@+id/seekBarBrDin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                android:max="255"
+                android:progress="100"
+                android:progressDrawable="@drawable/seekbar_style"
+                android:thumb="@drawable/custom_thumb"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvBrDin" />
 
             <TextView
                 android:id="@+id/tvBrDin"
@@ -41,33 +58,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <SeekBar
-                android:id="@+id/seekBarBrDin"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="16dp"
-                android:max="255"
-                android:progress="100"
-                android:progressDrawable="@drawable/seekbar_style"
-                android:thumb="@drawable/custom_thumb"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvBrDin" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewSp"
+        android:id="@+id/cardViewBrStat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:clipToPadding="false"
         app:cardBackgroundColor="@color/colorSecondaryBlack"
         app:cardCornerRadius="@dimen/cardCornerRadius"
@@ -86,11 +86,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <SeekBar
-                android:id="@+id/seekBarSpDin"
+                android:id="@+id/seekBarBrStat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:max="255"
@@ -100,10 +100,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/tvBrStat" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tvBrStat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
