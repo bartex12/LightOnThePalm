@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E8E6E6"
-    tools:context=".main.MainActivity">
+    android:background="@color/colorPrimaryDarkBlack">
 
     <Button
         android:id="@+id/bSave"
@@ -14,6 +13,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/save_ip"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/edIp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edIp"
@@ -29,6 +29,8 @@
         android:gravity="start"
         android:hint="@string/status"
         android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/bSave"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

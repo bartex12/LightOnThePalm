@@ -14,4 +14,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="colorPrimaryBlack">#5C5C5C</color>
+    <color name="colorPrimaryDarkBlack">#212121</color>
+    <color name="colorAccentBlack">#5677fc</color>
+    <color name="colorSecondaryBlack">#6E6D6D</color>
+    <color name="colorSecondaryBlue">#17B8B1</color>
+
 </resources>

@@ -3,10 +3,12 @@ package com.bartex.adresslentawifi.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.R
+import com.squareup.picasso.Picasso
 
 class RvAdapter(val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
 
@@ -21,7 +23,7 @@ class RvAdapter(val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view,parent, false )
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list_effects,parent, false )
         return ViewHolder(view)
     }
 
@@ -34,10 +36,16 @@ class RvAdapter(val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapte
     }
 
    inner class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.name)
+        val name: TextView = view.findViewById(R.id.tv_name_dis)
+        private val imageRound: ImageView = view.findViewById(R.id.iv_round_dis)
 
         fun bind(itemView: ListOfEffects){
             name.text = itemView.name
+            Picasso.get()
+                .load(itemView.icon)
+                .placeholder(R.drawable.trio_200)
+                .error(R.drawable.mistake)
+                .into(imageRound)
 
             this.itemView.setOnClickListener {
                 listener.onClick(itemView)

@@ -64,7 +64,7 @@ class ListFragment : Fragment(), Server.MessageListener {
         listViewModel.getListOfEffects().observe(this, {
             renderData(it)
         })
-
+        //следим за изменением заголовка тулбара и показываем новый заголовок
         sharedViewModel.getToolbarTitle().observe(this, {
             (activity as MainActivity).supportActionBar?.title = it
         })

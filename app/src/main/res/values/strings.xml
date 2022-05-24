@@ -6,7 +6,11 @@
     <string name="no_data">Нет данных.</string>
     <string name="save_ip">Сохранить Ip</string>
 
-    <string name="staticColors">Статические цвета</string>
+    <string name="date">8:00–8:45</string>
+    <string name="name_eff">Название</string>
+    <string name="description">Описание</string>
+
+    <string name="staticColors">Отдельные цвета</string>
     <string name="playOfColors">Плавные переливы</string>
     <string name="playOfColorsFlash">Плавные переливы с блёстками</string>
     <string name="flame">Пламя</string>
