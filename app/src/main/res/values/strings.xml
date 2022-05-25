@@ -10,8 +10,8 @@
     <string name="description">Описание</string>
 
     <string name="staticColors">Отдельные цвета</string>
-    <string name="playOfColors">Плавные переливы</string>
-    <string name="playOfColorsFlash">Плавные переливы с блёстками</string>
+    <string name="playOfColors">Переливы цвета</string>
+    <string name="playOfColorsFlash">Переливы цвета с блёстками</string>
     <string name="flame">Пламя</string>
     <string name="pride">Радуга с затуханием</string>
     <string name="rainbow">Скользящая радуга</string>

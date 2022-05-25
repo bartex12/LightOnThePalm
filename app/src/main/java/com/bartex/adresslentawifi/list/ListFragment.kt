@@ -29,7 +29,7 @@ import com.bartex.adresslentawifi.main.MainActivity
 
 class ListFragment : Fragment(), Server.MessageListener {
 
-    lateinit var navController: NavController
+    private lateinit var navController: NavController
     private val listViewModel: ListViewModel by lazy {
         ViewModelProvider(this)[ListViewModel::class.java]
     }
@@ -38,7 +38,7 @@ class ListFragment : Fragment(), Server.MessageListener {
     private  lateinit var bSave: Button
     private  lateinit var edIp:EditText
     private lateinit var pref: SharedPreferences
-
+    private var nameTag =""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_list, container, false)
@@ -63,6 +63,7 @@ class ListFragment : Fragment(), Server.MessageListener {
         listViewModel.getToolbarTitle().observe(this, {
             (activity as MainActivity).supportActionBar?.title = it
         })
+
 }
 
     override fun onPause() {
@@ -104,13 +105,14 @@ class ListFragment : Fragment(), Server.MessageListener {
 
     private fun initAdapter() {
         rvEffects.layoutManager = LinearLayoutManager(requireActivity())
-        rvAdapter =  RvAdapter(getOnClickListener())
+        rvAdapter =  RvAdapter(nameTag, getOnClickListener())
         rvEffects.adapter = rvAdapter
     }
 
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
+                nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = getString(R.string.baseUrl, edIp.text)
                 when(item.name){

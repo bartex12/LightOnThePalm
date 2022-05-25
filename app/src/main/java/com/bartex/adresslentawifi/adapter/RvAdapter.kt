@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.squareup.picasso.Picasso
 
-class RvAdapter(val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
+class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
 
     var listOfEffects:List<ListOfEffects> = listOf()
     set(value) {
@@ -36,11 +36,17 @@ class RvAdapter(val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapte
     }
 
    inner class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.tv_name_dis)
+        private var name: TextView = view.findViewById(R.id.tv_name_dis)
+        private var triangle: ImageView = view.findViewById(R.id.iv_triangle)
         private val imageRound: ImageView = view.findViewById(R.id.iv_round_dis)
 
         fun bind(itemView: ListOfEffects){
             name.text = itemView.name
+            triangle.tag = itemView.name
+            when(triangle.tag == nameTag){
+                true ->  triangle.visibility = View.VISIBLE
+                false->  triangle.visibility = View.GONE
+            }
             Picasso.get()
                 .load(itemView.icon)
                 .placeholder(R.drawable.trio_200)

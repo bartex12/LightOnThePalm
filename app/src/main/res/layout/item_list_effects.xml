@@ -18,13 +18,28 @@
 
 
     <ImageView
-        android:id="@+id/iv_time_type"
+        android:id="@+id/iv_circle"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/circle"
+        android:tag=""
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@+id/view_type"
         app:layout_constraintEnd_toEndOf="@+id/view_type"
+        />
+
+
+    <ImageView
+        android:id="@+id/iv_triangle"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/triangle"
+        android:visibility="gone"
+        android:tag=""
+        app:layout_constraintTop_toTopOf="@+id/card_view_type"
+        app:layout_constraintBottom_toBottomOf="@+id/card_view_type"
+        app:layout_constraintStart_toStartOf="@+id/view_type"
+
         />
 
     <androidx.cardview.widget.CardView
@@ -32,9 +47,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="13dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="@color/colorSecondaryBlack"
         app:cardCornerRadius="@dimen/cardCornerRadius"
         app:cardElevation="@dimen/cardElevation4"
@@ -56,10 +70,10 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
                 android:text="@string/name_eff"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:gravity="center_vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_round_dis"
