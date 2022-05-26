@@ -16,7 +16,7 @@ import com.google.android.material.navigation.NavigationView
 //управление адресной лентой через NodeMCU с WiFi в режиме STA
 //две библиотеки, + режим STA через параметры достаём цвет, яркость, скорость, количество точек
 //в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
-// код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка listMVVM_GoogleNavigation
+// код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка 5_mvvm_disign
 // скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_006EspWiFi_2lib_STA_EVERY_sketch_may22a
 //варианты - бег строка , pride, flame, статич цвета,конфетти,радуги
 
