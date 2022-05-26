@@ -48,7 +48,9 @@ class TestColorFragment: Fragment(), Server.MessageListener{
         initSeekBarBrightness()
         initSeekBarSpeed()
 
-        Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
+        sendMessageToServer()
+
+        Server(baseUrl, getString(R.string.postDynamicPos,keyWord,speed, brightness, nameOfEffect),
             this@TestColorFragment).start()
     }
 
@@ -70,9 +72,6 @@ class TestColorFragment: Fragment(), Server.MessageListener{
         seekBarTestSpeed.progress =seekBarTestSpeed.max - Integer.parseInt(speed!!)
         brightness = pref.getString(TEST_BRIGHTNESS, "50")
         seekBarTestBrightness.progress = Integer.parseInt(brightness!!)
-
-        Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
-            this@TestColorFragment).start()
     }
 
     private fun initSeekBarBrightness() {
@@ -82,10 +81,7 @@ class TestColorFragment: Fragment(), Server.MessageListener{
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = getBrightness()
-                    speed = getSpeed()
-
-                    Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
-                        this@TestColorFragment).start()
+                    sendMessageToServer()
                 }
             }
         )
@@ -107,10 +103,7 @@ class TestColorFragment: Fragment(), Server.MessageListener{
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     speed = getSpeed()
-                    brightness = getBrightness()
-
-                    Server(baseUrl, getString(R.string.post,keyWord,speed, brightness),
-                        this@TestColorFragment).start()
+                    sendMessageToServer()
                 }
             }
         )
@@ -123,6 +116,12 @@ class TestColorFragment: Fragment(), Server.MessageListener{
             seekBarTestSpeed.progress = seekBarTestSpeed.max - 5
         }
         return sp.toString()
+    }
+
+    private fun sendMessageToServer() {
+        Server(baseUrl,
+            getString(R.string.postDynamicPos, keyWord, speed, brightness, nameOfEffect),
+            this@TestColorFragment).start()
     }
 
     override fun onMessage(message: String) {

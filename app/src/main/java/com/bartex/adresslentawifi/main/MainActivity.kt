@@ -1,16 +1,20 @@
 package com.bartex.adresslentawifi.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.SharedViewModel
+import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.navigation.NavigationView
 
 //управление адресной лентой через NodeMCU с WiFi в режиме STA
@@ -22,7 +26,6 @@ import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
-    //private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
@@ -51,7 +54,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         //слушатель меню шторки -для обработки пунктов шторки
         navView.setNavigationItemSelectedListener(this)
-
     }
 
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх

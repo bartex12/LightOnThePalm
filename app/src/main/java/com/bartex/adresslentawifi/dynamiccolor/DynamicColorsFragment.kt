@@ -9,9 +9,11 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
@@ -19,26 +21,25 @@ import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 
 class DynamicColorsFragment : Fragment(), Server.MessageListener{
+
+    private val dynamicColorViewModel: DynamicColorViewModel by activityViewModels()
+    private val model: SharedViewModel by activityViewModels()
+
     private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
-    private  var adapterPosition:String = "0"
-
     private var brightness:String? = "50"
     private var speed:String? = "200"
-
     private lateinit var seekBarPlayBrightness: SeekBar
     private lateinit var seekBarPlaySpeed: SeekBar
-    private val dynamicColorViewModel: DynamicColorViewModel by lazy{
-        ViewModelProvider(this)[DynamicColorViewModel::class.java]
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(BASE_URL)?. let{baseUrl = it }
         arguments?.getString(ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(KEY_WORD)?. let{keyWord = it }
-        arguments?.getString(Constants.ADAPTER_POSITION)?. let{adapterPosition = it }
+        //Log.d(TAG, "DynamicColorsFragment onCreate: nameOfEffect = $nameOfEffect")
     }
 
     override fun onCreateView(
@@ -67,11 +68,11 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
     private fun initViews(view: View) {
         seekBarPlayBrightness = view.findViewById(R.id.seekBarBrDin)
-        seekBarPlaySpeed = view.findViewById(R.id.seekBarBrStat)
+        seekBarPlaySpeed = view.findViewById(R.id.seekBarSpDin)
         //если пламя, оставляем только яркость
         if (nameOfEffect == requireActivity().getString(R.string.flame) ){
             seekBarPlaySpeed.visibility = View.GONE
-            view.findViewById<TextView>(R.id.tvBrStat).visibility = View.GONE
+            view.findViewById<TextView>(R.id.tvSpDin).visibility = View.GONE
         }
     }
 
@@ -121,8 +122,10 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
     private fun sendMessageToServer() {
         Server(baseUrl,
-            getString(R.string.postDynamicPos, keyWord, speed, brightness, adapterPosition),
+            getString(R.string.postDynamicPos, keyWord, speed, brightness, nameOfEffect),
             this@DynamicColorsFragment).start()
+//        Log.d(TAG, "DynamicColorsFragment sendMessageToServer " +
+//                "speed= $speed brightness = $brightness nameOfEffect = $nameOfEffect")
     }
 
     private fun getSpeed(): String {
@@ -136,7 +139,8 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
     override fun onMessage(message: String) {
         requireActivity().runOnUiThread {
-            Log.d(TAG, "DynamicColorsFragment onMessage message=\n$message")
+            model.updateNameOfEffect(message)
+            //Log.d(TAG, "DynamicColorsFragment onMessage message= $message")
         }
     }
 }

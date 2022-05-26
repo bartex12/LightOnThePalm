@@ -1,11 +1,9 @@
 package com.bartex.adresslentawifi.list
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bartex.adresslentawifi.App
-import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.entity.ListOfEffects
 
 class ListViewModel:ViewModel() {
@@ -24,11 +22,9 @@ class ListViewModel:ViewModel() {
 
     fun updateTitle(newTitle:String){
         toolbarTitle.value = newTitle
-        //Log.d(Constants.TAG, "ListViewModel updateTitle: toolbarTitle.value = ${toolbarTitle.value}")
     }
 
     fun getToolbarTitle():LiveData<String>{
         return toolbarTitle
     }
-
 }

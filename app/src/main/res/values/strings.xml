@@ -24,11 +24,8 @@
     <string name="test">Проверка</string>
 
     <string name="baseUrl">http://%1$s</string>
-    <string name="postStatic">%1$s?color=%2$s&amp;brightness=%3$s</string>
     <string name="postStaticPos">%1$s?color=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
-    <string name="post">%1$s?speed=%2$s&amp;brightness=%3$s</string>
     <string name="postDynamicPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
-    <string name="postRun">%1$s?speed=%2$s&amp;brightness=%3$s&amp;numbers=%4$s&amp;color=%5$s</string>
     <string name="postRunPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;numbers=%4$s&amp;color=%5$s&amp;position=%6$s</string>
 
     <string name="_static">static</string>

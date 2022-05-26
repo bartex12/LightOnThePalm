@@ -7,21 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
 
 class RunningColorsFragment: Fragment(), Server.MessageListener {
+
+    private val runningViewModel: RunningViewModel  by activityViewModels()
+    private val model: SharedViewModel by activityViewModels()
+
     private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
-    private  var adapterPosition:String = "0"
 
     private var speed:String? = "50"
     private var progress:String? = "50"
@@ -35,16 +40,13 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
     private lateinit var rvColors: RecyclerView
     private lateinit var adapter: StaticColorAdapter
 
-    private val runningViewModel: RunningViewModel by lazy{
-        ViewModelProvider(this)[RunningViewModel::class.java]
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(Constants.BASE_URL)?. let{baseUrl = it }
         arguments?.getString(Constants.ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(Constants.KEY_WORD)?. let{keyWord = it }
-        arguments?.getString(Constants.ADAPTER_POSITION)?. let{adapterPosition = it }
     }
 
     override fun onCreateView(
@@ -163,7 +165,7 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
     }
 
     fun sendMessageToServer(){
-        Server(baseUrl,  getString(R.string.postRunPos, keyWord, speed, brightness, number, color,adapterPosition),
+        Server(baseUrl,  getString(R.string.postRunPos, keyWord, speed, brightness, number, color,nameOfEffect),
             this@RunningColorsFragment).start()
     }
     private fun getSpeedFromSeekBar(): String {
@@ -189,8 +191,10 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
     }
 
     override fun onMessage(message: String) {
-        try{requireActivity().runOnUiThread {
-                Log.d(TAG, "RunningColorsFragment onMessage message=\n$message")
+        try{
+            requireActivity().runOnUiThread {
+                //Log.d(TAG, "RunningColorsFragment onMessage message= $message")
+                model.updateNameOfEffect(message)
             }
         }catch (e:IllegalStateException){
             Log.d(TAG, "RunningColorsFragment Exception message= $e.message")

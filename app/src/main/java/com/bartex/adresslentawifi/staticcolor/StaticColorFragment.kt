@@ -9,13 +9,15 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
-import com.bartex.adresslentawifi.constants.Constants.ADAPTER_POSITION
+import com.bartex.adresslentawifi.constants.Constants.EFFECT_NAME
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.COLOR
@@ -23,19 +25,17 @@ import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
+import com.bartex.adresslentawifi.list.ListViewModel
 
 class StaticColorFragment: Fragment(), Server.MessageListener {
+
+    private val viewModel: StaticColorsViewModel by activityViewModels()
+    private val model: SharedViewModel by activityViewModels()
 
     private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
-    private  var adapterPosition:String = "0"
-
     private lateinit var adapter: StaticColorAdapter
-    private val viewModel: StaticColorsViewModel by lazy {
-        ViewModelProvider(this).get(StaticColorsViewModel::class.java)
-    }
-
     private var color:String? = "0x00FFFF"
     private var brightness:String? = "5"
     private lateinit var pref: SharedPreferences
@@ -48,7 +48,6 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         arguments?.getString(BASE_URL)?. let{baseUrl = it }
         arguments?.getString(ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(KEY_WORD)?. let{keyWord = it }
-        arguments?.getString(ADAPTER_POSITION)?. let{adapterPosition = it }
     }
 
     override fun onCreateView(
@@ -136,12 +135,12 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     }
 
     private fun sendMessageToServer() {
-        Server(baseUrl, getString(R.string.postStaticPos, keyWord, color, brightness, adapterPosition),
+        Server(baseUrl, getString(R.string.postStaticPos, keyWord, color, brightness, nameOfEffect),
             this@StaticColorFragment).start()
     }
     override fun onMessage(message: String) {
        requireActivity().runOnUiThread {
-            Log.d(TAG, "StaticColorFragment onMessage message=\n$message")
+           model.updateNameOfEffect(message)
         }
     }
 }

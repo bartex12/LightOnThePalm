@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
@@ -25,7 +26,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
     lateinit var context:Context
 
     interface OnItemClickListener{
-        fun onClick(item: ListOfEffects, adapterPosition:Int)
+        fun onClick(item: ListOfEffects)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,7 +47,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
         private var name: TextView = view.findViewById(R.id.tv_name_dis)
          var triangle: ImageView = view.findViewById(R.id.iv_triangle)
         private val imageRound: ImageView = view.findViewById(R.id.iv_round_dis)
-        val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
+        private val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
 
         fun bind(itemView: ListOfEffects){
             name.text = itemView.name
@@ -54,11 +55,11 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
             when(triangle.tag == nameTag){
                 true -> {
                     triangle.visibility = View.VISIBLE
-                    clList.background = context.getDrawable(R.drawable.item_list_effects)
+                    clList.background = AppCompatResources.getDrawable(context, R.drawable.item_list_effects)
                 }
                 false-> {
                     triangle.visibility = View.GONE
-                    clList.background = context.getDrawable(R.color.colorPrimaryBlack)
+                    clList.background = AppCompatResources.getDrawable(context, R.color.colorPrimaryBlack)
                 }
             }
             Picasso.get()
@@ -68,8 +69,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
                 .into(imageRound)
 
             this.itemView.setOnClickListener {
-                listener.onClick(itemView, this.adapterPosition)
-                //Log.d(TAG, "bind adapterPosition = ${this.adapterPosition} ")
+                listener.onClick(itemView)
             }
         }
     }
