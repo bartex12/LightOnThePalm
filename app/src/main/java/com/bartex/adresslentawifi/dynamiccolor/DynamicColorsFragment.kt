@@ -12,17 +12,21 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 
 class DynamicColorsFragment : Fragment(), Server.MessageListener{
+    private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
+    private  var adapterPosition:String = "0"
+
     private var brightness:String? = "50"
     private var speed:String? = "200"
-    private lateinit var baseUrl:String
+
     private lateinit var seekBarPlayBrightness: SeekBar
     private lateinit var seekBarPlaySpeed: SeekBar
     private val dynamicColorViewModel: DynamicColorViewModel by lazy{
@@ -34,6 +38,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         arguments?.getString(BASE_URL)?. let{baseUrl = it }
         arguments?.getString(ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(KEY_WORD)?. let{keyWord = it }
+        arguments?.getString(Constants.ADAPTER_POSITION)?. let{adapterPosition = it }
     }
 
     override fun onCreateView(
@@ -52,8 +57,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         initSeekBarBrightness()
         initSeekBarSpeed()
 
-        Server(baseUrl,  getString(R.string.post, keyWord, speed, brightness),
-            this@DynamicColorsFragment).start()
+        sendMessageToServer()
     }
 
     override fun onPause() {
@@ -77,10 +81,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
         brightness = dynamicColorViewModel.getBrightness(nameOfEffect)
         seekBarPlayBrightness.progress = Integer.parseInt(brightness!!)
-        Log.d(TAG, "DynamicColorsFragment getSpeedAndBrightness speed= $speed brightness = $brightness")
-
-        Server(baseUrl, getString(R.string.post, keyWord, speed, brightness),
-            this@DynamicColorsFragment).start()
+        //Log.d(TAG, "DynamicColorsFragment getSpeedAndBrightness speed= $speed brightness = $brightness")
     }
 
     private fun initSeekBarBrightness() {
@@ -90,9 +91,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = getBrightness()
-                    speed = getSpeed()
-                    Server(baseUrl,  getString(R.string.post, keyWord, speed, brightness),
-                        this@DynamicColorsFragment).start()
+                    sendMessageToServer()
                 }
             }
         )
@@ -114,12 +113,16 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     speed = getSpeed()
-                    brightness = getBrightness()
-                    Server(baseUrl, getString(R.string.post, keyWord, speed, brightness),
-                        this@DynamicColorsFragment).start()
+                    sendMessageToServer()
                 }
             }
         )
+    }
+
+    private fun sendMessageToServer() {
+        Server(baseUrl,
+            getString(R.string.postDynamicPos, keyWord, speed, brightness, adapterPosition),
+            this@DynamicColorsFragment).start()
     }
 
     private fun getSpeed(): String {
@@ -133,7 +136,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
 
     override fun onMessage(message: String) {
         requireActivity().runOnUiThread {
-            Log.d(TAG, "DynamicColorsFragment onMessage message= $message")
+            Log.d(TAG, "DynamicColorsFragment onMessage message=\n$message")
         }
     }
 }

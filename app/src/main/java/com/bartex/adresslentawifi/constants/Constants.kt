@@ -8,6 +8,7 @@ object Constants {
     const val KEY_WORD  = "KEY_WORD"
     const val NUMBER_LED  = "NUMBER_LED"
     const val COLOR_RUN  = "COLOR_RUN"
+    const val ADAPTER_POSITION  = "ADAPTER_POSITION"
 
 
     const val COLOR  = "color"

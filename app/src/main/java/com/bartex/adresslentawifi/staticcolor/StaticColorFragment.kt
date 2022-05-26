@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
+import com.bartex.adresslentawifi.constants.Constants.ADAPTER_POSITION
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.COLOR
@@ -28,22 +29,26 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
+    private  var adapterPosition:String = "0"
+
     private lateinit var adapter: StaticColorAdapter
     private val viewModel: StaticColorsViewModel by lazy {
         ViewModelProvider(this).get(StaticColorsViewModel::class.java)
     }
 
     private var color:String? = "0x00FFFF"
-    var brightness:String? = "5"
+    private var brightness:String? = "5"
     private lateinit var pref: SharedPreferences
     private lateinit var seekBarStatic: SeekBar
     private lateinit var rvColors: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getString(BASE_URL)?. let{baseUrl = it }
         arguments?.getString(ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(KEY_WORD)?. let{keyWord = it }
+        arguments?.getString(ADAPTER_POSITION)?. let{adapterPosition = it }
     }
 
     override fun onCreateView(
@@ -63,6 +68,7 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         getColorAndBrightness()
         initAdapter()
         initSeekBar()
+        sendMessageToServer()
 
         viewModel.loadStaticColors()
         viewModel.getStaticColors().observe(this, {
@@ -87,11 +93,8 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     private fun getOnClickListener(): StaticColorAdapter.OnItemClickListener =
         object : StaticColorAdapter.OnItemClickListener{
             override fun onClick(item: ButtonColor) {
-                brightness = setBrightness()
                 color = item.color.replace("#", "0x")
-
-                Server(baseUrl, getString(R.string.postStatic, keyWord, color, brightness),
-                    this@StaticColorFragment ).start()
+                sendMessageToServer()
             }
         }
 
@@ -106,9 +109,7 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
                     brightness = setBrightness()
-
-                    Server(baseUrl,  getString(R.string.postStatic, keyWord, color, brightness),
-                        this@StaticColorFragment).start()
+                    sendMessageToServer()
                 }
             }
         )
@@ -127,8 +128,6 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         color = pref.getString(COLOR, "0x00FFFF")
         brightness = pref.getString(BRIGHTNESS, "5")
         seekBarStatic.progress = Integer.parseInt(brightness!!)
-
-        Server(baseUrl,  getString(R.string.postStatic, keyWord, color, brightness), this).start()
     }
 
     private fun initViews(view: View) {
@@ -136,9 +135,13 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         rvColors = view.findViewById(R.id.rvColorsStat)
     }
 
+    private fun sendMessageToServer() {
+        Server(baseUrl, getString(R.string.postStaticPos, keyWord, color, brightness, adapterPosition),
+            this@StaticColorFragment).start()
+    }
     override fun onMessage(message: String) {
-       requireActivity(). runOnUiThread {
-            Log.d(TAG, "StaticColorFragment onMessage message= $message")
+       requireActivity().runOnUiThread {
+            Log.d(TAG, "StaticColorFragment onMessage message=\n$message")
         }
     }
 }

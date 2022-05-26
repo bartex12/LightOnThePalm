@@ -18,15 +18,17 @@ import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
 
 class RunningColorsFragment: Fragment(), Server.MessageListener {
+    private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
+    private  var adapterPosition:String = "0"
+
     private var speed:String? = "50"
     private var progress:String? = "50"
     private var brightness:String? = "50"
     private  var number:String? = "1"
     private var color:String? = "0x00FFFF"
 
-    private lateinit var baseUrl:String
     private lateinit var seekBarRunBrightness: SeekBar
     private lateinit var seekBarRunSpeed: SeekBar
     private lateinit var seekBarRunNumber: SeekBar
@@ -42,6 +44,7 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         arguments?.getString(Constants.BASE_URL)?. let{baseUrl = it }
         arguments?.getString(Constants.ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(Constants.KEY_WORD)?. let{keyWord = it }
+        arguments?.getString(Constants.ADAPTER_POSITION)?. let{adapterPosition = it }
     }
 
     override fun onCreateView(
@@ -62,9 +65,7 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         initSeekBarNumber()
         initAdapter()
 
-        speed = getSpeedFromSeekBar() //так  как м не запоминали- его рассчитываем из progress  
-        Server(baseUrl,  getString(R.string.postRun, keyWord, speed, brightness, number, color),
-            this@RunningColorsFragment).start()
+        sendMessageToServer()
 
         runningViewModel.loadStaticColors()
         runningViewModel.getStaticColors().observe(this, {
@@ -94,8 +95,7 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         object : StaticColorAdapter.OnItemClickListener{
             override fun onClick(item: ButtonColor) {
                 color = item.color.replace("#", "0x")
-                Server(baseUrl,  getString(R.string.postRun, keyWord, speed, brightness, number, color),
-                    this@RunningColorsFragment).start()
+                sendMessageToServer()
             }
         }
 
@@ -120,7 +120,7 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         seekBarRunNumber.progress = Integer.parseInt(number!!)
 
         color = runningViewModel.getColor(nameOfEffect)
-        Log.d(TAG, "RunningColorsFragment  speed= $speed brightness = $brightness number = $number")
+        //Log.d(TAG, "RunningColorsFragment  speed= $speed brightness = $brightness number = $number")
     }
 
     private fun initSeekBarBrightness() {
@@ -129,7 +129,8 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
-                    sendToServer()
+                    brightness = getBrightnessFromSeekBar()
+                    sendMessageToServer()
                 }
             }
         )
@@ -141,7 +142,8 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
-                    sendToServer()
+                    speed = getSpeedFromSeekBar()
+                    sendMessageToServer()
                 }
             }
         )
@@ -153,18 +155,15 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
                 override fun onStopTrackingTouch(p0: SeekBar?) {
-                    sendToServer()
+                    number = getNumberFromSeekBar()
+                    sendMessageToServer()
                 }
             }
         )
     }
 
-    fun sendToServer(){
-        speed = getSpeedFromSeekBar()
-        brightness = getBrightnessFromSeekBar()
-        number = getNumberFromSeekBar()
-
-        Server(baseUrl,  getString(R.string.postRun, keyWord, speed, brightness, number, color),
+    fun sendMessageToServer(){
+        Server(baseUrl,  getString(R.string.postRunPos, keyWord, speed, brightness, number, color,adapterPosition),
             this@RunningColorsFragment).start()
     }
     private fun getSpeedFromSeekBar(): String {
@@ -190,12 +189,11 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
     }
 
     override fun onMessage(message: String) {
-        try{
-            requireActivity().runOnUiThread {
-                Log.d(TAG, "DynamicColorsFragment onMessage message= $message")
+        try{requireActivity().runOnUiThread {
+                Log.d(TAG, "RunningColorsFragment onMessage message=\n$message")
             }
         }catch (e:IllegalStateException){
-            Log.d(TAG, "DynamicColorsFragment Exception message= $e.message")
+            Log.d(TAG, "RunningColorsFragment Exception message= $e.message")
         }
     }
 }

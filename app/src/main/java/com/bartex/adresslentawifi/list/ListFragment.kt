@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.adapter.RvAdapter
+import com.bartex.adresslentawifi.constants.Constants.ADAPTER_POSITION
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
@@ -111,56 +112,57 @@ class ListFragment : Fragment(), Server.MessageListener {
 
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
-            override fun onClick(item: ListOfEffects) {
+            override fun onClick(item: ListOfEffects, adapterPosition:Int) {
                 nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = getString(R.string.baseUrl, edIp.text)
                 when(item.name){
                     getString(R.string.staticColors) -> {
-                        navigateTo(baseUrl,item,getString(R.string._static),R.id.staticColorFragment)
+                        navigateTo(baseUrl,item, getString(R.string._static),adapterPosition,R.id.staticColorFragment)
                     }
                     getString(R.string.playOfColors) ->{
-                        navigateTo(baseUrl,item,getString(R.string._play),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._play),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.playOfColorsFlash) ->{
-                        navigateTo(baseUrl,item,getString(R.string._playFlash),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._playFlash),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.running_lights) ->{
-                        navigateTo(baseUrl,item,getString(R.string._runningLights),R.id.runningColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._runningLights),adapterPosition,R.id.runningColorsFragment)
                     }
                     getString(R.string.flame) ->{
-                        navigateTo(baseUrl,item,getString(R.string._flame),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._flame),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.pride) ->{
-                        navigateTo(baseUrl,item,getString(R.string._pride),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._pride),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.rainbow) ->{
-                        navigateTo(baseUrl,item,getString(R.string._rainbow),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._rainbow),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.rainbow_bias) ->{
-                        navigateTo(baseUrl,item,getString(R.string._rainbowBias),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._rainbowBias),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.rainbow_flash) ->{
-                        navigateTo(baseUrl,item,getString(R.string._rainbowFlash),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._rainbowFlash),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.random_color) ->{
-                        navigateTo(baseUrl,item,getString(R.string._random),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._random),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.random_color_fade) ->{
-                        navigateTo(baseUrl,item,getString(R.string._randomFade),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._randomFade),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.northern_lights) ->{
-                        navigateTo(baseUrl,item,getString(R.string._northernLights),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._northernLights),adapterPosition,R.id.dynamicColorsFragment)
                     }
                     getString(R.string.test) ->{
-                        navigateTo(baseUrl,item,getString(R.string._test),R.id.testColorFragment)
+                        navigateTo(baseUrl,item,getString(R.string._test),adapterPosition,R.id.testColorFragment)
                     }
                 }
             }
         }
 
-    private  fun navigateTo(baseUrl:String, item: ListOfEffects,keyword:String, frag:Int ){
-        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name, KEY_WORD to keyword)
+    private  fun navigateTo(baseUrl:String, item: ListOfEffects,keyword:String, position:Int, frag:Int ){
+        val bundle = bundleOf(BASE_URL to baseUrl, ITEM_NAME to item.name,
+            KEY_WORD to keyword, ADAPTER_POSITION to position.toString() )
         navController.navigate(frag, bundle)
     }
 

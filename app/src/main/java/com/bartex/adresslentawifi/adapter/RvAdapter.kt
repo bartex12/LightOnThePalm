@@ -2,6 +2,7 @@ package com.bartex.adresslentawifi.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.squareup.picasso.Picasso
 
@@ -23,7 +25,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
     lateinit var context:Context
 
     interface OnItemClickListener{
-        fun onClick(item: ListOfEffects)
+        fun onClick(item: ListOfEffects, adapterPosition:Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,9 +44,9 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
 
    inner class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
         private var name: TextView = view.findViewById(R.id.tv_name_dis)
-        private var triangle: ImageView = view.findViewById(R.id.iv_triangle)
+         var triangle: ImageView = view.findViewById(R.id.iv_triangle)
         private val imageRound: ImageView = view.findViewById(R.id.iv_round_dis)
-        private val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
+        val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
 
         fun bind(itemView: ListOfEffects){
             name.text = itemView.name
@@ -66,7 +68,8 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
                 .into(imageRound)
 
             this.itemView.setOnClickListener {
-                listener.onClick(itemView)
+                listener.onClick(itemView, this.adapterPosition)
+                //Log.d(TAG, "bind adapterPosition = ${this.adapterPosition} ")
             }
         }
     }

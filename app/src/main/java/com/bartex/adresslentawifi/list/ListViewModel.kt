@@ -24,7 +24,7 @@ class ListViewModel:ViewModel() {
 
     fun updateTitle(newTitle:String){
         toolbarTitle.value = newTitle
-        Log.d(Constants.TAG, "ListViewModel updateTitle: toolbarTitle.value = ${toolbarTitle.value}")
+        //Log.d(Constants.TAG, "ListViewModel updateTitle: toolbarTitle.value = ${toolbarTitle.value}")
     }
 
     fun getToolbarTitle():LiveData<String>{
