@@ -22,6 +22,9 @@ object Constants {
     const val RANDOM_COLOR_SPEED  = "RANDOM_COLOR_SPEED"
     const val RANDOM_COLOR_FADE_SPEED  = "RANDOM_COLOR_FADE_SPEED"
     const val NORTHERN_LIGHTS_SPEED  = "NORTHERN_LIGHTS_SPEED"
+
+    const val HEIGHT_FLAME  = "HEIGHT_FLAME"
+    const val SPARK_FLAME  = "SPARK_FLAME"
     const val TEST_SPEED  = "TEST_SPEED"
 
     const val BRIGHTNESS  = "brightness"
@@ -37,8 +40,5 @@ object Constants {
     const val RANDOM_COLOR_FADE_BRIGHTNESS  = "RANDOM_COLOR_FADE_BRIGHTNESS"
     const val NORTHERN_LIGHTS_BRIGHTNESS  = "NORTHERN_LIGHTS_BRIGHTNESS"
     const val TEST_BRIGHTNESS  = "TEST_BRIGHTNESS"
-
-
-
 
 }

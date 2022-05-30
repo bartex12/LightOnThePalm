@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,6 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvAdapter
-import com.bartex.adresslentawifi.constants.Constants.EFFECT_NAME
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
@@ -72,6 +70,10 @@ class ListFragment : Fragment(), Server.MessageListener {
         model.getNameOfEffect().observe(viewLifecycleOwner, {newTag->
             Log.d(TAG, "ListFragment onViewCreated newTag= $newTag")
             rvAdapter =  RvAdapter(newTag, getOnClickListener())
+        })
+
+        model.getIpAddress().observe(viewLifecycleOwner, {addressIp->
+            Log.d(TAG, "ListFragment onViewCreated addressIp = $addressIp")
         })
 }
 
@@ -162,7 +164,7 @@ class ListFragment : Fragment(), Server.MessageListener {
                         navigateTo(baseUrl,item,getString(R.string._northernLights),R.id.dynamicColorsFragment)
                     }
                     getString(R.string.test) ->{
-                        navigateTo(baseUrl,item,getString(R.string._test),R.id.testColorFragment)
+                        navigateTo(baseUrl,item,getString(R.string._test),R.id.flameFragment)
                     }
                 }
             }

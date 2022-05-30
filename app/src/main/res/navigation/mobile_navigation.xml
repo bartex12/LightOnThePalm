@@ -20,13 +20,12 @@
         tools:layout="@layout/fragment_dynamics" />
 <!--    android:label="fragment_dinamic_colors"-->
     <fragment
-        android:id="@+id/testColorFragment"
-        android:name="com.bartex.adresslentawifi.TestColorFragment"
-       />
+        android:id="@+id/flameFragment"
+        android:name="com.bartex.adresslentawifi.FlameFragment" />
     <fragment
         android:id="@+id/runningColorsFragment"
         android:name="com.bartex.adresslentawifi.running.RunningColorsFragment"
       />
     <!--  android:label="RunningColorsFragment" -->
-    <!--    android:label="TestColorFragment"-->
+    <!--    android:label="FlameFragment"-->
 </navigation>

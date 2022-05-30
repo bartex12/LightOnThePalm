@@ -39,7 +39,6 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         arguments?.getString(BASE_URL)?. let{baseUrl = it }
         arguments?.getString(ITEM_NAME)?. let{nameOfEffect = it }
         arguments?.getString(KEY_WORD)?. let{keyWord = it }
-        //Log.d(TAG, "DynamicColorsFragment onCreate: nameOfEffect = $nameOfEffect")
     }
 
     override fun onCreateView(
@@ -140,7 +139,6 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     override fun onMessage(message: String) {
         requireActivity().runOnUiThread {
             model.updateNameOfEffect(message)
-            //Log.d(TAG, "DynamicColorsFragment onMessage message= $message")
         }
     }
 }

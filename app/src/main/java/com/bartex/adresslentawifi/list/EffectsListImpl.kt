@@ -7,7 +7,7 @@ import com.bartex.adresslentawifi.R
 class EffectsListImpl(private val application: Application) : IEffectsList {
     override fun getList(): MutableList<ListOfEffects> {
         return mutableListOf(
-            ListOfEffects(icon = R.drawable.static200, name = application.resources.getString(R.string.staticColors)),
+            ListOfEffects(icon = R.drawable.static200 , name = application.resources.getString(R.string.staticColors)),
             ListOfEffects(icon = R.drawable.play200, name = application.resources.getString(R.string.playOfColors)),
             ListOfEffects(icon = R.drawable.play_flash200, name = application.resources.getString(R.string.playOfColorsFlash)),
             ListOfEffects(icon = R.drawable.physics100, name = application.resources.getString(R.string.running_lights)),

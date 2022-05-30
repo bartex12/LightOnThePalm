@@ -26,6 +26,7 @@
     <string name="baseUrl">http://%1$s</string>
     <string name="postStaticPos">%1$s?color=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
     <string name="postDynamicPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
+    <string name="postFlame">%1$s?brightness=%2$s&amp;height=%3$s&amp;spark=%4$s&amp;position=%5$s</string>
     <string name="postRunPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;numbers=%4$s&amp;color=%5$s&amp;position=%6$s</string>
 
     <string name="_static">static</string>
@@ -93,6 +94,8 @@
     <string name="choose_number">Количество точек</string>
     <string name="var_test">вариант- тест</string>
     <string name="name_of_effect">Название эффекта</string>
+    <string name="height_flame">Высота пламени</string>
+    <string name="spark">Искры</string>
 
 
 </resources>
