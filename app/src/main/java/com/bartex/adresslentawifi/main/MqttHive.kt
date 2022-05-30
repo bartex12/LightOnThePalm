@@ -14,8 +14,8 @@ import java.util.concurrent.CompletableFuture
 
 class MqttHive() {
     val client: Mqtt3AsyncClient
-    val  publishMessage: Mqtt3Publish
     val connection:CompletableFuture<Mqtt3ConnAck>
+    private val  publishMessage: Mqtt3Publish
     init {
         //Создание клиента
         client = MqttClient.builder()
@@ -81,7 +81,9 @@ class MqttHive() {
 //            }
     }
 }
-    //Подключение к брокеру
+    //Подключение к брокеру может быть и таким
+// - см https://console.hivemq.cloud/clients/java-hivemq?uuid=adb26aada24a40fdbfabb0bc5cf6f9b9
+// или  https://hivemq.github.io/hivemq-mqtt-client/docs/quick-start/
 //         val connAck:CompletableFuture<Mqtt3ConnAck> = client.connectWith()
 //            // here you can specify multiple properties described below
 //            .cleanSession(true)

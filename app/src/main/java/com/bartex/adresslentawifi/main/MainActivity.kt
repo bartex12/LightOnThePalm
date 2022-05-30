@@ -16,6 +16,9 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.navigation.NavigationView
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
+import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
+import java.util.concurrent.CompletableFuture
 
 import kotlin.text.Charsets.UTF_8
 
@@ -37,8 +40,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val model: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
     }
-    val client = MqttHive().client
-    val connection = MqttHive().connection
+    private val client = MqttHive().client
+    private val connection = MqttHive().connection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,37 +66,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //слушатель меню шторки -для обработки пунктов шторки
         navView.setNavigationItemSelectedListener(this)
 
-        connection
-            .whenComplete { _, error ->
-            if (error != null) {
-                // Обрабатываем ошибку подключения
-                Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
-            } else {
-                // подключение успешно -> можно подписаться на топик testtt или опубликовать что то
-                client.subscribeWith()
-                    .topicFilter("testtt")
-                    .callback { publish ->
-                        val addressIp = String(publish.payloadAsBytes, UTF_8)
-                        // Обрабатываем принятое сообщение
-                        //Log.d(TAG, "***MainActivity onCreate: topic = ${publish.topic} ip = $addressIp\n")
-                        runOnUiThread {
-                            model.updateIpAddress(addressIp)
-                        }
-                    }
-                    .send()
-                    .whenComplete { _, err ->
-                        if (err != null) {
-                            // Обрабатываем ошибку подписки
-                            Log.d(TAG, "MainActivity onCreate: throwable = ${err.message} ")
-                        }
-                    }
-            }
-        }
+        //получаем ip адрес сервера через MQTT
+        //getIpFromMqtt(MqttHive().client, MqttHive().connection, "testtt")
+        getIpFromMqtt(MqttBy().client, MqttBy().connection, "/user/bartex/test")
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        MqttHive().client.disconnect()
+        disconnectMqtt( MqttHive().client)
+    }
+
+    // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
+    // в иерархии действий приложения из панели действий (экшенбара)
+    override fun onSupportNavigateUp(): Boolean {
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                ||super.onSupportNavigateUp()
+    }
+
+    private fun disconnectMqtt(client: Mqtt3AsyncClient){
+        client.disconnect()
             .whenComplete { cl, e ->
                 if (e != null) {
                     // Handle failure to subscribe
@@ -105,11 +97,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
     }
 
-    // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
-    // в иерархии действий приложения из панели действий (экшенбара)
-    override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                ||super.onSupportNavigateUp()
+    private fun getIpFromMqtt(client: Mqtt3AsyncClient, connection: CompletableFuture<Mqtt3ConnAck>, topicFilter:String ){
+        connection
+            .whenComplete { _, error ->
+                if (error != null) {
+                    // Обрабатываем ошибку подключения
+                    Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
+                } else {
+                    // подключение успешно -> можно подписаться на топик testtt или опубликовать что то
+                    client.subscribeWith()
+                        .topicFilter(topicFilter)
+                        .callback { publish ->
+                            val addressIp = String(publish.payloadAsBytes, UTF_8)
+                            // Обрабатываем принятое сообщение
+                           // Log.d(TAG, "***MainActivity onCreate: topic = ${publish.topic} ip = $addressIp\n")
+                            runOnUiThread {
+                                model.updateIpAddress(addressIp)
+                            }
+                        }
+                        .send()
+                        .whenComplete { _, err ->
+                            if (err != null) {
+                                // Обрабатываем ошибку подписки
+                                Log.d(TAG, "MainActivity onCreate: throwable = ${err.message} ")
+                            }
+                        }
+                }
+            }
     }
 
     private fun initViews() {
