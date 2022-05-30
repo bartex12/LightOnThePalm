@@ -16,13 +16,7 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.navigation.NavigationView
-import com.hivemq.client.mqtt.MqttClient
-import com.hivemq.client.mqtt.datatypes.MqttQos
 
-import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
-import java.util.*
-import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import kotlin.text.Charsets.UTF_8
 
 
@@ -40,10 +34,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var  appBarConfiguration:AppBarConfiguration
-    private lateinit var client: Mqtt3AsyncClient
     private val model: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
     }
+    val client = MqttHive().client
+    val connection = MqttHive().connection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,87 +63,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //слушатель меню шторки -для обработки пунктов шторки
         navView.setNavigationItemSelectedListener(this)
 
-        //Подключение к брокеру
-//         val connAck:CompletableFuture<Mqtt3ConnAck> = client.connectWith()
-//            // here you can specify multiple properties described below
-//            .cleanSession(true)
-//             .noKeepAlive()
-//             .simpleAuth()
-//             .username("bartex")
-//             .password("Kukamon@1".toByteArray())
-//             .applySimpleAuth()
-//            .send()
-
-        //Создание клиента
-        client = MqttClient.builder()
-            .useMqttVersion3()
-            .identifier(UUID.randomUUID().toString())
-            .serverHost("broker.hivemq.com")
-            .serverPort(1883)
-            .buildAsync()
-
-        //создание публикации
-        val  publishMessage: Mqtt3Publish = Mqtt3Publish.builder()
-            .topic("test333")
-            .payload("hello world".toByteArray())
-            .qos(MqttQos.AT_LEAST_ONCE)
-            .build()
-
-        //Подключение к брокеру
-         client.connectWith()
-            .simpleAuth()
-            .username("bartex")
-            .password("Kukamon@1".toByteArray())
-            .applySimpleAuth()
-            .send()
-            .whenComplete { connAck: Mqtt3ConnAck?, throwable: Throwable? ->
-                if (throwable != null) {
-                    // handle failure
-                    Log.d(TAG, "MainActivity onCreate: throwable.conn = ${throwable.message} ")
-                } else {
-                    // setup subscribes or start publishing
-                    Log.d(TAG, "MainActivity onCreate: connAck = $connAck ")
-                    // так как подключение успешно - подписываемся на топик testtt
-                    client.subscribeWith()
-                        .topicFilter("testtt")
-                        .callback { publish ->
-                            // Process the received message
-                            Log.d(TAG, "***MainActivity onCreate: received publish topic = ${publish.topic}" +
-                                    "\nreceived publish payloadAsBytes = ${String(publish.payloadAsBytes, UTF_8)}\n")
-                       runOnUiThread {
-                           val addressIp = String(publish.payloadAsBytes, UTF_8)
-                           model. updateIpAddress(addressIp)
-                         }
+        connection
+            .whenComplete { _, error ->
+            if (error != null) {
+                // Обрабатываем ошибку подключения
+                Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
+            } else {
+                // подключение успешно -> можно подписаться на топик testtt или опубликовать что то
+                client.subscribeWith()
+                    .topicFilter("testtt")
+                    .callback { publish ->
+                        val addressIp = String(publish.payloadAsBytes, UTF_8)
+                        // Обрабатываем принятое сообщение
+                        //Log.d(TAG, "***MainActivity onCreate: topic = ${publish.topic} ip = $addressIp\n")
+                        runOnUiThread {
+                            model.updateIpAddress(addressIp)
                         }
-                        .send()
-                        .whenComplete { subAck, e ->
-                            if (e != null) {
-                                // Handle failure to subscribe
-                                Log.d(TAG, "MainActivity onCreate: throwable = ${e.message} ")
-                            } else {
-                                // Handle successful subscription, e.g. logging or incrementing a metric
-                                Log.d(TAG, "MainActivity onCreate: subAck = $subAck ")
-                            }
+                    }
+                    .send()
+                    .whenComplete { _, err ->
+                        if (err != null) {
+                            // Обрабатываем ошибку подписки
+                            Log.d(TAG, "MainActivity onCreate: throwable = ${err.message} ")
                         }
-                    //так как подключение успешно - публикуем сообщение в топике test333
-                    client.publish(publishMessage)
-                        .whenComplete { publish, e ->
-                            if (e != null) {
-                                // handle failure to publish
-                                Log.d(TAG, "MainActivity onCreate: publish.e = ${e.message} ")
-                            } else {
-                                // Handle successful subscription, e.g. logging or incrementing a metric
-                                Log.d(TAG, "###MainActivity onCreate: publishMessage = " +
-                                        "${String(publish.payloadAsBytes, UTF_8)} ")
-                            }
-                        }
-                }
+                    }
             }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        client.disconnect()
+        MqttHive().client.disconnect()
             .whenComplete { cl, e ->
                 if (e != null) {
                     // Handle failure to subscribe

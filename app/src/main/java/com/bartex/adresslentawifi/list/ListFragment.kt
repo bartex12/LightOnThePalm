@@ -72,6 +72,7 @@ class ListFragment : Fragment(), Server.MessageListener {
             rvAdapter =  RvAdapter(newTag, getOnClickListener())
         })
 
+        //наблюдаем за IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
         model.getIpAddress().observe(viewLifecycleOwner, {addressIp->
             Log.d(TAG, "ListFragment onViewCreated addressIp = $addressIp")
         })
