@@ -1,45 +1,28 @@
 package com.bartex.adresslentawifi.main
 
-import android.util.Log
-import com.bartex.adresslentawifi.App
-import com.bartex.adresslentawifi.constants.Constants
-import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.hivemq.client.mqtt.MqttClient
-import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
 import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
-import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class MqttHive() {
-    val client: Mqtt3AsyncClient
-    val connection:CompletableFuture<Mqtt3ConnAck>
-    private val  publishMessage: Mqtt3Publish
-    init {
-        //Создание клиента
-        client = MqttClient.builder()
-            .useMqttVersion3()
-            .identifier(UUID.randomUUID().toString())
-            .serverHost("broker.hivemq.com")
-            .serverPort(1883)
-            .buildAsync()
-
-        //создание публикации
-        publishMessage = Mqtt3Publish.builder()
-        .topic("test333")
-            .payload("hello world".toByteArray())
-            .qos(MqttQos.AT_LEAST_ONCE)
-            .build()
-
-        //Подключение к брокеру
-        connection =client.connectWith()
-            .simpleAuth()
-            .username("bartex")
-            .password("Kukamon@1".toByteArray())
-            .applySimpleAuth()
-            .send()
-//            .whenComplete { connAck: Mqtt3ConnAck?, throwable: Throwable? ->
+    //Создание клиента
+    val client: Mqtt3AsyncClient = MqttClient.builder()
+        .useMqttVersion3()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("broker.hivemq.com")
+        .serverPort(1883)
+        .buildAsync()
+    //Подключение к брокеру
+    val connection:CompletableFuture<Mqtt3ConnAck> = client.connectWith()
+        .simpleAuth()
+        .username("bartex")
+        .password("Kukamon@1".toByteArray())
+        .applySimpleAuth()
+        .send()
+    //это перенесено в mainActivity
+//           .whenComplete { connAck: Mqtt3ConnAck?, throwable: Throwable? ->
 //                if (throwable != null) {
 //                    // handle failure
 //                    Log.d(Constants.TAG, "MainActivity onCreate: throwable.conn = ${throwable.message} ")
@@ -79,7 +62,6 @@ class MqttHive() {
 //                        }
 //                }
 //            }
-    }
 }
     //Подключение к брокеру может быть и таким
 // - см https://console.hivemq.cloud/clients/java-hivemq?uuid=adb26aada24a40fdbfabb0bc5cf6f9b9
@@ -94,3 +76,9 @@ class MqttHive() {
 //             .applySimpleAuth()
 //            .send()
 
+//создание публикации
+//        publishMessage = Mqtt3Publish.builder()
+//        .topic("test333")
+//            .payload("hello world".toByteArray())
+//            .qos(MqttQos.AT_LEAST_ONCE)
+//            .build()
