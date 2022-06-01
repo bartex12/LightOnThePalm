@@ -1,8 +1,12 @@
 package com.bartex.adresslentawifi.main
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -40,8 +44,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val model: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
     }
-    private val client = MqttHive().client
-    private val connection = MqttHive().connection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +72,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //getIpFromMqtt(MqttHive().client, MqttHive().connection, "testtt")
         getIpFromMqtt(MqttBy().client, MqttBy().connection, "/user/bartex/test")
 
+        //запрашиваем разрешение на определение местоположения
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 100)
+        }
     }
 
     override fun onDestroy() {
@@ -132,6 +138,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView = findViewById(R.id.nav_view)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        Log.d(TAG, "MainActivity onCreateOptionsMenu ")
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+
+        when(val id = navController.currentDestination?.id){
+            R.id.syncroFragment,R.id.settingsFragment  ->{
+                id.let {
+                    menu?.findItem(R.id.sync)?.isVisible = it == R.id.listFragment
+                }
+            }
+        }
+        return super.onPrepareOptionsMenu(menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+           R.id.sync -> navController.navigate(R.id.action_listFragment_to_syncroFragment)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     //меню шторки
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         //todo
@@ -139,6 +171,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         item.isChecked = true
         drawerLayout.closeDrawer(GravityCompat.START)
         return false
+    }
+
+    //метод обратного вызова после запроса разрешений в onCreate
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 100) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, resources.getString(R.string.permission),
+                    Toast.LENGTH_SHORT).show()
+                //повторный вызов onCreate
+                recreate()
+            }else {
+                Toast.makeText(this, resources.getString(R.string.notPermission),
+                    Toast.LENGTH_SHORT ).show()
+            }
+        }
+        if (requestCode == 110) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, resources.getString(R.string.permission),
+                    Toast.LENGTH_SHORT).show()
+                //повторный вызов onCreate
+                recreate()
+            }else {
+                Toast.makeText(this, resources.getString(R.string.notPermission),
+                    Toast.LENGTH_SHORT ).show()
+            }
+        }
     }
 
 }

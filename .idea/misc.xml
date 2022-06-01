@@ -12,17 +12,23 @@
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/drawable/progress_drawable.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/drawable/seekbar_progress.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/drawable/seekbar_style.xml" value="0.19583333333333333" />
+        <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/font/andika.xml" value="0.19166666666666668" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/activity_main.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/app_bar_main.xml" value="0.1796875" />
+        <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/content_main.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_dynamics.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_flame.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_list.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_running.xml" value="0.1796875" />
+        <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_settings.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_static.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_syncro.xml" value="0.14492753623188406" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/fragment_test_color.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/item_list_effects.xml" value="0.4466666666666667" />
+        <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/item_view.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/layout/nav_header_main.xml" value="0.1796875" />
+        <entry key="..\:/AndroidStudioProjects/Android14 Wifi/AdressLentaWiFi/app/src/main/res/menu/main_menu.xml" value="0.1796875" />
         <entry key="..\:/AndroidStudioProjects/Android15 Bluetooth/AdressLentaWiFi/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudioProjects/Android15 Bluetooth/AdressLentaWiFi/app/src/main/res/drawable-v24/ic_menu_send.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudioProjects/Android15 Bluetooth/AdressLentaWiFi/app/src/main/res/drawable-v24/ic_menu_share.xml" value="0.19583333333333333" />

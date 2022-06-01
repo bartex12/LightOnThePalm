@@ -20,8 +20,10 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvAdapter
+import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
+import com.bartex.adresslentawifi.constants.Constants.WIFI_IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
@@ -72,7 +74,7 @@ class ListFragment : Fragment(), Server.MessageListener {
             rvAdapter =  RvAdapter(newTag, getOnClickListener())
         })
 
-        //наблюдаем за IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
+        //наблюдаем за WIFI_IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
         model.getIpAddress().observe(viewLifecycleOwner, {addressIp->
             Log.d(TAG, "ListFragment onViewCreated addressIp = $addressIp")
             if (edIp.text.toString()!=addressIp){
@@ -80,6 +82,8 @@ class ListFragment : Fragment(), Server.MessageListener {
                 Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
             }
         })
+        //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
+        setHasOptionsMenu(true)
 }
 
     override fun onPause() {
@@ -107,6 +111,7 @@ class ListFragment : Fragment(), Server.MessageListener {
         val editor = pref.edit()
         editor.putString(IP, ip)
         editor.apply()
+        model.updateIpAddress(ip)
     }
 
     private fun renderData(data: List<ListOfEffects>?) {
@@ -119,7 +124,7 @@ class ListFragment : Fragment(), Server.MessageListener {
         edIp = view.findViewById(R.id.edIp)
     }
 
-    private fun initAdapter() {
+    private fun  initAdapter() {
         rvEffects.layoutManager = LinearLayoutManager(requireActivity())
         nameTag?. let{rvAdapter = RvAdapter(it, getOnClickListener())}
         rvEffects.adapter = rvAdapter
@@ -133,43 +138,43 @@ class ListFragment : Fragment(), Server.MessageListener {
                 val baseUrl = getString(R.string.baseUrl, edIp.text)
                 when(item.name){
                     getString(R.string.staticColors) -> {
-                        navigateTo(baseUrl,item, getString(R.string._static),R.id.staticColorFragment)
+                        navigateTo(baseUrl,item, getString(R.string._static),R.id.action_listFragment_to_staticColorFragment)
                     }
                     getString(R.string.playOfColors) ->{
-                        navigateTo(baseUrl,item,getString(R.string._play),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._play),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.playOfColorsFlash) ->{
-                        navigateTo(baseUrl,item,getString(R.string._playFlash),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._playFlash),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.running_lights) ->{
-                        navigateTo(baseUrl,item,getString(R.string._runningLights),R.id.runningColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._runningLights),R.id.action_listFragment_to_runningColorsFragment)
                     }
                     getString(R.string.flame) ->{
-                        navigateTo(baseUrl,item,getString(R.string._flame),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._flame),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.pride) ->{
-                        navigateTo(baseUrl,item,getString(R.string._pride),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._pride),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.rainbow) ->{
-                        navigateTo(baseUrl,item,getString(R.string._rainbow),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._rainbow),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.rainbow_bias) ->{
-                        navigateTo(baseUrl,item,getString(R.string._rainbowBias),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._rainbowBias),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.rainbow_flash) ->{
-                        navigateTo(baseUrl,item,getString(R.string._rainbowFlash),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._rainbowFlash),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.random_color) ->{
-                        navigateTo(baseUrl,item,getString(R.string._random),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._random),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.random_color_fade) ->{
-                        navigateTo(baseUrl,item,getString(R.string._randomFade),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._randomFade),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.northern_lights) ->{
-                        navigateTo(baseUrl,item,getString(R.string._northernLights),R.id.dynamicColorsFragment)
+                        navigateTo(baseUrl,item,getString(R.string._northernLights),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.test) ->{
-                        navigateTo(baseUrl,item,getString(R.string._test),R.id.flameFragment)
+                        navigateTo(baseUrl,item,getString(R.string._test),R.id.action_listFragment_to_flameFragment)
                     }
                 }
             }

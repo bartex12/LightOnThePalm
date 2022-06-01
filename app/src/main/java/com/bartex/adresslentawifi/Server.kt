@@ -17,11 +17,15 @@ class Server(
     private var request: Request = Request.Builder().url("$baseUrl/$post").build()
     private val client = OkHttpClient()
 
+    init {
+        Log.d(TAG, "$baseUrl/$post")
+    }
+
 
     override fun run() {
         try {
             val response = client.newCall(request).execute()
-            //Log.d(TAG, "Server request = $request")
+            Log.d(TAG, "Server request = $request")
             //Log.d(TAG, "Server response = $response")
             if(response.isSuccessful){
                 val resultText = response.body()?.string()

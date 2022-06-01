@@ -3,6 +3,10 @@ package com.bartex.adresslentawifi.constants
 object Constants {
     const val TAG = "33333"
     const val IP  = "IP"
+    const val WIFI_IP  = "WIFI_IP"
+    const val WIFI_NAME  = "WIFI_NAME"
+    const val WIFI_PASSWORD  = "WIFI_PASSWORD"
+
     const val BASE_URL  = "BASE_URL"
     const val ITEM_NAME  = "ITEM_NAME"
     const val KEY_WORD  = "KEY_WORD"

@@ -12,4 +12,12 @@
     <dimen name="margin40">40dp</dimen>
     <dimen name="cardElevation4">4dp</dimen>
     <dimen name="cardCornerRadius">30dp</dimen>
+
+    <dimen name="behavior_peekHeight">60dp</dimen>
+    <dimen name="bottom_sheet_view_layout_width">50dp</dimen>
+    <dimen name="bottom_sheet_view_layout_height">2dp</dimen>
+    <dimen name="bottom_sheet_view_layout_marginTop">5dp</dimen>
+    <dimen name="tv_paddingStart">10dp</dimen>
+    <dimen name="tv_paddingEnd">10dp</dimen>
+    <dimen name="tv_layout_marginTop">5dp</dimen>
 </resources>

@@ -19,5 +19,7 @@
     <color name="colorAccentBlack">#5677fc</color>
     <color name="colorSecondaryBlack">#6E6D6D</color>
     <color name="colorSecondaryBlue">#17B8B1</color>
-
+    <color name="whisper">#F6F6FA</color>
+    <color name="bright_gray">#663b4351</color>
+    <color name="_gray">#3b4351</color>
 </resources>

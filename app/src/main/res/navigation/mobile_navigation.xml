@@ -7,7 +7,26 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.bartex.adresslentawifi.list.ListFragment"
-         />
+         >
+        <action
+            android:id="@+id/action_listFragment_to_staticColorFragment"
+            app:destination="@id/staticColorFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_dynamicColorsFragment"
+            app:destination="@id/dynamicColorsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_flameFragment"
+            app:destination="@id/flameFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_runningColorsFragment"
+            app:destination="@id/runningColorsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_syncroFragment"
+            app:destination="@id/syncroFragment" />
+    </fragment>
 <!--    android:label="ListFragment"-->
     <fragment
         android:id="@+id/staticColorFragment"
@@ -26,6 +45,14 @@
         android:id="@+id/runningColorsFragment"
         android:name="com.bartex.adresslentawifi.running.RunningColorsFragment"
       />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.bartex.adresslentawifi.settings.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/syncroFragment"
+        android:name="com.bartex.adresslentawifi.settings.SyncroFragment"
+        android:label="SyncroFragment" />
     <!--  android:label="RunningColorsFragment" -->
     <!--    android:label="FlameFragment"-->
 </navigation>

@@ -96,6 +96,15 @@
     <string name="name_of_effect">Название эффекта</string>
     <string name="height_flame">Высота пламени</string>
     <string name="spark">Искры</string>
+    <string name="save_">Сохранить</string>
 
+    <string name="permission">Разрешение получено</string>
+    <string name="notPermission">Приложение не имеет разрешения на определение местонахождения</string>
+    <string name="StartScan">Поиск WiFi сетей…</string>
+    <string name="wifi_name">Имя WiFi сети</string>
+    <string name="bottom_shit_text">1 Перейдите в настройки WiFi. Для этого можно кликнуть по любой строке списка на экране или нажать на кнопку под инструкцией "Перейти в настройки"\n2 Подключитесь к WiFi сети с именем NodeMCU.\nПри необходимости введите пароль 12345678\n3 Вернитесь обратно в приложение "Свет на ладони для получения дальнейших инструкций</string>
+    <string name="bottom_shit_title">Инструкция</string>
+    <string name="goToSettings">Перейти в настройки</string>
+    <string name="wifi_list">Список доступных WiFi сетей…</string>
 
 </resources>

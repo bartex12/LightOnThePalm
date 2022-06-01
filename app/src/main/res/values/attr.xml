@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="colorBottomIcon" format="reference"/>
+    <attr name="bottom_sheet_root_background" format="reference"/>
+    <attr name="bottom_sheet_view_background" format="reference"/>
 </resources>
