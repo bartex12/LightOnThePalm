@@ -29,6 +29,7 @@ import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
+import java.util.*
 
 class ListFragment : Fragment(), Server.MessageListener {
 
@@ -135,7 +136,7 @@ class ListFragment : Fragment(), Server.MessageListener {
             override fun onClick(item: ListOfEffects) {
                 nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
-                val baseUrl = getString(R.string.baseUrl, edIp.text)
+                val baseUrl = String.format(getString(R.string.baseUrl), edIp.text.toString())
                 when(item.name){
                     getString(R.string.staticColors) -> {
                         navigateTo(baseUrl,item, getString(R.string._static),R.id.action_listFragment_to_staticColorFragment)

@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -46,6 +47,11 @@ class SyncroFragment:Fragment(), Server.MessageListener {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "SyncroFragment onStart ")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,10 +72,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 == Constants.NODE_MCU)
         //находим корневой лейаут и подключаем BottomSheet
         initBottomSheet(view, isNodeMcu)
-
-        Log.d(TAG, "SyncroFragment onViewCreated enableWifi = ${wifiManager.wifiState}")
-       // val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-       // Log.d(TAG, "SyncroFragment onViewCreated Wifi ssid =$ssid")
 
         wifiScanReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -136,6 +138,21 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         val buttonSheetHome: Button = view.findViewById(R.id.buttonBottomSheetHome)
         buttonSheetHome.setOnClickListener {
             startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+        }
+
+        val nameHome:EditText =view.findViewById(R.id.edName_home)
+        val passHome:EditText =view.findViewById(R.id.edPass_home)
+        val sendNamePassToServerHome:Button =view.findViewById(R.id.savePass_home)
+        sendNamePassToServerHome.setOnClickListener {
+            val name = nameHome.text.toString()
+            val password = passHome.text.toString()
+            Log.d(TAG, "SyncroFragment sendNamePassToServerHome" +
+                    "  name = $name password = $password")
+            Server(
+                getString(R.string.urlHotpoint),
+                getString(R.string.postHome, getString(R.string._home),name, password),
+                this@SyncroFragment
+            ).start()
         }
 
         if (isNode){

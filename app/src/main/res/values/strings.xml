@@ -23,12 +23,16 @@
     <string name="running_lights">Бегущие огни</string>
     <string name="test">Проверка</string>
 
+    <string name="urlHotpoint">http://192.168.1.1</string>
     <string name="baseUrl">http://%1$s</string>
+    <string name="postHome">%1$s?name=%2$s&amp;password=%3$s</string>
     <string name="postStaticPos">%1$s?color=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
     <string name="postDynamicPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
     <string name="postFlame">%1$s?brightness=%2$s&amp;height=%3$s&amp;spark=%4$s&amp;position=%5$s</string>
     <string name="postRunPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;numbers=%4$s&amp;color=%5$s&amp;position=%6$s</string>
 
+
+    <string name="_home">home</string>
     <string name="_static">static</string>
     <string name="_play">play</string>
     <string name="_playFlash">playFlash</string>
@@ -113,5 +117,9 @@
     <string name="wifi_list">Список доступных WiFi сетей…</string>
     <string name="passHome">Пароль домашней WiFi сети</string>
     <string name="inputPass">Введите пароль</string>
+    <string name="wifiHomeName">Имя домашней WiFi сети</string>
+    <string name="homeNetworkName">WL500GPv2_GbcK</string>
+    <string name="homeNetworkPass">aassddff</string>
+
 
 </resources>
