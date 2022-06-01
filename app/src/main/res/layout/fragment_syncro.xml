@@ -40,5 +40,6 @@
 
     <!--    BottomSheet  -->
     <include layout="@layout/bottom_sheet_layout" />
+    <include layout="@layout/bottom_sheet_layout_home" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

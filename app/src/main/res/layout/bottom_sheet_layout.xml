@@ -13,7 +13,7 @@
     tools:visibility="visible">
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrolling"
+        android:id="@+id/scrolling_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,6 +35,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:textColor="@color/white"
                 android:text="@string/goToSettings"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +68,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line"
-                tools:text="@string/bottom_shit_title" />
+                tools:text="@string/bottom_shit_title12" />
             <!--            style="@style/TextViewBottomSheetDescriptionStyle"-->
             <View
                 android:id="@+id/bottom_sheet_line"

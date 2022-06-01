@@ -26,7 +26,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:gravity="start"
-        android:hint="@string/status"
+        android:hint="@string/inputName"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
         android:textSize="20sp"
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvIpSet"  />
 
     <TextView
-        android:id="@+id/tvNameSet"
+        android:id="@+id/tvName_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -68,14 +68,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="start"
-        android:hint="@string/status"
+        android:hint="@string/inputName"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
         android:textSize="20sp"
         android:text="NodeMCU"
         app:layout_constraintEnd_toEndOf="@+id/edIpSet"
         app:layout_constraintStart_toStartOf="@+id/edIpSet"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameSet" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName_home" />
 
     <Button
         android:id="@+id/saveIpNameSet"
@@ -86,11 +86,11 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/saveIpSet"
         app:layout_constraintStart_toStartOf="@+id/saveIpSet"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameSet" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName_home" />
 
 
     <TextView
-        android:id="@+id/tvPassSet"
+        android:id="@+id/tvPass_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -103,22 +103,22 @@
         app:layout_constraintTop_toBottomOf="@+id/edIpNameSet" />
 
     <EditText
-        android:id="@+id/edIpPassSet"
+        android:id="@+id/edPass_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="start"
-        android:hint="@string/status"
+        android:hint="@string/inputName"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
         android:textSize="20sp"
         android:text="12345678"
         app:layout_constraintEnd_toEndOf="@+id/edIpNameSet"
         app:layout_constraintStart_toStartOf="@+id/edIpNameSet"
-        app:layout_constraintTop_toBottomOf="@+id/tvPassSet" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPass_home" />
 
     <Button
-        android:id="@+id/saveIpPassSet"
+        android:id="@+id/savePass_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -126,7 +126,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/saveIpNameSet"
         app:layout_constraintStart_toStartOf="@+id/saveIpNameSet"
-        app:layout_constraintTop_toBottomOf="@+id/tvPassSet" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPass_home" />
 
     <TextView
         android:id="@+id/tvInfoSet"
@@ -141,7 +141,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edIpPassSet" />
+        app:layout_constraintTop_toBottomOf="@+id/edPass_home" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

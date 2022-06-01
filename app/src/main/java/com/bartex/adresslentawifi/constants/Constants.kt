@@ -2,6 +2,7 @@ package com.bartex.adresslentawifi.constants
 
 object Constants {
     const val TAG = "33333"
+    const val NODE_MCU = "NodeMCU"
     const val IP  = "IP"
     const val WIFI_IP  = "WIFI_IP"
     const val WIFI_NAME  = "WIFI_NAME"

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.adapter.WiFiListAdapter
+import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
@@ -41,6 +42,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
 
     private var networkSSID = "NodeMCU"
     private var networkPass = "12345678"
+    private var isNodeMcu = false
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
@@ -54,14 +56,20 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        Log.d(TAG, "SyncroFragment onViewCreated ")
         initView(view)
-        //находим корневой лейаут и подключаем BottomSheet
-        initBottomSheet(view)
-
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         //Проверяем включен ли WiFi, если нет то включаем
         enableWifi()
+        //проверяем текущую сеть WiFi
+        isNodeMcu = (wifiManager.connectionInfo.ssid.removeSurrounding("\"")
+                == Constants.NODE_MCU)
+        //находим корневой лейаут и подключаем BottomSheet
+        initBottomSheet(view, isNodeMcu)
+
+        Log.d(TAG, "SyncroFragment onViewCreated enableWifi = ${wifiManager.wifiState}")
+       // val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
+       // Log.d(TAG, "SyncroFragment onViewCreated Wifi ssid =$ssid")
 
         wifiScanReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -99,18 +107,45 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     }
 
     //находим корневой лейаут и подключаем BottomSheet
-    private fun initBottomSheet(view: View) {
-        val  header:TextView =view.findViewById(R.id.bottom_sheet_header)
-        val  description:TextView =view.findViewById(R.id.bottom_sheet_description)
+    private fun initBottomSheet(view: View, isNode:Boolean) {
+
         val bottomSheet: ConstraintLayout = view.findViewById(R.id.bottom_sheet_container)
-        val buttonSheet: Button = view.findViewById(R.id.buttonBottomSheet)
-        bottomSheet.visibility = View.VISIBLE
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        header.text = requireActivity().getString(R.string.bottom_shit_title)
+
+        val  header:TextView =view.findViewById(R.id.bottom_sheet_header)
+        header.text = requireActivity().getString(R.string.bottom_shit_title12)
+
+        val  description:TextView =view.findViewById(R.id.bottom_sheet_description)
         description.text = requireActivity().getString(R.string.bottom_shit_text)
+
+        val buttonSheet: Button = view.findViewById(R.id.buttonBottomSheet)
         buttonSheet.setOnClickListener {
             startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+        }
+        val bottomSheetHome: ConstraintLayout = view.findViewById(R.id.bottom_sheet_container_home)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+        val  headerHome:TextView =view.findViewById(R.id.bottom_sheet_header_home)
+        //headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home)
+
+        val  descriptionHome:TextView =view.findViewById(R.id.bottom_sheet_description_home)
+        descriptionHome.text = requireActivity().getString(R.string.bottom_shit_text_home)
+
+        val buttonSheetHome: Button = view.findViewById(R.id.buttonBottomSheetHome)
+        buttonSheetHome.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+        }
+
+        if (isNode){
+            bottomSheet.visibility = View.GONE
+            bottomSheetHome.visibility = View.VISIBLE
+            headerHome.text = requireActivity().getString(R.string.bottom_shit_title22)
+        }else{
+            bottomSheet.visibility = View.VISIBLE
+            bottomSheetHome.visibility = View.GONE
+            header.text = requireActivity().getString(R.string.bottom_shit_title12)
         }
     }
 

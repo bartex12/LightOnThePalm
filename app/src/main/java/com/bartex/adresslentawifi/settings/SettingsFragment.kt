@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.SharedViewModel
-import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.WIFI_IP
 import com.bartex.adresslentawifi.constants.Constants.WIFI_NAME
 import com.bartex.adresslentawifi.constants.Constants.WIFI_PASSWORD
@@ -78,11 +77,11 @@ class SettingsFragment: Fragment() {
     private fun initView(view: View) {
         saveIpSet = view.findViewById(R.id.saveIpSet)
         saveIpNameSet = view.findViewById(R.id.saveIpNameSet)
-        saveIpPassSet = view.findViewById(R.id.saveIpPassSet)
+        saveIpPassSet = view.findViewById(R.id.savePass_home)
 
         edIpSet = view.findViewById(R.id.edIpSet)
         edIpNameSet = view.findViewById(R.id.edIpNameSet)
-        edIpPassSet = view.findViewById(R.id.edIpPassSet)
+        edIpPassSet = view.findViewById(R.id.edPass_home)
 
         tvInfoSet = view.findViewById(R.id.tvInfoSet)
     }
