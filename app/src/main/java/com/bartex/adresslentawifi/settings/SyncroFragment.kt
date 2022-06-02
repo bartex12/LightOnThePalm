@@ -17,11 +17,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.WiFiListAdapter
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
@@ -45,6 +48,8 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     private var networkPass = "12345678"
     private var isNodeMcu = false
 
+    private val model: SharedViewModel by activityViewModels()
+
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onStart() {
@@ -62,7 +67,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "SyncroFragment onViewCreated ")
+        //Log.d(TAG, "SyncroFragment onViewCreated ")
         initView(view)
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         //Проверяем включен ли WiFi, если нет то включаем
@@ -70,6 +75,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         //проверяем текущую сеть WiFi
         isNodeMcu = (wifiManager.connectionInfo.ssid.removeSurrounding("\"")
                 == Constants.NODE_MCU)
+        Log.d(TAG, "SyncroFragment onViewCreated isNodeMcu =$isNodeMcu")
         //находим корневой лейаут и подключаем BottomSheet
         initBottomSheet(view, isNodeMcu)
 
@@ -109,40 +115,23 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     }
 
     //находим корневой лейаут и подключаем BottomSheet
-    private fun initBottomSheet(view: View, isNode:Boolean) {
+    private fun initBottomSheet(view: View, isNodeMCU:Boolean) {
 
-        val bottomSheet: ConstraintLayout = view.findViewById(R.id.bottom_sheet_container)
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-        val  header:TextView =view.findViewById(R.id.bottom_sheet_header)
-        header.text = requireActivity().getString(R.string.bottom_shit_title12)
-
-        val  description:TextView =view.findViewById(R.id.bottom_sheet_description)
-        description.text = requireActivity().getString(R.string.bottom_shit_text)
-
-        val buttonSheet: Button = view.findViewById(R.id.buttonBottomSheet)
-        buttonSheet.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-        }
         val bottomSheetHome: ConstraintLayout = view.findViewById(R.id.bottom_sheet_container_home)
+        val  headerHome:TextView =view.findViewById(R.id.bottom_sheet_header_home)
+        val  descriptionHome:TextView =view.findViewById(R.id.bottom_sheet_description_home)
+        val nameHome:EditText =view.findViewById(R.id.edName_home)
+        val passHome:EditText =view.findViewById(R.id.edPass_home)
+        val profileHome: Group =view.findViewById(R.id.profile_home)
+        val sendNamePassToServerHome:Button =view.findViewById(R.id.savePass_home)
+        val buttonToSettingHome: Button = view.findViewById(R.id.button_to_setting_home)
+
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
-        val  headerHome:TextView =view.findViewById(R.id.bottom_sheet_header_home)
-        //headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home)
-
-        val  descriptionHome:TextView =view.findViewById(R.id.bottom_sheet_description_home)
-        descriptionHome.text = requireActivity().getString(R.string.bottom_shit_text_home)
-
-        val buttonSheetHome: Button = view.findViewById(R.id.buttonBottomSheetHome)
-        buttonSheetHome.setOnClickListener {
+        buttonToSettingHome.setOnClickListener {
             startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
         }
-
-        val nameHome:EditText =view.findViewById(R.id.edName_home)
-        val passHome:EditText =view.findViewById(R.id.edPass_home)
-        val sendNamePassToServerHome:Button =view.findViewById(R.id.savePass_home)
         sendNamePassToServerHome.setOnClickListener {
             val name = nameHome.text.toString()
             val password = passHome.text.toString()
@@ -153,16 +142,21 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 getString(R.string.postHome, getString(R.string._home),name, password),
                 this@SyncroFragment
             ).start()
+
+            profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
+            model.updateIpAddress(getString(R.string.hotpointZero))
         }
 
-        if (isNode){
-            bottomSheet.visibility = View.GONE
-            bottomSheetHome.visibility = View.VISIBLE
+        //изменяем параметры в зависимости от того, есть ли подключение к сети NodeMCU
+        if (isNodeMCU){
+            model.updateIpAddress(getString(R.string.hotpointIp))
+            profileHome.visibility = View.VISIBLE
             headerHome.text = requireActivity().getString(R.string.bottom_shit_title22)
+            descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr2)
         }else{
-            bottomSheet.visibility = View.VISIBLE
-            bottomSheetHome.visibility = View.GONE
-            header.text = requireActivity().getString(R.string.bottom_shit_title12)
+            profileHome.visibility = View.GONE
+            headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
+            descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
         }
     }
 

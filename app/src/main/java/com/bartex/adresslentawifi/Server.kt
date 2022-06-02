@@ -14,7 +14,7 @@ class Server(
     private val listener: MessageListener
     ):Thread() {
 
-    private var request: Request = Request.Builder().url("$baseUrl/$post").build()
+    private var request: Request = Request.Builder().url("${baseUrl.trim()}/$post").build()
     private val client = OkHttpClient()
 
     init {

@@ -63,8 +63,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_header_home"
-                tools:text="@string/bottom_shit_text" />
+                tools:text="@string/bottom_shit_descr1" />
             <!--            style="@style/TextViewBottomSheetHeaderStyle"-->
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/profile_home"
+                android:visibility="gone"
+                app:constraint_referenced_ids=
+                    "tvName_home,edName_home,tvPass_home,
+                    edPass_home, savePass_home"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                tools:visibility="visible"/>
             <TextView
                 android:id="@+id/tvName_home"
                 android:layout_width="0dp"
@@ -138,7 +148,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/edPass_home" />
 
             <Button
-                android:id="@+id/buttonBottomSheetHome"
+                android:id="@+id/button_to_setting_home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

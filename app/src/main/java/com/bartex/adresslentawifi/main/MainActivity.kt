@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Log.d(TAG, "MainActivity onCreate ")
 
         initViews()
 
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //получаем ip адрес сервера через MQTT
         //getIpFromMqtt(MqttHive().client, MqttHive().connection, "testtt")
-        getIpFromMqtt(MqttBy().client, MqttBy().connection, "/user/bartex/test")
+        getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
 
         //запрашиваем разрешение на определение местоположения
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -86,6 +87,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
     // в иерархии действий приложения из панели действий (экшенбара)
     override fun onSupportNavigateUp(): Boolean {
+        Log.d(TAG, "MainActivity onSupportNavigateUp ")
+        if (navController.currentDestination?.id ==  R.id.syncroFragment){
+            // после перехода из фрагмента синхронизации перезапускаем связь с Mqtt сервером
+            //иначе он сам не перезапустится - а почему он встаёт?
+           getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+        }
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 ||super.onSupportNavigateUp()
     }
@@ -109,6 +116,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (error != null) {
                     // Обрабатываем ошибку подключения
                     Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
+                    getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
                 } else {
                     // подключение успешно -> можно подписаться на топик testtt или опубликовать что то
                     client.subscribeWith()
@@ -116,7 +124,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .callback { publish ->
                             val addressIp = String(publish.payloadAsBytes, UTF_8)
                             // Обрабатываем принятое сообщение
-                           // Log.d(TAG, "***MainActivity onCreate: topic = ${publish.topic} ip = $addressIp\n")
+                            //Log.d(TAG, "***MainActivity onCreate: topic = ${publish.topic} ip = $addressIp\n")
                             runOnUiThread {
                                 model.updateIpAddress(addressIp)
                             }
@@ -145,19 +153,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        Log.d(TAG, "MainActivity onPrepareOptionsMenu ")
+        menu?.findItem(R.id.sync)?.isVisible =
+            navController.currentDestination?.id ==  R.id.listFragment
 
-        when(val id = navController.currentDestination?.id){
-            R.id.syncroFragment,R.id.settingsFragment  ->{
-                id.let {
-                    menu?.findItem(R.id.sync)?.isVisible = it == R.id.listFragment
-                }
-            }
-        }
         return super.onPrepareOptionsMenu(menu)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(TAG, "MainActivity onOptionsItemSelected ")
         when(item.itemId){
            R.id.sync -> navController.navigate(R.id.action_listFragment_to_syncroFragment)
         }

@@ -44,12 +44,19 @@ class ListFragment : Fragment(), Server.MessageListener {
     private lateinit var pref: SharedPreferences
     private var nameTag:String? = ""
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "ListFragment onStart")
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.d(TAG, "ListFragment onCreateView")
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "ListFragment onViewCreated")
 
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
@@ -77,7 +84,7 @@ class ListFragment : Fragment(), Server.MessageListener {
 
         //наблюдаем за WIFI_IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
         model.getIpAddress().observe(viewLifecycleOwner, {addressIp->
-            Log.d(TAG, "ListFragment onViewCreated addressIp = $addressIp")
+            Log.d(TAG, "***ListFragment onViewCreated addressIp = $addressIp")
             if (edIp.text.toString()!=addressIp){
                 edIp.setText(addressIp)
                 Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
