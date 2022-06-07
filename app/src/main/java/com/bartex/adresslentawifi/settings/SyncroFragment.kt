@@ -27,34 +27,28 @@ import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.WiFiListAdapter
 import com.bartex.adresslentawifi.constants.Constants
+import com.bartex.adresslentawifi.constants.Constants.ACTION_NAME
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class SyncroFragment:Fragment(), Server.MessageListener {
 
     var wifiList: MutableList<String> = mutableListOf()
-    private lateinit var rvWiFi: RecyclerView
-    private lateinit var tvInfo: TextView
-    private var nameTag:String? = ""
-
-    private lateinit var wiFiListAdapter: WiFiListAdapter
-    private lateinit var wifiManager: WifiManager
-    private lateinit var wifiScanReceiver: BroadcastReceiver
-    private val intentFilter = IntentFilter()
-//    var networkSSID = "WL500GPv2_GbcK"
-//    var networkPass = "aassddff"
-
-    private var networkSSID = "NodeMCU"
-    private var networkPass = "12345678"
-    private var isNodeMcu = false
-
-    private val model: SharedViewModel by activityViewModels()
-
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    lateinit var rvWiFi: RecyclerView
+    lateinit var tvInfo: TextView
+    lateinit var wiFiListAdapter: WiFiListAdapter
+    lateinit var wifiManager: WifiManager
+    lateinit var wifiScanReceiver: BroadcastReceiver
+    val intentFilter = IntentFilter()
+     var isNodeMcu = false
+     var actionTag:String? = ""
+     val model: SharedViewModel by activityViewModels()
+     lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "SyncroFragment onStart ")
+        actionTag = arguments?.getString(ACTION_NAME, "")
     }
 
     override fun onCreateView(
@@ -73,8 +67,9 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         //Проверяем включен ли WiFi, если нет то включаем
         enableWifi()
         //проверяем текущую сеть WiFi
-        isNodeMcu = (wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-                == Constants.NODE_MCU)
+        val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
+        isNodeMcu = ssid == Constants.NODE_MCU
+        model.updateSSID(ssid)
         Log.d(TAG, "SyncroFragment onViewCreated isNodeMcu =$isNodeMcu")
         //находим корневой лейаут и подключаем BottomSheet
         initBottomSheet(view, isNodeMcu)
@@ -114,6 +109,8 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         requireActivity(). unregisterReceiver(wifiScanReceiver)
     }
 
+    //abstract fun initBottomSheet(view: View, isNodeMCU:Boolean)
+
     //находим корневой лейаут и подключаем BottomSheet
     private fun initBottomSheet(view: View, isNodeMCU:Boolean) {
 
@@ -125,6 +122,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         val profileHome: Group =view.findViewById(R.id.profile_home)
         val sendNamePassToServerHome:Button =view.findViewById(R.id.savePass_home)
         val buttonToSettingHome: Button = view.findViewById(R.id.button_to_setting_home)
+        //buttonToSettingHome.visibility = View.GONE
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
@@ -144,9 +142,16 @@ class SyncroFragment:Fragment(), Server.MessageListener {
             ).start()
 
             profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
+            buttonToSettingHome.visibility = View.VISIBLE
             model.updateIpAddress(getString(R.string.hotpointZero))
         }
-
+//
+//        when(actionTag){
+//            getString(R.string.createHotpoint) ->{}
+//            getString(R.string.toHome) ->{}
+//            getString(R.string.toDifferent) ->{}
+//            getString(R.string.firstInclusion) ->{}
+//        }
         //изменяем параметры в зависимости от того, есть ли подключение к сети NodeMCU
         if (isNodeMCU){
             model.updateIpAddress(getString(R.string.hotpointIp))
@@ -176,7 +181,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
             wifiList.add(ssid)
         }
         rvWiFi.layoutManager = LinearLayoutManager(requireActivity())
-        nameTag?. let{wiFiListAdapter = WiFiListAdapter(it, getOnWiFiListener())}
+        wiFiListAdapter = WiFiListAdapter(getOnWiFiListener())
         rvWiFi.adapter = wiFiListAdapter
         wiFiListAdapter.list = wifiList
 
@@ -204,7 +209,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
             override fun onWiFiClick(name: String) {
                 Log.d(TAG, "getOnWiFiListener name = $name")
                 //nameTag = name
-                nameTag = "NodeMCU"
                 startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
             }
         }

@@ -10,7 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 
-class WiFiListAdapter(val nameTag:String, val listener:OnClickWiFiListener): RecyclerView.Adapter<WiFiListAdapter.ViewHolder>() {
+class WiFiListAdapter(val listener:OnClickWiFiListener): RecyclerView.Adapter<WiFiListAdapter.ViewHolder>() {
     var list:List<String> = listOf()
         set(value) {
             field = value
@@ -54,7 +54,6 @@ class WiFiListAdapter(val nameTag:String, val listener:OnClickWiFiListener): Rec
                         AppCompatResources.getDrawable(context, R.color.colorSecondaryBlack)
                 }
             }
-
 
             itemView.setOnClickListener {
                 listener.onWiFiClick(itemWiFi)

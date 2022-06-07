@@ -24,6 +24,9 @@
             android:id="@+id/action_listFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
+            android:id="@+id/action_listFragment_to_actionFragment"
+            app:destination="@id/actionFragment" />
+        <action
             android:id="@+id/action_listFragment_to_syncroFragment"
             app:destination="@id/syncroFragment" />
     </fragment>
@@ -53,6 +56,18 @@
         android:id="@+id/syncroFragment"
         android:name="com.bartex.adresslentawifi.settings.SyncroFragment"
         android:label="SyncroFragment" />
+    <fragment
+        android:id="@+id/actionFragment"
+        android:name="com.bartex.adresslentawifi.action.ActionFragment"
+        android:label="ActionFragment" >
+        <action
+            android:id="@+id/action_actionFragment_to_localFragment"
+            app:destination="@id/localFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/localFragment"
+        android:name="com.bartex.adresslentawifi.settings.LocalFragment"
+        android:label="LocalFragment" />
     <!--  android:label="RunningColorsFragment" -->
     <!--    android:label="FlameFragment"-->
 </navigation>

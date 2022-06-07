@@ -8,6 +8,7 @@ class SharedViewModel: ViewModel() {
 
     private val nameOfEffect = MutableLiveData<String>()
     private val ipAddress = MutableLiveData<String>()
+    private val ssidNetwork = MutableLiveData<String>()
 
     fun getNameOfEffect():LiveData<String>{
         //Log.d(TAG, "SharedViewModel getNameOfEffect message= ${nameOfEffect.value}")
@@ -25,5 +26,13 @@ class SharedViewModel: ViewModel() {
 
     fun getIpAddress():LiveData<String>{
         return ipAddress
+    }
+
+    fun updateSSID(ssid: String) {
+        ssidNetwork.value = ssid
+    }
+
+    fun getSSID():LiveData<String>{
+        return ssidNetwork
     }
 }

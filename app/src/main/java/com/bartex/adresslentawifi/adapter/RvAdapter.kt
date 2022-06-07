@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.constants.Constants.TAG
+import com.bartex.adresslentawifi.entity.ListOfActions
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.squareup.picasso.Picasso
 

@@ -1,6 +1,8 @@
 package com.bartex.adresslentawifi.list
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -35,13 +38,13 @@ class ListFragment : Fragment(), Server.MessageListener {
 
     private val listViewModel: ListViewModel by activityViewModels()
     private val model: SharedViewModel by activityViewModels()
-
+    private lateinit var wifiManager: WifiManager
     private lateinit var navController: NavController
-    private var rvAdapter: RvAdapter? = null
-    private  lateinit var rvEffects: RecyclerView
-    private  lateinit var bSave: Button
+    private  lateinit var tvName: TextView
     private  lateinit var edIp:EditText
     private lateinit var pref: SharedPreferences
+    private var rvAdapter: RvAdapter? = null
+    private  lateinit var rvEffects: RecyclerView
     private var nameTag:String? = ""
 
     override fun onStart() {
@@ -63,8 +66,8 @@ class ListFragment : Fragment(), Server.MessageListener {
 
         initViews(view)
         getIp()
-        onClickSaveIp()
         initAdapter()
+        updateSSID()
 
         listViewModel.loadData()
         listViewModel.getListOfEffects().observe(this, {
@@ -90,9 +93,18 @@ class ListFragment : Fragment(), Server.MessageListener {
                 Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
             }
         })
+
+        model.getSSID().observe(viewLifecycleOwner,{
+            tvName.text = it
+        })
         //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
         setHasOptionsMenu(true)
 }
+
+    private fun updateSSID() {
+        wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
+        model.updateSSID(wifiManager.connectionInfo.ssid.removeSurrounding("\""))
+    }
 
     override fun onPause() {
         super.onPause()
@@ -104,14 +116,6 @@ class ListFragment : Fragment(), Server.MessageListener {
         val ip = pref.getString(IP, "")
         if(ip != null){
             if(ip.isNotEmpty()) edIp.setText(ip)
-        }
-    }
-
-    private fun onClickSaveIp(){
-        bSave.setOnClickListener {
-            if(edIp.text.isNotEmpty()){
-                saveIp(edIp.text.toString())
-            }
         }
     }
 
@@ -128,7 +132,7 @@ class ListFragment : Fragment(), Server.MessageListener {
 
     private fun initViews(view: View) {
         rvEffects = view.findViewById(R.id.rv_effects)
-        bSave = view.findViewById(R.id.bSave)
+        tvName = view.findViewById(R.id.tvNameList)
         edIp = view.findViewById(R.id.edIp)
     }
 

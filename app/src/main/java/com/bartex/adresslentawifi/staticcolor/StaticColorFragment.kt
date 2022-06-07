@@ -2,7 +2,6 @@ package com.bartex.adresslentawifi.staticcolor
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,22 +9,18 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
-import com.bartex.adresslentawifi.constants.Constants.EFFECT_NAME
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.COLOR
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
-import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
-import com.bartex.adresslentawifi.list.ListViewModel
 
 class StaticColorFragment: Fragment(), Server.MessageListener {
 
