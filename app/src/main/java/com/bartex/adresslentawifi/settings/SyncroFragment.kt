@@ -113,7 +113,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
 
     //находим корневой лейаут и подключаем BottomSheet
     private fun initBottomSheet(view: View, isNodeMCU:Boolean) {
-
         val bottomSheetHome: ConstraintLayout = view.findViewById(R.id.bottom_sheet_container_home)
         val  headerHome:TextView =view.findViewById(R.id.bottom_sheet_header_home)
         val  descriptionHome:TextView =view.findViewById(R.id.bottom_sheet_description_home)
