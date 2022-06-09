@@ -176,8 +176,8 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText("Redmi")
-                passWiFi.setText("b480192ed5ec")
+                nameWiFi.setText(getString(R.string.Redmi))
+                passWiFi.setText(getString(R.string.passRedmi))
                 tvName.text = requireActivity().getString(R.string.nameDifferent)
                 tvPass.text = requireActivity().getString(R.string.passDifferent)
                 profileHome.visibility = View.VISIBLE
@@ -226,8 +226,8 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText("Redmi")
-                passWiFi.setText("b480192ed5ec")
+                nameWiFi.setText(getString(R.string.Redmi))
+                passWiFi.setText(getString(R.string.passRedmi))
                 tvName.text = requireActivity().getString(R.string.nameDifferent)
                 tvPass.text = requireActivity().getString(R.string.passDifferent)
                 profileHome.visibility = View.VISIBLE

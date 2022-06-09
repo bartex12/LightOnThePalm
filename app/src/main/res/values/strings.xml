@@ -154,4 +154,6 @@
     <string name="createHotpoint">Создать локальную сеть WiFi</string>
     <string name="toHomeFromLocal">Переключиться на домашнюю сеть WiFi из локальной сети</string>
     <string name="toDifferentFromLocal">Переключиться на другую сеть WiFi из локальной сети</string>
+    <string name="Redmi">Redmi</string>
+    <string name="passRedmi">b480192ed5ec</string>
 </resources>
