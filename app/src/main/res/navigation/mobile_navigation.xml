@@ -61,13 +61,8 @@
         android:name="com.bartex.adresslentawifi.action.ActionFragment"
         android:label="ActionFragment" >
         <action
-            android:id="@+id/action_actionFragment_to_localFragment"
-            app:destination="@id/localFragment" />
+            android:id="@+id/action_actionFragment_to_syncroFragment"
+            app:destination="@id/syncroFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/localFragment"
-        android:name="com.bartex.adresslentawifi.settings.LocalFragment"
-        android:label="LocalFragment" />
-    <!--  android:label="RunningColorsFragment" -->
-    <!--    android:label="FlameFragment"-->
+
 </navigation>

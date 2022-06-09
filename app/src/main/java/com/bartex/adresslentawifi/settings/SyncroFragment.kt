@@ -33,33 +33,36 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class SyncroFragment:Fragment(), Server.MessageListener {
 
-    var wifiList: MutableList<String> = mutableListOf()
-    lateinit var rvWiFi: RecyclerView
-    lateinit var tvInfo: TextView
-    lateinit var btnPrev: Button
-    lateinit var btnNext: Button
-    lateinit var bottomSheetHome: ConstraintLayout
-    lateinit var  headerHome:TextView
-    lateinit var  descriptionHome:TextView
-    lateinit var nameHome:EditText
-    lateinit var passHome:EditText
-    lateinit var profileHome: Group
-    lateinit var sendNamePassToServerHome:Button
-    lateinit var buttonToSettingHome: Button
+    private var wifiList: MutableList<String> = mutableListOf()
+    private lateinit var rvWiFi: RecyclerView
+    private lateinit var tvInfo: TextView
+    private lateinit var tvName: TextView
+    private lateinit var tvPass: TextView
+    private lateinit var btnPrev: Button
+    private lateinit var btnNext: Button
+    private lateinit var bottomSheetHome: ConstraintLayout
+    private lateinit var headerHome:TextView
+    private lateinit var descriptionHome:TextView
+    private lateinit var nameWiFi:EditText
+    private lateinit var passWiFi:EditText
+    private lateinit var profileHome: Group
+    private lateinit var sendNamePassToServerHome:Button
+    private lateinit var buttonToSettingHome: Button
 
-    lateinit var wiFiListAdapter: WiFiListAdapter
-    lateinit var wifiManager: WifiManager
-    lateinit var wifiScanReceiver: BroadcastReceiver
-    val intentFilter = IntentFilter()
-     var isNodeMcu = false
-     var actionTag:String? = ""
-     val model: SharedViewModel by activityViewModels()
-     lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var wiFiListAdapter: WiFiListAdapter
+    private lateinit var wifiManager: WifiManager
+    private lateinit var wifiScanReceiver: BroadcastReceiver
+    private val intentFilter = IntentFilter()
+    private var isNodeMcu = false
+    private var actionTag:String? = ""
+    private val model: SharedViewModel by activityViewModels()
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "SyncroFragment onStart ")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         actionTag = arguments?.getString(ACTION_NAME, "")
+        Log.d(TAG, "SyncroFragment onCreate actionTag = $actionTag")
     }
 
     override fun onCreateView(
@@ -82,6 +85,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         isNodeMcu = ssid == Constants.NODE_MCU
         model.updateSSID(ssid)
         Log.d(TAG, "SyncroFragment onViewCreated isNodeMcu =$isNodeMcu")
+
         //находим корневой лейаут и подключаем BottomSheet
         initBottomSheet(view, isNodeMcu)
 
@@ -120,62 +124,18 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         requireActivity(). unregisterReceiver(wifiScanReceiver)
     }
 
-    //abstract fun initBottomSheet(view: View, isNodeMCU:Boolean)
-
-    //находим корневой лейаут и подключаем BottomSheet
-    private fun initBottomSheet(view: View, isNodeMCU:Boolean) {
+    private fun initView(view: View) {
         bottomSheetHome = view.findViewById(R.id.bottom_sheet_container_home)
         headerHome =view.findViewById(R.id.bottom_sheet_header_home)
         descriptionHome =view.findViewById(R.id.bottom_sheet_description_home)
-        nameHome =view.findViewById(R.id.edName_home)
-        passHome =view.findViewById(R.id.edPass_home)
+        nameWiFi =view.findViewById(R.id.edName_home)
+        passWiFi =view.findViewById(R.id.edPass_home)
+        tvName =view.findViewById(R.id.tvName_home)
+        tvPass =view.findViewById(R.id.tvPass_home)
         profileHome =view.findViewById(R.id.profile_home)
         sendNamePassToServerHome =view.findViewById(R.id.savePass_home)
         buttonToSettingHome = view.findViewById(R.id.button_to_setting_home)
-        //buttonToSettingHome.visibility = View.GONE
 
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
-        buttonToSettingHome.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-        }
-        sendNamePassToServerHome.setOnClickListener {
-            val name = nameHome.text.toString()
-            val password = passHome.text.toString()
-            Log.d(TAG, "SyncroFragment sendNamePassToServerHome" +
-                    "  name = $name password = $password")
-            Server(
-                getString(R.string.urlHotpoint),
-                getString(R.string.postHome, getString(R.string._home),name, password),
-                this@SyncroFragment
-            ).start()
-
-            profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
-            buttonToSettingHome.visibility = View.VISIBLE
-            model.updateIpAddress(getString(R.string.hotpointZero))
-        }
-//
-//        when(actionTag){
-//            getString(R.string.createHotpoint) ->{}
-//            getString(R.string.toHome) ->{}
-//            getString(R.string.toDifferent) ->{}
-//            getString(R.string.firstInclusion) ->{}
-//        }
-        //изменяем параметры в зависимости от того, есть ли подключение к сети NodeMCU
-        if (isNodeMCU){
-            model.updateIpAddress(getString(R.string.hotpointIp))
-            profileHome.visibility = View.VISIBLE
-            headerHome.text = requireActivity().getString(R.string.bottom_shit_title22)
-            descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr2)
-        }else{
-            profileHome.visibility = View.GONE
-            headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
-            descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
-        }
-    }
-
-    private fun initView(view: View) {
         rvWiFi = view.findViewById(R.id.rvWiFi)
         tvInfo = view.findViewById(R.id.tvInfo)
         btnPrev = view.findViewById(R.id.btnPrev)
@@ -190,6 +150,106 @@ class SyncroFragment:Fragment(), Server.MessageListener {
             profileHome.visibility = View.VISIBLE
             headerHome.text = requireActivity().getString(R.string.bottom_shit_title22)
             descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr2)
+        }
+    }
+
+    //находим корневой лейаут и подключаем BottomSheet
+    private fun initBottomSheet(view: View, isNodeMCU:Boolean) {
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+
+        //изменяем IpAddress если  подключение к сети NodeMCU
+        if (isNodeMCU){
+            model.updateIpAddress(getString(R.string.hotpointIp))
+        }
+
+        when(actionTag){
+            getString(R.string.createHotpoint) ->{
+
+            }
+            getString(R.string.toHome) ->{
+                //todo брать из сохр в преференсис так как дом сети - разные могут быть, а лучше из списка
+                btnPrev.visibility = View.GONE
+                btnNext.visibility = View.GONE
+                nameWiFi.setText(R.string.homeNetworkName)
+                passWiFi.setText((R.string.homeNetworkPass))
+                profileHome.visibility = View.VISIBLE
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_home)
+            }
+            getString(R.string.toDifferent) ->{
+                //todo брать из сохр в преференсис а лучше из списка
+                btnPrev.visibility = View.GONE
+                btnNext.visibility = View.GONE
+                nameWiFi.setText("")
+                tvName.text = requireActivity().getString(R.string.nameDifferent)
+                passWiFi.setText("")
+                tvPass.text = requireActivity().getString(R.string.passDifferent)
+                profileHome.visibility = View.VISIBLE
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)
+            }
+            getString(R.string.firstInclusion) ->{
+                profileHome.visibility = View.GONE
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
+            }
+        }
+
+        sendNamePassToServerHome.setOnClickListener {
+            val name = nameWiFi.text.toString()
+            val password = passWiFi.text.toString()
+            Log.d(TAG, "SyncroFragment sendNamePassToServerHome" +
+                    "  name = $name password = $password")
+            if (name.isNotEmpty()&& password.isNotEmpty()){
+               val ip = model.getIpAddress().value
+                when(actionTag){
+                    getString(R.string.createHotpoint) ->{
+
+                    }
+                    getString(R.string.toHome),
+                    getString(R.string.toDifferent) ->{
+                        Server(
+                            getString(R.string.baseUrl,ip ),
+                            getString(R.string.postHome, getString(R.string._home),name, password),
+                            this@SyncroFragment
+                        ).start()
+                        profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
+                        buttonToSettingHome.visibility = View.VISIBLE
+                        model.updateIpAddress(getString(R.string.hotpointZero))
+                    }
+//                    getString(R.string.toDifferent) ->{
+//                        Server(
+//                            getString(R.string.baseUrl,ip ),
+//                            getString(R.string.postDifferent, getString(R.string._different),name, password),
+//                            this@SyncroFragment
+//                        ).start()
+//
+//                        profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
+//                        buttonToSettingHome.visibility = View.VISIBLE
+//                        model.updateIpAddress(getString(R.string.hotpointZero))
+//                    }
+
+                    getString(R.string.firstInclusion) ->{
+                        Server(
+                            getString(R.string.urlHotpoint ),
+                            getString(R.string.postHome, getString(R.string._home),name, password),
+                            this@SyncroFragment
+                        ).start()
+
+                        profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
+                        buttonToSettingHome.visibility = View.VISIBLE
+                        model.updateIpAddress(getString(R.string.hotpointZero))
+                    }
+                }
+            }else{
+                Toast.makeText(requireActivity(), "имя и пароль не должны быть пустыми", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        buttonToSettingHome.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
         }
     }
 

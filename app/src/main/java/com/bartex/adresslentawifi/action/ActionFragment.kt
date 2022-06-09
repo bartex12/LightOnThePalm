@@ -69,7 +69,8 @@ class ActionFragment : Fragment(){
         object : ActionAdapter.OnActionClickListener {
             override fun onClick(item: ListOfActions) {
                 nameTag = item.nameOfAction
-                navigateTo(nameTag, R.id.action_actionFragment_to_localFragment)
+                navigateTo(nameTag, R.id.action_actionFragment_to_syncroFragment)
+               // navigateTo(nameTag, R.id.action_actionFragment_to_localFragment)
                // listViewModel.updateTitle(item.nameOfAction) //обновляем имя заголовка тулбара
                 //val baseUrl = String.format(getString(R.string.baseUrl), edIp.text.toString())
             }

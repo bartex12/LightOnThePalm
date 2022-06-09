@@ -163,7 +163,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(TAG, "MainActivity onOptionsItemSelected ")
         when(item.itemId){
-           R.id.sync -> navController.navigate(R.id.action_listFragment_to_syncroFragment)
+           //R.id.sync -> navController.navigate(R.id.action_listFragment_to_syncroFragment)
+            R.id.sync -> navController.navigate(R.id.action_listFragment_to_actionFragment)
         }
         return super.onOptionsItemSelected(item)
     }

@@ -47,14 +47,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/btnNext"
                 app:layout_constraintEnd_toStartOf="@+id/btnNext"
                 app:layout_constraintStart_toEndOf="@+id/btnPrev"
-                app:layout_constraintTop_toTopOf="@+id/btnNext"
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home"
                 tools:text="@string/bottom_shit_title_home" />
 
             <TextView
@@ -67,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnPrev"
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_header_home"
                 tools:text="@string/bottom_shit_descr1" />
 
             <androidx.constraintlayout.widget.Group
@@ -185,7 +185,14 @@
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home" />
-            <!--            style="@style/ViewBottomSheetStyle"-->
+
+<!--            <View-->
+<!--                android:id="@+id/viewBarrier"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="2dp"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/bottom_sheet_line_home" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
