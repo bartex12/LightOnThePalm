@@ -21,7 +21,6 @@ import com.bartex.adresslentawifi.entity.ListOfActions
 
 class ActionFragment : Fragment(){
     private val listViewModel: ActionViewModel by activityViewModels()
-    private val model: SharedViewModel by activityViewModels()
     private lateinit var navController: NavController
     private  lateinit var rvActions: RecyclerView
     private  lateinit var tvName: TextView

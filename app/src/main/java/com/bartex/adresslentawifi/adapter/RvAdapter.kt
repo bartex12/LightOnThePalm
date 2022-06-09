@@ -1,8 +1,6 @@
 package com.bartex.adresslentawifi.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +10,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.constants.Constants.TAG
-import com.bartex.adresslentawifi.entity.ListOfActions
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.squareup.picasso.Picasso
 
@@ -46,7 +42,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
 
    inner class ViewHolder(view: View):RecyclerView.ViewHolder(view) {
         private var name: TextView = view.findViewById(R.id.tv_name_dis)
-         var triangle: ImageView = view.findViewById(R.id.iv_triangle)
+         private var triangle: ImageView = view.findViewById(R.id.iv_triangle)
         private val imageRound: ImageView = view.findViewById(R.id.iv_round_dis)
         private val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
 

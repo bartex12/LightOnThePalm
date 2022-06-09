@@ -2,11 +2,9 @@ package com.bartex.adresslentawifi.dynamiccolor
 
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.preference.PreferenceManager
 import com.bartex.adresslentawifi.App
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.COLOR_RUN
 import com.bartex.adresslentawifi.constants.Constants.FLAME_BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.FLAME_SPEED

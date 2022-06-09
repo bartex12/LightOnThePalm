@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bartex.adresslentawifi.App
+import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.entity.ListOfEffects
 
 class ListViewModel:ViewModel() {
 
     private val listOfEffects = MutableLiveData<List<ListOfEffects>>()
     private val mainRepo: IEffectsList =  EffectsListImpl(App.instance)
-    private val toolbarTitle = MutableLiveData<String>("Свет на ладони")
+    private val toolbarTitle = MutableLiveData(App.instance.getString(R.string.ligthOnHand))
 
     fun getListOfEffects(): LiveData<List<ListOfEffects>> {
         return listOfEffects

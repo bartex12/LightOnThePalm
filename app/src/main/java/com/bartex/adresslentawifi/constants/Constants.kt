@@ -30,7 +30,6 @@ object Constants {
 
     const val HEIGHT_FLAME  = "HEIGHT_FLAME"
     const val SPARK_FLAME  = "SPARK_FLAME"
-    const val TEST_SPEED  = "TEST_SPEED"
 
     const val BRIGHTNESS  = "brightness"
     const val PLAY_BRIGHTNESS  = "playBrightness"
@@ -44,6 +43,4 @@ object Constants {
     const val RANDOM_COLOR_BRIGHTNESS  = "RANDOM_COLOR_BRIGHTNESS"
     const val RANDOM_COLOR_FADE_BRIGHTNESS  = "RANDOM_COLOR_FADE_BRIGHTNESS"
     const val NORTHERN_LIGHTS_BRIGHTNESS  = "NORTHERN_LIGHTS_BRIGHTNESS"
-    const val TEST_BRIGHTNESS  = "TEST_BRIGHTNESS"
-
 }

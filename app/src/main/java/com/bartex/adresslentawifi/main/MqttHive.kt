@@ -6,7 +6,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-class MqttHive() {
+class MqttHive {
     //Создание клиента
     val client: Mqtt3AsyncClient = MqttClient.builder()
         .useMqttVersion3()

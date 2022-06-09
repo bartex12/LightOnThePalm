@@ -1,9 +1,7 @@
 package com.bartex.adresslentawifi
 
 import android.util.Log
-import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
-import com.bartex.adresslentawifi.main.MainActivity
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException

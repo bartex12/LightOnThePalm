@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.entity.ListOfActions
-import com.bartex.adresslentawifi.entity.ListOfEffects
+
 
 class ActionAdapter(val nameTag:String, val listener: OnActionClickListener)
     :RecyclerView.Adapter<ActionAdapter.ViewHolder>() {
@@ -45,7 +45,7 @@ class ActionAdapter(val nameTag:String, val listener: OnActionClickListener)
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private var name: TextView = view.findViewById(R.id.tv_name_dis_action)
-        var triangle: ImageView = view.findViewById(R.id.iv_triangle_action)
+        private var triangle: ImageView = view.findViewById(R.id.iv_triangle_action)
         private val clList: ConstraintLayout = view.findViewById(R.id.cl_list_action)
 
         fun bind(itemView: ListOfActions) {

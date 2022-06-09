@@ -26,14 +26,17 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
 import java.util.concurrent.CompletableFuture
 
 import kotlin.text.Charsets.UTF_8
-
-
-//управление адресной лентой через NodeMCU с WiFi в режиме STA
+//управление адресной лентой через NodeMCU с WiFi в режиме STA и AT
 //две библиотеки, + режим STA через параметры достаём цвет, яркость, скорость, количество точек
 //в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
-// код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка 5_mvvm_disign
-// скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_006EspWiFi_2lib_STA_EVERY_sketch_may22a
+// код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка 10_mvvm_eeprom_actions
+//скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_012_AP_STA_MQTT_EEPROM_ALL_sketch_jun09b
 //варианты - бег строка , pride, flame, статич цвета,конфетти,радуги
+//добавлено обращение на MQTT сервер для передачи ip адреса - используется  mqtt.by, закоментировано - если local или   HiveMQ
+//при этом делается 1 обращение в 3 сек  - в loop
+//добавлено чтение и запись в EEPROM имени и пароля сети через функции set_String(0,1,ssidHome) и set_String(31,32,passHome)
+//https://russianblogs.com/article/26471580690/  для создания подключения к домашней сети
+//включено создание точки доступа по команде с телефона, а всего 6 сценариев работы с WiFi
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 

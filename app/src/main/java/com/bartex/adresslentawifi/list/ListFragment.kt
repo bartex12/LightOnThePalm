@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,16 +22,13 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvAdapter
-import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
-import com.bartex.adresslentawifi.constants.Constants.WIFI_IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
-import java.util.*
 
 class ListFragment : Fragment(), Server.MessageListener {
 
