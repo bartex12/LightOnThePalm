@@ -144,6 +144,7 @@
     <string name="hotpointZero">0.0.0.0</string>
 
     <string name="topic_user_bartex_test">/user/bartex/test</string>
+    <string name="topic_user_bartex_test_hive">testtt</string>
     <string name="chooseAction">Выберите необходимое действие</string>
 
     <string name="prev">Назад</string>

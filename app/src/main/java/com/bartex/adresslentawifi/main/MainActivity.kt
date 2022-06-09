@@ -74,9 +74,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         //получаем ip адрес сервера через MQTT
-        //getIpFromMqtt(MqttHive().client, MqttHive().connection, "testtt")
-        getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
-
+       // getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+        getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test_hive))
         //запрашиваем разрешение на определение местоположения
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 100)
@@ -95,7 +94,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (navController.currentDestination?.id ==  R.id.syncroFragment){
             // после перехода из фрагмента синхронизации перезапускаем связь с Mqtt сервером
             //иначе он сам не перезапустится - а почему он встаёт?
-           getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+           //getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+            getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test_hive))
         }
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 ||super.onSupportNavigateUp()
@@ -122,7 +122,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
                     //если в локальной сети - будет повторяться снова и снова
                     if (model.getSSID().value != Constants.NODE_MCU){
-                        getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+                        //если нет соединения со стороны ESP , будет повторяться снова и снова
+                        //getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
                     }
                 } else {
                     // подключение успешно -> можно подписаться на топик testtt или опубликовать что то

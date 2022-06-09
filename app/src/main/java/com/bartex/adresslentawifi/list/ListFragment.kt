@@ -30,7 +30,7 @@ import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
 
-class ListFragment : Fragment(), Server.MessageListener {
+class   ListFragment : Fragment(), Server.MessageListener {
 
     private val listViewModel: ListViewModel by activityViewModels()
     private val model: SharedViewModel by activityViewModels()
