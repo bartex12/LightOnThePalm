@@ -164,6 +164,40 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         }
 
         when(actionTag){
+            //Привязка к сети WiFi при первом включении
+            getString(R.string.firstInclusion) ->{
+                profileHome.visibility = View.GONE
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
+            }
+
+            //Переключиться на другую сеть WiFi
+            getString(R.string.toDifferent) ->{
+                //todo брать из сохр в преференсис а лучше из списка
+                btnPrev.visibility = View.GONE
+                btnNext.visibility = View.GONE
+                nameWiFi.setText("Redmi")
+                passWiFi.setText("b480192ed5ec")
+                tvName.text = requireActivity().getString(R.string.nameDifferent)
+                tvPass.text = requireActivity().getString(R.string.passDifferent)
+                profileHome.visibility = View.VISIBLE
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)
+            }
+
+            //Переключиться на домашнюю сеть WiFi из другой сети
+            getString(R.string.toHome) ->{
+                //todo брать из сохр в преференсис так как дом сети - разные могут быть, а лучше из списка
+                btnPrev.visibility = View.GONE
+                btnNext.visibility = View.GONE
+                nameWiFi.setText(R.string.homeNetworkName)
+                passWiFi.setText((R.string.homeNetworkPass))
+                profileHome.visibility = View.VISIBLE
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_home )
+            }
+
+            //Создать локальную сеть WiFi
             getString(R.string.createHotpoint) ->{
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
@@ -177,32 +211,28 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_local)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_local)
             }
-            getString(R.string.toHome) ->{
-                //todo брать из сохр в преференсис так как дом сети - разные могут быть, а лучше из списка
+
+            //Переключиться на домашнюю сеть WiFi из локальной сети
+            getString(R.string.toHomeFromLocal) -> {
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText(R.string.homeNetworkName)
-                passWiFi.setText((R.string.homeNetworkPass))
                 profileHome.visibility = View.VISIBLE
-                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home)
-                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_home )
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home_from_local)
+                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_home)
             }
-            getString(R.string.toDifferent) ->{
+
+            //Переключиться на другую сеть WiFi из локальной сети
+            getString(R.string.toDifferentFromLocal) -> {
                 //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText("")
-                passWiFi.setText("")
+                nameWiFi.setText("Redmi")
+                passWiFi.setText("b480192ed5ec")
                 tvName.text = requireActivity().getString(R.string.nameDifferent)
                 tvPass.text = requireActivity().getString(R.string.passDifferent)
                 profileHome.visibility = View.VISIBLE
-                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different)
+                headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different_from_local)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)
-            }
-            getString(R.string.firstInclusion) ->{
-                profileHome.visibility = View.GONE
-                headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
-                descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
             }
         }
 
@@ -213,16 +243,20 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                     "  name = $name password = $password")
             if (name.isNotEmpty()&& password.isNotEmpty()){
                val ip = model.getIpAddress().value
+
                 when(actionTag){
-                    getString(R.string.createHotpoint) ->{
+                    getString(R.string.firstInclusion),
+                    getString(R.string.toHomeFromLocal),
+                    getString(R.string.toDifferentFromLocal)->{
                         Server(
-                            getString(R.string.baseUrl,ip ),
-                            getString(R.string.postLocal, getString(R.string._hotpoint),name, password),
+                            getString(R.string.urlHotpoint ),
+                            getString(R.string.postHome, getString(R.string._home),name, password),
                             this@SyncroFragment
                         ).start()
+
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddress(getString(R.string.hotpointIp))
+                        model.updateIpAddress(getString(R.string.hotpointZero))
                     }
 
                     getString(R.string.toHome),
@@ -237,16 +271,15 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                         model.updateIpAddress(getString(R.string.hotpointZero))
                     }
 
-                    getString(R.string.firstInclusion) ->{
+                    getString(R.string.createHotpoint) ->{
                         Server(
-                            getString(R.string.urlHotpoint ),
-                            getString(R.string.postHome, getString(R.string._home),name, password),
+                            getString(R.string.baseUrl,ip ),
+                            getString(R.string.postLocal, getString(R.string._hotpoint),name, password),
                             this@SyncroFragment
                         ).start()
-
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddress(getString(R.string.hotpointZero))
+                        model.updateIpAddress(getString(R.string.hotpointIp))
                     }
                 }
             }else{

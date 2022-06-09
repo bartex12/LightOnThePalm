@@ -123,7 +123,9 @@
     <string name="bottom_shit_title22">Инструкция Шаг 2 из 2</string>
     <string name="bottom_shit_title">Инструкция</string>
     <string name="bottom_shit_title_home">Порядок подключения к домашней сети WiFi</string>
+    <string name="bottom_shit_title_home_from_local">Порядок подключения к домашней сети WiFi из локальной сети</string>
     <string name="bottom_shit_title_different">Порядок подключения к произвольной сети WiFi</string>
+    <string name="bottom_shit_title_different_from_local">Порядок подключения к произвольной сети WiFi из локальной сети</string>
     <string name="bottom_shit_title_local">Порядок создания локальной сети WiFi</string>
     <string name="goToSettings">Перейти в настройки</string>
     <string name="wifi_list">Список доступных WiFi сетей…</string>
@@ -143,12 +145,13 @@
 
     <string name="topic_user_bartex_test">/user/bartex/test</string>
     <string name="chooseAction">Выберите необходимое действие</string>
-    <string name="createHotpoint">Создать локальную сеть WiFi</string>
-    <string name="toHome">Подключиться к домашней сети WiFi</string>
-    <string name="toDifferent">Подключиться к иной сети WiFi</string>
-    <string name="firstInclusion">Привязка при первом включении</string>
+
     <string name="prev">Назад</string>
     <string name="next">Вперёд</string>
-
-
+    <string name="firstInclusion">Привязка к сети WiFi при первом включении</string>
+    <string name="toDifferent">Переключиться на другую сеть WiFi из домашней сети</string>
+    <string name="toHome">Переключиться на домашнюю сеть WiFi из другой сети</string>
+    <string name="createHotpoint">Создать локальную сеть WiFi</string>
+    <string name="toHomeFromLocal">Переключиться на домашнюю сеть WiFi из локальной сети</string>
+    <string name="toDifferentFromLocal">Переключиться на другую сеть WiFi из локальной сети</string>
 </resources>
