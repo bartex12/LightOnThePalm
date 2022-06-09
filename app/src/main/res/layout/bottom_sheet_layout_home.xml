@@ -39,32 +39,36 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!--            style="@style/TextViewBottomSheetDescriptionStyle"-->
+            <!--            style="@style/TextViewBottomSheetHeaderStyle"-->
+
             <TextView
                 android:id="@+id/bottom_sheet_header_home"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home"
+                app:layout_constraintBottom_toBottomOf="@+id/btnNext"
+                app:layout_constraintEnd_toStartOf="@+id/btnNext"
+                app:layout_constraintStart_toEndOf="@+id/btnPrev"
+                app:layout_constraintTop_toTopOf="@+id/btnNext"
                 tools:text="@string/bottom_shit_title_home" />
-            <!--            style="@style/TextViewBottomSheetDescriptionStyle"-->
+
             <TextView
                 android:id="@+id/bottom_sheet_description_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:padding="@dimen/margin16"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_header_home"
+                app:layout_constraintTop_toBottomOf="@+id/btnPrev"
                 tools:text="@string/bottom_shit_descr1" />
-            <!--            style="@style/TextViewBottomSheetHeaderStyle"-->
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/profile_home"
@@ -159,6 +163,28 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/savePass_home" />
+
+            <Button
+                android:id="@+id/btnPrev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/prev"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home" />
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/next"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home" />
             <!--            style="@style/ViewBottomSheetStyle"-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>

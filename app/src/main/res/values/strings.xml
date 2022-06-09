@@ -137,6 +137,8 @@
     <string name="toHome">Подключиться к домашней сети WiFi</string>
     <string name="toDifferent">Подключиться к иной сети WiFi</string>
     <string name="firstInclusion">Привязка при первом включении</string>
+    <string name="prev">Назад</string>
+    <string name="next">Вперёд</string>
 
 
 </resources>

@@ -36,6 +36,17 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     var wifiList: MutableList<String> = mutableListOf()
     lateinit var rvWiFi: RecyclerView
     lateinit var tvInfo: TextView
+    lateinit var btnPrev: Button
+    lateinit var btnNext: Button
+    lateinit var bottomSheetHome: ConstraintLayout
+    lateinit var  headerHome:TextView
+    lateinit var  descriptionHome:TextView
+    lateinit var nameHome:EditText
+    lateinit var passHome:EditText
+    lateinit var profileHome: Group
+    lateinit var sendNamePassToServerHome:Button
+    lateinit var buttonToSettingHome: Button
+
     lateinit var wiFiListAdapter: WiFiListAdapter
     lateinit var wifiManager: WifiManager
     lateinit var wifiScanReceiver: BroadcastReceiver
@@ -113,14 +124,14 @@ class SyncroFragment:Fragment(), Server.MessageListener {
 
     //находим корневой лейаут и подключаем BottomSheet
     private fun initBottomSheet(view: View, isNodeMCU:Boolean) {
-        val bottomSheetHome: ConstraintLayout = view.findViewById(R.id.bottom_sheet_container_home)
-        val  headerHome:TextView =view.findViewById(R.id.bottom_sheet_header_home)
-        val  descriptionHome:TextView =view.findViewById(R.id.bottom_sheet_description_home)
-        val nameHome:EditText =view.findViewById(R.id.edName_home)
-        val passHome:EditText =view.findViewById(R.id.edPass_home)
-        val profileHome: Group =view.findViewById(R.id.profile_home)
-        val sendNamePassToServerHome:Button =view.findViewById(R.id.savePass_home)
-        val buttonToSettingHome: Button = view.findViewById(R.id.button_to_setting_home)
+        bottomSheetHome = view.findViewById(R.id.bottom_sheet_container_home)
+        headerHome =view.findViewById(R.id.bottom_sheet_header_home)
+        descriptionHome =view.findViewById(R.id.bottom_sheet_description_home)
+        nameHome =view.findViewById(R.id.edName_home)
+        passHome =view.findViewById(R.id.edPass_home)
+        profileHome =view.findViewById(R.id.profile_home)
+        sendNamePassToServerHome =view.findViewById(R.id.savePass_home)
+        buttonToSettingHome = view.findViewById(R.id.button_to_setting_home)
         //buttonToSettingHome.visibility = View.GONE
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
@@ -167,6 +178,19 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     private fun initView(view: View) {
         rvWiFi = view.findViewById(R.id.rvWiFi)
         tvInfo = view.findViewById(R.id.tvInfo)
+        btnPrev = view.findViewById(R.id.btnPrev)
+        btnPrev.setOnClickListener {
+            profileHome.visibility = View.GONE
+            headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
+            descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
+        }
+        btnNext = view.findViewById(R.id.btnNext)
+        btnNext.setOnClickListener {
+            model.updateIpAddress(getString(R.string.hotpointIp))
+            profileHome.visibility = View.VISIBLE
+            headerHome.text = requireActivity().getString(R.string.bottom_shit_title22)
+            descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr2)
+        }
     }
 
     private fun scanSuccess() {
