@@ -63,7 +63,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_header_local"
-                tools:text="@string/bottom_shit_descr3" />
+                tools:text="@string/bottom_shit_descr_local" />
             <!--            style="@style/TextViewBottomSheetHeaderStyle"-->
 
             <androidx.constraintlayout.widget.Group
@@ -112,7 +112,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/passLocal"
+                android:text="@string/wifiLocalPass"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

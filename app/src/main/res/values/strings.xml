@@ -27,6 +27,7 @@
     <string name="urlHotpoint">http://192.168.1.1</string>
     <string name="baseUrl">http://%1$s</string>
     <string name="postHome">%1$s?name=%2$s&amp;password=%3$s</string>
+    <string name="postLocal">%1$s?name=%2$s&amp;password=%3$s</string>
     <string name="postDifferent">%1$s?name=%2$s&amp;password=%3$s</string>
     <string name="postStaticPos">%1$s?color=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
     <string name="postDynamicPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
@@ -116,26 +117,27 @@
     Передать на сервер.\n Это нужно для того, чтобы блок управления адресной лентой смог подключиться к вашей домашней сети\n\n 3 После этого нажмите кнопку Перейти в настройки и переключитесь на домашнюю сеть WiFi\n\n   4 Вернитесь назад в приложение Свет на ладони</string>
     <string name="bottom_shit_descr_different">1 Введите имя и пароль WiFi сети, к которой хотите подключиться, в поля ввода ниже и нажмите кнопку Передать на сервер.\n Это нужно для того, чтобы блок управления адресной лентой смог подключиться к вашей сети\n\n 2 После этого нажмите кнопку Перейти в настройки и вручную переключитесь на вашу сеть WiFi\n\n   3 Вернитесь назад в приложение Свет на ладони</string>
     <string name="bottom_shit_descr_home">1 Введите имя и пароль своей домашней WiFi сети  в поля ввода ниже и нажмите кнопку Передать на сервер.\n Это нужно для того, чтобы блок управления адресной лентой смог подключиться к вашей сети\n\n 2 После этого нажмите кнопку Перейти в настройки и вручную переключитесь на вашу домашнюю сеть WiFi, если это не произошло автоматически\n\n   3 Вернитесь назад в приложение Свет на ладони</string>
-    <string name="bottom_shit_descr3">Для подключения блока управления к локальной сети WiFi нужно сделать следующее:\n\n 1 Перейдите в настройки WiFi телефона. Для этого можно кликнуть по любой строке списка на экране или нажать на кнопку в нижней части инструкции\n\n 2 Подключитесь к WiFi сети с именем NodeMCU.\nПри необходимости введите пароль 12345678\n\n 3 Вернитесь обратно в приложение "Свет на ладони"  </string>
+    <string name="bottom_shit_descr_local">Для создания локальной сети WiFi с именем NodeMCU и паролем 12345678 нужно сделать следующее:\n\n 1 Нажмите кнопку Передать на сервер, чтобы передать в блок управления название и пароль локальной сети 2 Перейдите в настройки WiFi телефона. Для этого можно кликнуть по любой строке списка на экране или нажать на кнопку в нижней части инструкции\n\n 2 Подключитесь к WiFi сети с именем NodeMCU.\nПри необходимости введите пароль 12345678\n\n 3 Вернитесь обратно в приложение "Свет на ладони"  </string>
 
     <string name="bottom_shit_title12">Инструкция Шаг 1 из 2</string>
     <string name="bottom_shit_title22">Инструкция Шаг 2 из 2</string>
     <string name="bottom_shit_title">Инструкция</string>
     <string name="bottom_shit_title_home">Порядок подключения к домашней сети WiFi</string>
     <string name="bottom_shit_title_different">Порядок подключения к произвольной сети WiFi</string>
+    <string name="bottom_shit_title_local">Порядок создания локальной сети WiFi</string>
     <string name="goToSettings">Перейти в настройки</string>
     <string name="wifi_list">Список доступных WiFi сетей…</string>
-    <string name="passHome">Пароль домашней WiFi сети</string>
-    <string name="passDifferent">Пароль WiFi сети</string>
-    <string name="passLocal">Пароль локальной WiFi сети</string>
-    <string name="inputPass">Введите пароль</string>
     <string name="wifiHomeName">Имя домашней WiFi сети</string>
+    <string name="passHome">Пароль домашней WiFi сети</string>
     <string name="nameDifferent">Имя WiFi сети</string>
+    <string name="passDifferent">Пароль WiFi сети</string>
     <string name="wifiLocalName">Имя локальной WiFi сети</string>
+    <string name="wifiLocalPass">Пароль локальной WiFi сети</string>
+    <string name="inputPass">Введите пароль</string>
     <string name="homeNetworkName">WL500GPv2_GbcK</string>
     <string name="homeNetworkPass">aassddff</string>
     <string name="localNetworkPass">12345678</string>
-    <string name="localNetworkName">NodeNCU</string>
+    <string name="localNetworkName">NodeMCU</string>
     <string name="hotpointIp">192.168.1.1</string>
     <string name="hotpointZero">0.0.0.0</string>
 

@@ -18,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.SharedViewModel
+import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.navigation.NavigationView
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
@@ -116,7 +117,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (error != null) {
                     // Обрабатываем ошибку подключения
                     Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
-                    getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+                    //если в локальной сети - будет повторяться снова и снова
+                    if (model.getSSID().value != Constants.NODE_MCU){
+                        getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
+                    }
                 } else {
                     // подключение успешно -> можно подписаться на топик testtt или опубликовать что то
                     client.subscribeWith()
