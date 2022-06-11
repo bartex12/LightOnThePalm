@@ -36,8 +36,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     private var wifiList: MutableList<String> = mutableListOf()
     private lateinit var rvWiFi: RecyclerView
     private lateinit var tvInfo: TextView
-    private lateinit var tvName: TextView
-    private lateinit var tvPass: TextView
     private lateinit var btnPrev: Button
     private lateinit var btnNext: Button
     private lateinit var bottomSheetHome: ConstraintLayout
@@ -70,21 +68,17 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "SyncroFragment onCreateView")
         return LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_syncro, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //Log.d(TAG, "SyncroFragment onViewCreated ")
+        Log.d(TAG, "SyncroFragment onViewCreated ")
         initView(view)
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         //Проверяем включен ли WiFi, если нет то включаем
         enableWifi()
-        //проверяем текущую сеть WiFi
-        val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-        isNodeMcu = ssid == Constants.NODE_MCU
-        model.updateSSID(ssid)
-        Log.d(TAG, "SyncroFragment onViewCreated ssid =$ssid isNodeMcu =$isNodeMcu")
         //находим корневой лейаут и подключаем BottomSheet
         initBottomSheet(isNodeMcu)
 
@@ -115,11 +109,18 @@ class SyncroFragment:Fragment(), Server.MessageListener {
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "SyncroFragment onResume ")
         requireActivity().registerReceiver(wifiScanReceiver,intentFilter)
+        //проверяем текущую сеть WiFi
+        val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
+        isNodeMcu = ssid == Constants.NODE_MCU
+        model.updateSSID(ssid)
+        Log.d(TAG, "SyncroFragment onViewCreated ssid =$ssid isNodeMcu =$isNodeMcu")
     }
 
     override fun onPause() {
         super.onPause()
+        Log.d(TAG, "SyncroFragment onPause ")
         requireActivity(). unregisterReceiver(wifiScanReceiver)
     }
 
@@ -129,8 +130,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         descriptionHome =view.findViewById(R.id.bottom_sheet_description_home)
         nameWiFi =view.findViewById(R.id.edName_home)
         passWiFi =view.findViewById(R.id.edPass_home)
-        tvName =view.findViewById(R.id.tvName_home)
-        tvPass =view.findViewById(R.id.tvPass_home)
         profileHome =view.findViewById(R.id.profile_home)
         sendNamePassToServerHome =view.findViewById(R.id.savePass_home)
         buttonToSettingHome = view.findViewById(R.id.button_to_setting_home)
@@ -178,8 +177,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 btnNext.visibility = View.GONE
                 nameWiFi.setText(getString(R.string.Redmi))
                 passWiFi.setText(getString(R.string.passRedmi))
-                tvName.text = requireActivity().getString(R.string.nameDifferent)
-                tvPass.text = requireActivity().getString(R.string.passDifferent)
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)
@@ -205,8 +202,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 nameWiFi.isEnabled = false
                 passWiFi.setText((R.string.localNetworkPass))
                 passWiFi.isEnabled = false
-                tvName.text = requireActivity().getString(R.string.wifiLocalName)
-                tvPass.text = requireActivity().getString(R.string.wifiLocalPass)
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_local)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_local)
@@ -228,8 +223,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                 btnNext.visibility = View.GONE
                 nameWiFi.setText(getString(R.string.Redmi))
                 passWiFi.setText(getString(R.string.passRedmi))
-                tvName.text = requireActivity().getString(R.string.nameDifferent)
-                tvPass.text = requireActivity().getString(R.string.passDifferent)
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different_from_local)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)

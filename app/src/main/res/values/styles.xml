@@ -65,7 +65,19 @@
         <item name="android:textStyle">bold</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:fontFamily"> @font/bressay_trial</item>
-
     </style>
+
+    <!--Floating label style-->
+    <style name="EditTextHintStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <!--Input field style-->
+    <style name="EditTextStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@android:color/black</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
+
 
 </resources>

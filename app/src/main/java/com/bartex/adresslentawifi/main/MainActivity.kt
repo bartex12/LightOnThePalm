@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // после перехода из фрагмента синхронизации перезапускаем связь с Mqtt сервером
             //иначе он сам не перезапустится - а почему он встаёт?
            //getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
-            getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test_hive))
+            getIpFromMqtt(MqttHive().client, MqttHive().connection, getString(R.string.topic_user_bartex_test_hive))
         }
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 ||super.onSupportNavigateUp()

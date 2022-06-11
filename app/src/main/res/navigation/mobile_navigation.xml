@@ -21,9 +21,6 @@
             android:id="@+id/action_listFragment_to_runningColorsFragment"
             app:destination="@id/runningColorsFragment" />
         <action
-            android:id="@+id/action_listFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
             android:id="@+id/action_listFragment_to_actionFragment"
             app:destination="@id/actionFragment" />
         <action
@@ -49,17 +46,13 @@
         android:name="com.bartex.adresslentawifi.running.RunningColorsFragment"
       />
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.bartex.adresslentawifi.settings.SettingsFragment"
-        android:label="SettingsFragment" />
-    <fragment
         android:id="@+id/syncroFragment"
         android:name="com.bartex.adresslentawifi.settings.SyncroFragment"
-        android:label="SyncroFragment" />
+        android:label="Инструкция по привязке" />
     <fragment
         android:id="@+id/actionFragment"
         android:name="com.bartex.adresslentawifi.action.ActionFragment"
-        android:label="ActionFragment" >
+        android:label="Привязка к WiFi сетям" >
         <action
             android:id="@+id/action_actionFragment_to_syncroFragment"
             app:destination="@id/syncroFragment" />

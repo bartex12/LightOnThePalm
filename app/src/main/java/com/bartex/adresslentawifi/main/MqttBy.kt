@@ -11,8 +11,8 @@ class MqttBy {
     val client: Mqtt3AsyncClient = MqttClient.builder()
         .useMqttVersion3()
         .identifier(UUID.randomUUID().toString())
-        //.serverHost("mqtt.by")
-        .serverHost("broker.hivemq.com")
+        .serverHost("mqtt.by")
+        //.serverHost("broker.hivemq.com")
         .serverPort(1883)
         .buildAsync()
 
@@ -20,8 +20,8 @@ class MqttBy {
     val connection: CompletableFuture<Mqtt3ConnAck> = client.connectWith()
         .simpleAuth()
         .username("bartex")
-        //.password("eeoyuepr".toByteArray())  //mqtt.by
-        .password("Kukamon@1".toByteArray()) //hivemq
+        .password("eeoyuepr".toByteArray())  //mqtt.by
+        //.password("Kukamon@1".toByteArray()) //hivemq
         .applySimpleAuth()
         .send()
 

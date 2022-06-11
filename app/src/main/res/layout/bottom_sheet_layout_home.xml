@@ -73,96 +73,101 @@
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/profile_home"
                 android:visibility="gone"
-                app:constraint_referenced_ids=
-                    "tvName_home,edName_home,tvPass_home,
-                    edPass_home, savePass_home"
+                app:constraint_referenced_ids= "edName_home_layout,
+                    edPass_home_layout, savePass_home"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 tools:visibility="visible"/>
-            <TextView
-                android:id="@+id/tvName_home"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/wifiHomeName"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_description_home" />
 
-            <EditText
-                android:id="@+id/edName_home"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edName_home_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="start"
+                android:layout_marginTop="8dp"
                 android:hint="@string/inputName"
-                android:text="@string/homeNetworkName"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="18sp"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
+                app:endIconMode="clear_text"
+                app:helperText="@string/you_net"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvName_home" />
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_description_home">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edName_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="start"
+                    android:inputType="text"
+                    android:text="@string/homeNetworkName"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <TextView
-                android:id="@+id/tvPass_home"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edPass_home_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/passHome"
-                android:textSize="14sp"
+                android:hint="@string/inputPassWiFi"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
+                app:endIconMode="clear_text"
+                app:helperText="@string/you_net_pass"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edName_home" />
+                app:layout_constraintTop_toBottomOf="@+id/edName_home_layout">
 
-            <EditText
-                android:id="@+id/edPass_home"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="start"
-                android:hint="@string/inputPass"
-                android:text="@string/homeNetworkPass"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPass_home" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edPass_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="start"
+                    android:text="@string/homeNetworkPass"
+                    android:inputType="text"
+                    android:textSize="18sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/savePass_home"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/save_"
                 android:textColor="@color/white"
+                app:backgroundTint="@color/colorSecondaryBlue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edPass_home" />
+                app:layout_constraintTop_toBottomOf="@+id/edPass_home_layout"
+                app:strokeColor="@color/colorSecondaryBlue"
+                app:strokeWidth="2dp" />
 
             <Button
                 android:id="@+id/button_to_setting_home"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/goToSettings"
-                android:textColor="@color/white"
+                android:textColor="@color/colorSecondaryBlue"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/savePass_home" />
+                app:layout_constraintTop_toBottomOf="@+id/savePass_home"
+                app:strokeColor="@color/colorSecondaryBlue"
+                app:strokeWidth="2dp" />
 
             <Button
                 android:id="@+id/btnPrev"
@@ -171,21 +176,27 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/prev"
-                android:textColor="@color/white"
+                style="?attr/materialButtonOutlinedStyle"
+                android:textColor="@color/colorSecondaryBlue"
+                app:strokeColor="@color/colorSecondaryBlue"
+                app:strokeWidth = "2dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home" />
 
             <Button
                 android:id="@+id/btnNext"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/next"
-                android:textColor="@color/white"
+                android:textColor="#00796B"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home" />
-
+                app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line_home"
+                app:strokeColor="@color/colorSecondaryBlue"
+                app:strokeWidth="2dp" />
+<!--            android:backgroud="@drawable/ramka"-->
 <!--            <View-->
 <!--                android:id="@+id/viewBarrier"-->
 <!--                android:layout_width="match_parent"-->
