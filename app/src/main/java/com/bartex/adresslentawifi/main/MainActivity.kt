@@ -32,8 +32,8 @@ import kotlin.text.Charsets.UTF_8
 // код Андроид F:\AndroidStudioProjects\Android15 Bluetooth\AdressLentaWiFi  ветка 10_mvvm_eeprom_actions
 //скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_012_AP_STA_MQTT_EEPROM_ALL_sketch_jun09b
 //варианты - бег строка , pride, flame, статич цвета,конфетти,радуги
-//добавлено обращение на MQTT сервер для передачи ip адреса - используется  mqtt.by, закоментировано - если local или   HiveMQ
-//при этом делается 1 обращение в 3 сек  - в loop
+//добавлено обращение на MQTT сервер для передачи ip адреса - используется HiveMQ но есть класс и для mqtt.by
+//при этом делается 1 обращение в 5 сек  - в loop
 //добавлено чтение и запись в EEPROM имени и пароля сети через функции set_String(0,1,ssidHome) и set_String(31,32,passHome)
 //https://russianblogs.com/article/26471580690/  для создания подключения к домашней сети
 //включено создание точки доступа по команде с телефона, а всего 6 сценариев работы с WiFi
