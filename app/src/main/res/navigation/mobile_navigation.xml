@@ -23,9 +23,6 @@
         <action
             android:id="@+id/action_listFragment_to_actionFragment"
             app:destination="@id/actionFragment" />
-        <action
-            android:id="@+id/action_listFragment_to_syncroFragment"
-            app:destination="@id/syncroFragment" />
     </fragment>
 <!--    android:label="ListFragment"-->
     <fragment
@@ -55,7 +52,8 @@
         android:label="Привязка к WiFi сетям" >
         <action
             android:id="@+id/action_actionFragment_to_syncroFragment"
-            app:destination="@id/syncroFragment" />
+            app:destination="@id/syncroFragment"
+            app:popUpTo="@id/listFragment" />
     </fragment>
 
 </navigation>

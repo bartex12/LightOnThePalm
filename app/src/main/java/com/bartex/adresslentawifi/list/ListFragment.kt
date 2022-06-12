@@ -51,13 +51,21 @@ class   ListFragment : Fragment(), Server.MessageListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        //Log.d(TAG, "ListFragment onViewCreated")
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
 
         initViews(view)
         getIp()
-        initAdapter() //иначе при отключенной ленте будет пустой экран
+        initAdapter()  //иначе при отключенной ленте будет пустой экран
+        if (model.isFirstLaunch){
+            Log.d(TAG, "ListFragment onViewCreated model.isFirstLaunch")
+            //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
+            // при включении приложения при работающей ленте
+            Server(getString(R.string.baseUrl, edIp.text.toString()),
+                getString(R.string.postPosition, getString(R.string._position)),
+                this@ListFragment).start()
+        }
         updateSSID()
 
         //следим за изменением заголовка тулбара и показываем новый заголовок
@@ -68,10 +76,6 @@ class   ListFragment : Fragment(), Server.MessageListener {
         //чтобы выставить правильный указатель при включении приложения при работающей ленте
         model.getNameOfEffect().observe(viewLifecycleOwner, { newTag ->
             nameTag = newTag
-            initAdapter() //приходится обновлять полностью и потом выставлять позицию
-            val position = getAdapterPosition()
-            Log.d(TAG, "###ListFragment onViewCreated  newTag= $newTag position = $position")
-            rvEffects.scrollToPosition(position)
         })
 
         //наблюдаем за WIFI_IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
@@ -82,19 +86,12 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
             }
         })
-
-        //наблюдаем за SSID и обновляем его
+        //наблюдаем за SSID и обновляем текстовое поле
         model.getSSID().observe(viewLifecycleOwner,{
             tvName.text = it
         })
         //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
         setHasOptionsMenu(true)
-
-        //посылаем запрос на имя эффекта чтобы выставить правильный указатель
-        // при включении приложения при работающей ленте
-        Server(getString(R.string.baseUrl, edIp.text.toString()),
-            getString(R.string.postPosition, getString(R.string._position)),
-            this@ListFragment).start()
 }
 
     private fun getAdapterPosition():Int {
@@ -111,15 +108,21 @@ class   ListFragment : Fragment(), Server.MessageListener {
 
     private fun updateSSID() {
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
-        model.updateSSID(wifiManager.connectionInfo.ssid.removeSurrounding("\""))
+        val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
+        model.updateSSID(ssid)
+        if (ssid == getString(R.string.localNetworkName)){
+        model.updateIpAddress(getString(R.string.hotpointIp))
+        }
     }
 
     override fun onPause() {
         super.onPause()
+        Log.d(TAG, "ListFragment onPause")
         if(edIp.text.isNotEmpty()){
             saveIp(edIp.text.toString())
         }
     }
+
     private fun getIp(){
         val ip = pref.getString(IP, "")
         if(ip != null){
@@ -151,7 +154,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
-                //nameTag = item.name
+                nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = String.format(getString(R.string.baseUrl), edIp.text.toString())
                 when(item.name){
@@ -205,11 +208,18 @@ class   ListFragment : Fragment(), Server.MessageListener {
     }
 
     override fun onMessage(message: String) {
-
+        //сюда попадаем 1 раз - при первом включении - для установки позиции адаптера
         try {
             requireActivity().runOnUiThread {
                 Log.d(TAG, "*****ListFragment onMessage message= $message")
                 model.updateNameOfEffect(message)
+                initAdapter()
+                if (model.isFirstLaunch){
+                    val position = getAdapterPosition()
+                    Log.d(TAG, "###ListFragment onViewCreated  nameTag= $nameTag position = $position")
+                    rvEffects.scrollToPosition(position)
+                    model.isNotFirstLaunch() //меняем флаг
+                }
             }
             } catch (e:IllegalStateException){
                 Log.d(TAG, "ListFragment Exception message= $e.message")

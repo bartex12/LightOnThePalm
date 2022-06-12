@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
     // в иерархии действий приложения из панели действий (экшенбара)
     override fun onSupportNavigateUp(): Boolean {
-        Log.d(TAG, "MainActivity onSupportNavigateUp ")
+       // Log.d(TAG, "MainActivity onSupportNavigateUp ")
         if (navController.currentDestination?.id ==  R.id.syncroFragment){
             // после перехода из фрагмента синхронизации перезапускаем связь с Mqtt сервером
             //иначе он сам не перезапустится - а почему он встаёт?

@@ -9,15 +9,14 @@ class SharedViewModel: ViewModel() {
     private val nameOfEffect = MutableLiveData<String>()
     private val ipAddress = MutableLiveData<String>()
     private val ssidNetwork = MutableLiveData<String>()
+    var isFirstLaunch = true //флаг первого запуска
 
     fun getNameOfEffect():LiveData<String>{
-        //Log.d(TAG, "SharedViewModel getNameOfEffect message= ${nameOfEffect.value}")
         return nameOfEffect
     }
 
     fun updateNameOfEffect(name:String){
         nameOfEffect.value = name
-        //Log.d(TAG, "SharedViewModel updateNameOfEffect message= ${nameOfEffect.value}")
     }
 
     fun updateIpAddress(addressIp: String) {
@@ -35,4 +34,9 @@ class SharedViewModel: ViewModel() {
     fun getSSID():LiveData<String>{
         return ssidNetwork
     }
+
+    fun isNotFirstLaunch() {
+        isFirstLaunch = false
+    }
+
 }

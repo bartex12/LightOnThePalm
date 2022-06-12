@@ -157,11 +157,6 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
-        //изменяем IpAddress если  подключение к сети NodeMCU
-        if (isNodeMCU){
-            model.updateIpAddress(getString(R.string.hotpointIp))
-        }
-
         when(actionTag){
             //Привязка к сети WiFi при первом включении
             getString(R.string.firstInclusion) ->{
@@ -250,6 +245,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
                         model.updateIpAddress(getString(R.string.hotpointZero))
+                        model.updateNameOfEffect("")
                     }
 
                     getString(R.string.toHome),
@@ -273,6 +269,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
                         model.updateIpAddress(getString(R.string.hotpointIp))
+                        model.updateNameOfEffect("")
                     }
                 }
             }else{
