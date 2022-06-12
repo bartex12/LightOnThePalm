@@ -28,9 +28,6 @@ class FlameFragment: Fragment(), Server.MessageListener {
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
     private lateinit var pref: SharedPreferences
-    //private lateinit var seekBarBrFlame:SeekBar
-    //private lateinit var seekBarHeightFlame: SeekBar
-    //private lateinit var seekBarSparkFlame: SeekBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +55,6 @@ class FlameFragment: Fragment(), Server.MessageListener {
 
         pref = requireActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE)
 
-        //initView(view)
         getSparkHeightBrightness()
         initSeekBarBrightness()
         initSeekBarHeight()
@@ -87,12 +83,6 @@ class FlameFragment: Fragment(), Server.MessageListener {
             binding.seekBarSparkFlame.progress = 5
         }
         return sf.toString()
-    }
-
-    private fun initView(view: View) {
-       // seekBarBrFlame = view.findViewById(R.id.seekBarBrFlame)
-        //seekBarHeightFlame = view.findViewById(R.id.seekBarHightFlame)
-        //seekBarSparkFlame = view.findViewById(R.id.seekBarSparkFlame)
     }
 
     override fun onPause() {
