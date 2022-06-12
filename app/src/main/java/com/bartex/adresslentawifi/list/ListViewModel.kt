@@ -12,12 +12,15 @@ class ListViewModel:ViewModel() {
     private val listOfEffects = MutableLiveData<List<ListOfEffects>>()
     private val mainRepo: IEffectsList =  EffectsListImpl(App.instance)
     private val toolbarTitle = MutableLiveData(App.instance.getString(R.string.ligthOnHand))
+    private val listPosition = MutableLiveData<Int>()
+
 
     fun getListOfEffects(): LiveData<List<ListOfEffects>> {
+        loadData()
         return listOfEffects
     }
 
-    fun loadData(){
+    private fun loadData(){
         listOfEffects.value = mainRepo.getList()
     }
 
@@ -27,5 +30,13 @@ class ListViewModel:ViewModel() {
 
     fun getToolbarTitle():LiveData<String>{
         return toolbarTitle
+    }
+
+    fun updateListPosition(position:Int){
+        listPosition.value = position
+    }
+
+    fun getListPosition():LiveData<Int>{
+        return listPosition
     }
 }

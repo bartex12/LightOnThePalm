@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d(TAG, "MainActivity onCreate ")
+        //Log.d(TAG, "MainActivity onCreate ")
 
         initViews()
 
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //получаем ip адрес сервера через MQTT
        // getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
-        getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test_hive))
+        getIpFromMqtt(MqttHive().client, MqttHive().connection, getString(R.string.topic_user_bartex_test_hive))
         //запрашиваем разрешение на определение местоположения
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 100)
@@ -155,13 +155,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        Log.d(TAG, "MainActivity onCreateOptionsMenu ")
+        //Log.d(TAG, "MainActivity onCreateOptionsMenu ")
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        Log.d(TAG, "MainActivity onPrepareOptionsMenu ")
+       // Log.d(TAG, "MainActivity onPrepareOptionsMenu ")
         menu?.findItem(R.id.sync)?.isVisible =
             navController.currentDestination?.id ==  R.id.listFragment
 
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "MainActivity onOptionsItemSelected ")
+        //Log.d(TAG, "MainActivity onOptionsItemSelected ")
         when(item.itemId){
            //R.id.sync -> navController.navigate(R.id.action_listFragment_to_syncroFragment)
             R.id.sync -> navController.navigate(R.id.action_listFragment_to_actionFragment)

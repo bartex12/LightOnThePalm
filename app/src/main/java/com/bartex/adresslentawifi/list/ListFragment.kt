@@ -29,6 +29,7 @@ import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
+import java.util.*
 
 class   ListFragment : Fragment(), Server.MessageListener {
 
@@ -43,42 +44,34 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private  lateinit var rvEffects: RecyclerView
     private var nameTag:String? = ""
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "ListFragment onStart")
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.d(TAG, "ListFragment onCreateView")
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "ListFragment onViewCreated")
 
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
 
         initViews(view)
         getIp()
-        initAdapter()
+        initAdapter() //иначе при отключенной ленте будет пустой экран
         updateSSID()
 
-        listViewModel.loadData()
-        listViewModel.getListOfEffects().observe(this, {
-            renderData(it)
-        })
         //следим за изменением заголовка тулбара и показываем новый заголовок
         listViewModel.getToolbarTitle().observe(this, {
             (activity as MainActivity).supportActionBar?.title = it
         })
         //следим за тем, что пришло от сервера и передаём в адаптер
-        //это нужно для того, чтобы синхронизировать работу нескольких телефонов
-        // - на экранах будет одинаковая картинка
-        model.getNameOfEffect().observe(viewLifecycleOwner, {newTag->
-            Log.d(TAG, "ListFragment onViewCreated newTag= $newTag")
-            rvAdapter =  RvAdapter(newTag, getOnClickListener())
+        //чтобы выставить правильный указатель при включении приложения при работающей ленте
+        model.getNameOfEffect().observe(viewLifecycleOwner, { newTag ->
+            nameTag = newTag
+            initAdapter() //приходится обновлять полностью и потом выставлять позицию
+            val position = getAdapterPosition()
+            Log.d(TAG, "###ListFragment onViewCreated  newTag= $newTag position = $position")
+            rvEffects.scrollToPosition(position)
         })
 
         //наблюдаем за WIFI_IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
@@ -90,12 +83,31 @@ class   ListFragment : Fragment(), Server.MessageListener {
             }
         })
 
+        //наблюдаем за SSID и обновляем его
         model.getSSID().observe(viewLifecycleOwner,{
             tvName.text = it
         })
         //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
         setHasOptionsMenu(true)
+
+        //посылаем запрос на имя эффекта чтобы выставить правильный указатель
+        // при включении приложения при работающей ленте
+        Server(getString(R.string.baseUrl, edIp.text.toString()),
+            getString(R.string.postPosition, getString(R.string._position)),
+            this@ListFragment).start()
 }
+
+    private fun getAdapterPosition():Int {
+        val list:List<ListOfEffects>? = rvAdapter?.listOfEffects
+        list?. let{
+            for (item in it.indices) {
+                if (it[item].name == nameTag) {
+                    return item
+                }
+            }
+        }
+        return -1
+    }
 
     private fun updateSSID() {
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -122,10 +134,6 @@ class   ListFragment : Fragment(), Server.MessageListener {
         model.updateIpAddress(ip)
     }
 
-    private fun renderData(data: List<ListOfEffects>?) {
-        data?. let{ rvAdapter?.listOfEffects = it}
-    }
-
     private fun initViews(view: View) {
         rvEffects = view.findViewById(R.id.rv_effects)
         tvName = view.findViewById(R.id.tvNameList)
@@ -133,15 +141,17 @@ class   ListFragment : Fragment(), Server.MessageListener {
     }
 
     private fun  initAdapter() {
+        Log.d(TAG, "ListFragment initAdapter nameTag = $nameTag")
         rvEffects.layoutManager = LinearLayoutManager(requireActivity())
         nameTag?. let{rvAdapter = RvAdapter(it, getOnClickListener())}
         rvEffects.adapter = rvAdapter
+        listViewModel.getListOfEffects().value?. let{rvAdapter?.listOfEffects = it}
     }
 
     private fun getOnClickListener(): RvAdapter.OnItemClickListener =
         object : RvAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
-                nameTag = item.name
+                //nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = String.format(getString(R.string.baseUrl), edIp.text.toString())
                 when(item.name){
@@ -195,9 +205,14 @@ class   ListFragment : Fragment(), Server.MessageListener {
     }
 
     override fun onMessage(message: String) {
-        requireActivity().runOnUiThread {
-            Log.d(TAG, "*****ListFragment onMessage message= $message")
+
+        try {
+            requireActivity().runOnUiThread {
+                Log.d(TAG, "*****ListFragment onMessage message= $message")
+                model.updateNameOfEffect(message)
+            }
+            } catch (e:IllegalStateException){
+                Log.d(TAG, "ListFragment Exception message= $e.message")
+            }
         }
     }
-
-}

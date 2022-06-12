@@ -17,6 +17,7 @@ import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
+import java.util.*
 
 class RunningColorsFragment: Fragment(), Server.MessageListener {
 
@@ -38,8 +39,6 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
     private lateinit var seekBarRunNumber: SeekBar
     private lateinit var rvColors: RecyclerView
     private lateinit var adapter: StaticColorAdapter
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

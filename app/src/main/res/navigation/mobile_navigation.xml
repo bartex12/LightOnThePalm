@@ -40,7 +40,7 @@
 <!--    android:label="fragment_dinamic_colors"-->
     <fragment
         android:id="@+id/flameFragment"
-        android:name="com.bartex.adresslentawifi.FlameFragment" />
+        android:name="com.bartex.adresslentawifi.flame.FlameFragment" />
     <fragment
         android:id="@+id/runningColorsFragment"
         android:name="com.bartex.adresslentawifi.running.RunningColorsFragment"

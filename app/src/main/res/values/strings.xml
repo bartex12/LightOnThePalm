@@ -23,6 +23,7 @@
 
     <string name="urlHotpoint">http://192.168.1.1</string>
     <string name="baseUrl">http://%1$s</string>
+    <string name="postPosition">%1$s</string>
     <string name="postHome">%1$s?name=%2$s&amp;password=%3$s</string>
     <string name="postLocal">%1$s?name=%2$s&amp;password=%3$s</string>
     <string name="postDifferent">%1$s?name=%2$s&amp;password=%3$s</string>
@@ -35,6 +36,7 @@
     <string name="_home">home</string>
     <string name="_different">different</string>
     <string name="_hotpoint">hotpoint</string>
+    <string name="_position">position</string>
     <string name="_static">static</string>
     <string name="_play">play</string>
     <string name="_playFlash">playFlash</string>

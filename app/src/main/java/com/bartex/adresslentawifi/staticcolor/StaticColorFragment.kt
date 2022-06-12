@@ -2,6 +2,7 @@ package com.bartex.adresslentawifi.staticcolor
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
+import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.COLOR
@@ -134,8 +136,12 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
             this@StaticColorFragment).start()
     }
     override fun onMessage(message: String) {
-       requireActivity().runOnUiThread {
-           model.updateNameOfEffect(message)
+        try{
+            requireActivity().runOnUiThread {
+                model.updateNameOfEffect(message)
+            }
+        }catch (e:IllegalStateException){
+            Log.d(Constants.TAG, "StaticColorFragment Exception message= $e.message")
         }
     }
 }

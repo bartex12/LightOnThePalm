@@ -1,6 +1,7 @@
 package com.bartex.adresslentawifi
 
 import android.util.Log
+import androidx.fragment.app.activityViewModels
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,14 +17,14 @@ class Server(
     private val client = OkHttpClient()
 
     init {
-        Log.d(TAG, "$baseUrl/$post")
+       // Log.d(TAG, "$baseUrl/$post")
     }
 
 
     override fun run() {
         try {
             val response = client.newCall(request).execute()
-            Log.d(TAG, "Server request = $request")
+            //Log.d(TAG, "Server request = $request")
             //Log.d(TAG, "Server response = $response")
             if(response.isSuccessful){
                 val resultText = response.body()?.string()

@@ -1,4 +1,4 @@
-package com.bartex.adresslentawifi
+package com.bartex.adresslentawifi.flame
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.FLAME_BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.HEIGHT_FLAME
 import com.bartex.adresslentawifi.constants.Constants.SPARK_FLAME
 
-class FlameFragment: Fragment(), Server.MessageListener{
+class FlameFragment: Fragment(), Server.MessageListener {
     private var brightness:String? = "50"
     private var heightFlame:String? = "55"
     private var sparkFlame:String? = "120"
