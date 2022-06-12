@@ -15,19 +15,22 @@ import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.FLAME_BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.HEIGHT_FLAME
 import com.bartex.adresslentawifi.constants.Constants.SPARK_FLAME
+import com.bartex.adresslentawifi.databinding.FragmentFlameBinding
 
 class FlameFragment: Fragment(), Server.MessageListener {
+
+    private var _binding:FragmentFlameBinding? = null
+    private val binding get() = _binding!!
     private var brightness:String? = "50"
     private var heightFlame:String? = "55"
     private var sparkFlame:String? = "120"
-
     private lateinit var baseUrl:String
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
     private lateinit var pref: SharedPreferences
-    private lateinit var seekBarBrFlame:SeekBar
-    private lateinit var seekBarHeightFlame: SeekBar
-    private lateinit var seekBarSparkFlame: SeekBar
+    //private lateinit var seekBarBrFlame:SeekBar
+    //private lateinit var seekBarHeightFlame: SeekBar
+    //private lateinit var seekBarSparkFlame: SeekBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +44,14 @@ class FlameFragment: Fragment(), Server.MessageListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_flame,container, false )
+        _binding = FragmentFlameBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +59,7 @@ class FlameFragment: Fragment(), Server.MessageListener {
 
         pref = requireActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE)
 
-        initView(view)
+        //initView(view)
         getSparkHeightBrightness()
         initSeekBarBrightness()
         initSeekBarHeight()
@@ -59,7 +69,7 @@ class FlameFragment: Fragment(), Server.MessageListener {
     }
 
     private fun initSeekBarSpark() {
-        seekBarSparkFlame.setOnSeekBarChangeListener(
+        binding.seekBarBrFlame.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -72,18 +82,18 @@ class FlameFragment: Fragment(), Server.MessageListener {
     }
 
     private fun getSparkFlame(): String {
-        var sf = seekBarSparkFlame.progress
+        var sf = binding.seekBarSparkFlame.progress
         if (sf < 5) {
             sf = 5
-            seekBarSparkFlame.progress = 5
+            binding.seekBarSparkFlame.progress = 5
         }
         return sf.toString()
     }
 
     private fun initView(view: View) {
-        seekBarBrFlame = view.findViewById(R.id.seekBarBrFlame)
-        seekBarHeightFlame = view.findViewById(R.id.seekBarHightFlame)
-        seekBarSparkFlame = view.findViewById(R.id.seekBarSparkFlame)
+       // seekBarBrFlame = view.findViewById(R.id.seekBarBrFlame)
+        //seekBarHeightFlame = view.findViewById(R.id.seekBarHightFlame)
+        //seekBarSparkFlame = view.findViewById(R.id.seekBarSparkFlame)
     }
 
     override fun onPause() {
@@ -97,15 +107,15 @@ class FlameFragment: Fragment(), Server.MessageListener {
 
     private fun getSparkHeightBrightness() {
         brightness = pref.getString(FLAME_BRIGHTNESS, "50")
-        seekBarBrFlame.progress = Integer.parseInt(brightness!!)
+        binding.seekBarBrFlame.progress = Integer.parseInt(brightness!!)
         heightFlame = pref.getString(HEIGHT_FLAME, "55")
-        seekBarHeightFlame.progress =Integer.parseInt(heightFlame!!)
+        binding.seekBarHightFlame.progress =Integer.parseInt(heightFlame!!)
         sparkFlame = pref.getString(SPARK_FLAME, "120")
-        seekBarSparkFlame.progress =Integer.parseInt(sparkFlame!!)
+        binding.seekBarSparkFlame.progress =Integer.parseInt(sparkFlame!!)
     }
 
     private fun initSeekBarBrightness() {
-        seekBarBrFlame.setOnSeekBarChangeListener(
+        binding.seekBarBrFlame.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -118,16 +128,16 @@ class FlameFragment: Fragment(), Server.MessageListener {
     }
 
     private fun getBrightness(): String {
-        var br = seekBarBrFlame.progress
+        var br = binding.seekBarBrFlame.progress
         if (br < 5) {
             br = 5
-            seekBarBrFlame.progress = 5
+            binding.seekBarBrFlame.progress = 5
         }
         return br.toString()
     }
 
     private fun initSeekBarHeight() {
-        seekBarHeightFlame.setOnSeekBarChangeListener(
+        binding.seekBarHightFlame.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -140,10 +150,10 @@ class FlameFragment: Fragment(), Server.MessageListener {
     }
 
     private fun getHeightFlame(): String {
-        var hf = seekBarHeightFlame.progress
+        var hf = binding.seekBarHightFlame.progress
         if (hf < 5) {
             hf = 5
-            seekBarHeightFlame.progress = 5
+            binding.seekBarHightFlame.progress = 5
         }
         return hf.toString()
     }
