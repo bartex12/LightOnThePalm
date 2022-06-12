@@ -44,7 +44,7 @@
       />
     <fragment
         android:id="@+id/syncroFragment"
-        android:name="com.bartex.adresslentawifi.settings.SyncroFragment"
+        android:name="com.bartex.adresslentawifi.synchro.SynchroFragment"
         android:label="Инструкция по привязке" />
     <fragment
         android:id="@+id/actionFragment"

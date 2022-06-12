@@ -1,4 +1,4 @@
-package com.bartex.adresslentawifi.settings
+package com.bartex.adresslentawifi.synchro
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -31,7 +31,7 @@ import com.bartex.adresslentawifi.constants.Constants.ACTION_NAME
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
-class SyncroFragment:Fragment(), Server.MessageListener {
+class SynchroFragment:Fragment(), Server.MessageListener {
 
     private var wifiList: MutableList<String> = mutableListOf()
     private lateinit var rvWiFi: RecyclerView
@@ -60,7 +60,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionTag = arguments?.getString(ACTION_NAME, "")
-        Log.d(TAG, "SyncroFragment onCreate actionTag = $actionTag")
+        Log.d(TAG, "SynchroFragment onCreate actionTag = $actionTag")
     }
 
     override fun onCreateView(
@@ -68,13 +68,13 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "SyncroFragment onCreateView")
+        Log.d(TAG, "SynchroFragment onCreateView")
         return LayoutInflater.from(container?.context)
             .inflate(R.layout.fragment_syncro, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "SyncroFragment onViewCreated ")
+        Log.d(TAG, "SynchroFragment onViewCreated ")
         initView(view)
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         //Проверяем включен ли WiFi, если нет то включаем
@@ -109,18 +109,18 @@ class SyncroFragment:Fragment(), Server.MessageListener {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "SyncroFragment onResume ")
+        Log.d(TAG, "SynchroFragment onResume ")
         requireActivity().registerReceiver(wifiScanReceiver,intentFilter)
         //проверяем текущую сеть WiFi
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
         isNodeMcu = ssid == Constants.NODE_MCU
         model.updateSSID(ssid)
-        Log.d(TAG, "SyncroFragment onViewCreated ssid =$ssid isNodeMcu =$isNodeMcu")
+        Log.d(TAG, "SynchroFragment onViewCreated ssid =$ssid isNodeMcu =$isNodeMcu")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "SyncroFragment onPause ")
+        Log.d(TAG, "SynchroFragment onPause ")
         requireActivity(). unregisterReceiver(wifiScanReceiver)
     }
 
@@ -227,7 +227,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
         sendNamePassToServerHome.setOnClickListener {
             val name = nameWiFi.text.toString()
             val password = passWiFi.text.toString()
-            Log.d(TAG, "SyncroFragment sendNamePassToServerHome" +
+            Log.d(TAG, "SynchroFragment sendNamePassToServerHome" +
                     "  name = $name password = $password")
             if (name.isNotEmpty()&& password.isNotEmpty()){
                val ip = model.getIpAddress().value
@@ -239,7 +239,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                         Server(
                             getString(R.string.urlHotpoint ),
                             getString(R.string.postHome, getString(R.string._home),name, password),
-                            this@SyncroFragment
+                            this@SynchroFragment
                         ).start()
 
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
@@ -253,7 +253,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                         Server(
                             getString(R.string.baseUrl,ip ),
                             getString(R.string.postHome, getString(R.string._home),name, password),
-                            this@SyncroFragment
+                            this@SynchroFragment
                         ).start()
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
@@ -264,7 +264,7 @@ class SyncroFragment:Fragment(), Server.MessageListener {
                         Server(
                             getString(R.string.baseUrl,ip ),
                             getString(R.string.postLocal, getString(R.string._hotpoint),name, password),
-                            this@SyncroFragment
+                            this@SynchroFragment
                         ).start()
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE

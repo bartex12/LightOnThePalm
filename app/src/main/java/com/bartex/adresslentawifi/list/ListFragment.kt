@@ -44,7 +44,6 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private  lateinit var rvEffects: RecyclerView
     private var nameTag:String? = ""
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
