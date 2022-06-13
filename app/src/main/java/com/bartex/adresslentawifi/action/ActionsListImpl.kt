@@ -10,6 +10,7 @@ class ActionsListImpl(private val application: App) : IActionsList {
     override fun getActionsList(): MutableList<ListOfActions> {
         return mutableListOf(
             ListOfActions(nameOfAction = application.resources.getString(R.string.firstInclusion)),
+            ListOfActions(nameOfAction = application.resources.getString(R.string.reconnecting)),
             ListOfActions(nameOfAction = application.resources.getString(R.string.toDifferent)),
             ListOfActions(nameOfAction = application.resources.getString(R.string.toHome)),
             ListOfActions(nameOfAction = application.resources.getString(R.string.createHotpoint)),

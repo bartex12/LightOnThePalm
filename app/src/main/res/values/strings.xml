@@ -151,11 +151,12 @@
     <string name="prev">Назад</string>
     <string name="next">Вперёд</string>
     <string name="firstInclusion">Привязка к сети WiFi при первом включении</string>
-    <string name="toDifferent">Переключиться на другую сеть WiFi из домашней сети</string>
-    <string name="toHome">Переключиться на домашнюю сеть WiFi из другой сети</string>
-    <string name="createHotpoint">Создать локальную сеть WiFi</string>
-    <string name="toHomeFromLocal">Переключиться на домашнюю сеть WiFi из локальной сети</string>
-    <string name="toDifferentFromLocal">Переключиться на другую сеть WiFi из локальной сети</string>
+    <string name="reconnecting">Повторная привязка к сети WiFi после её пропадания</string>
+    <string name="toDifferent">Привязка к другой сети WiFi из домашней сети</string>
+    <string name="toHome">Привязка к домашней сети WiFi из другой сети</string>
+    <string name="createHotpoint">Создание локальной WiFi сети NodeMCU</string>
+    <string name="toHomeFromLocal">Привязка к домашней сети WiFi из локальной сети</string>
+    <string name="toDifferentFromLocal">Привязка к другой сети WiFi из локальной сети</string>
     <string name="Redmi">Redmi</string>
     <string name="passRedmi">b480192ed5ec</string>
     <string name="ligthOnHand">Свет на ладони</string>

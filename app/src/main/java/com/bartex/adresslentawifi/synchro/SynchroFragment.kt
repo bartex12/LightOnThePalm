@@ -159,7 +159,8 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
         when(actionTag){
             //Привязка к сети WiFi при первом включении
-            getString(R.string.firstInclusion) ->{
+            getString(R.string.firstInclusion),
+            getString(R.string.reconnecting)->{
                 profileHome.visibility = View.GONE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title12)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr1)
@@ -234,6 +235,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
                 when(actionTag){
                     getString(R.string.firstInclusion),
+                    getString(R.string.reconnecting),
                     getString(R.string.toHomeFromLocal),
                     getString(R.string.toDifferentFromLocal)->{
                         Server(
