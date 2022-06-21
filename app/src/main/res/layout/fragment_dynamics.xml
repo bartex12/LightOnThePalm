@@ -6,7 +6,7 @@
     android:background="@color/colorPrimaryDarkBlack">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewBr"
+        android:id="@+id/cardViewBrStat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -60,7 +60,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewBrStat"
+        android:id="@+id/cardViewSpeedStat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -72,7 +72,7 @@
         app:cardElevation="@dimen/cardElevation4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardViewBr">
+        app:layout_constraintTop_toBottomOf="@+id/cardViewBrStat">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -27,41 +27,45 @@ import com.bartex.adresslentawifi.constants.Constants.IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
+import com.bartex.adresslentawifi.databinding.FragmentFlameBinding
+import com.bartex.adresslentawifi.databinding.FragmentListBinding
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
 import java.util.*
 
 class   ListFragment : Fragment(), Server.MessageListener {
 
+    private var _binding:FragmentListBinding? = null
+    private val binding get() = _binding!!
+
     private val listViewModel: ListViewModel by activityViewModels()
     private val model: SharedViewModel by activityViewModels()
     private lateinit var wifiManager: WifiManager
     private lateinit var navController: NavController
-    private  lateinit var tvName: TextView
-    private  lateinit var edIp:EditText
     private lateinit var pref: SharedPreferences
     private var rvAdapter: RvAdapter? = null
-    private  lateinit var rvEffects: RecyclerView
+
     private var nameTag:String? = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_list, container, false)
+        _binding = FragmentListBinding.inflate(inflater, container, false)
+        return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Log.d(TAG, "ListFragment onViewCreated")
+
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
 
-        initViews(view)
         getIp()
         initAdapter()  //иначе при отключенной ленте будет пустой экран
         if (model.isFirstLaunch){
             Log.d(TAG, "ListFragment onViewCreated model.isFirstLaunch")
             //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
             // при включении приложения при работающей ленте
-            Server(getString(R.string.baseUrl, edIp.text.toString()),
+            Server(getString(R.string.baseUrl, binding.edIp.text.toString()),
                 getString(R.string.postPosition, getString(R.string._position)),
                 this@ListFragment).start()
         }
@@ -80,18 +84,31 @@ class   ListFragment : Fragment(), Server.MessageListener {
         //наблюдаем за WIFI_IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
         model.getIpAddress().observe(viewLifecycleOwner, {addressIp->
             Log.d(TAG, "***ListFragment onViewCreated addressIp = $addressIp")
-            if (edIp.text.toString()!=addressIp){
-                edIp.setText(addressIp)
+            if (binding.edIp.text.toString()!=addressIp){
+                binding.edIp.setText(addressIp)
                 Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
             }
         })
         //наблюдаем за SSID и обновляем текстовое поле
         model.getSSID().observe(viewLifecycleOwner,{
-            tvName.text = it
+            binding.tvNameList.text = it
         })
         //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
         setHasOptionsMenu(true)
 }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "ListFragment onPause")
+        if(binding.edIp.text.isNotEmpty()){
+            saveIp(binding.edIp.text.toString())
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     private fun getAdapterPosition():Int {
         val list:List<ListOfEffects>? = rvAdapter?.listOfEffects
@@ -114,18 +131,10 @@ class   ListFragment : Fragment(), Server.MessageListener {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "ListFragment onPause")
-        if(edIp.text.isNotEmpty()){
-            saveIp(edIp.text.toString())
-        }
-    }
-
     private fun getIp(){
         val ip = pref.getString(IP, "")
         if(ip != null){
-            if(ip.isNotEmpty()) edIp.setText(ip)
+            if(ip.isNotEmpty()) binding.edIp.setText(ip)
         }
     }
 
@@ -136,17 +145,11 @@ class   ListFragment : Fragment(), Server.MessageListener {
         model.updateIpAddress(ip)
     }
 
-    private fun initViews(view: View) {
-        rvEffects = view.findViewById(R.id.rv_effects)
-        tvName = view.findViewById(R.id.tvNameList)
-        edIp = view.findViewById(R.id.edIp)
-    }
-
     private fun  initAdapter() {
         Log.d(TAG, "ListFragment initAdapter nameTag = $nameTag")
-        rvEffects.layoutManager = LinearLayoutManager(requireActivity())
+        binding.rvEffects.layoutManager = LinearLayoutManager(requireActivity())
         nameTag?. let{rvAdapter = RvAdapter(it, getOnClickListener())}
-        rvEffects.adapter = rvAdapter
+        binding. rvEffects.adapter = rvAdapter
         listViewModel.getListOfEffects().value?. let{rvAdapter?.listOfEffects = it}
     }
 
@@ -155,7 +158,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
             override fun onClick(item: ListOfEffects) {
                 nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
-                val baseUrl = String.format(getString(R.string.baseUrl), edIp.text.toString())
+                val baseUrl = String.format(getString(R.string.baseUrl), binding.edIp.text.toString())
                 when(item.name){
                     getString(R.string.staticColors) -> {
                         navigateTo(baseUrl,item, getString(R.string._static),R.id.action_listFragment_to_staticColorFragment)
@@ -216,7 +219,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 if (model.isFirstLaunch){
                     val position = getAdapterPosition()
                     Log.d(TAG, "###ListFragment onViewCreated  nameTag= $nameTag position = $position")
-                    rvEffects.scrollToPosition(position)
+                    binding.rvEffects.scrollToPosition(position)
                     model.isNotFirstLaunch() //меняем флаг
                 }
             }

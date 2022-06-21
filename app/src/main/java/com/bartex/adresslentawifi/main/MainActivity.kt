@@ -20,6 +20,8 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
+import com.bartex.adresslentawifi.databinding.ActivityMainBinding
+import com.bartex.adresslentawifi.databinding.AppBarMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
 import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
@@ -40,10 +42,8 @@ import kotlin.text.Charsets.UTF_8
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
+    lateinit var binding:ActivityMainBinding
     private lateinit var navController: NavController
-    private lateinit var toolbar: Toolbar
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navView: NavigationView
     private lateinit var  appBarConfiguration:AppBarConfiguration
     private val model: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
@@ -51,27 +51,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        //Log.d(TAG, "MainActivity onCreate ")
-
-        initViews()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         //находим NavController
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        //пока не понятно как через binding
+        val  toolbar:Toolbar = findViewById(R.id.toolbar)
         //задаём шрифт и размер для title тулбара
         toolbar.setTitleTextAppearance(this, R.style.ToolbarTitleStyle)
         //поддержка экшенбара
         setSupportActionBar(toolbar)
         //отключаем показ заголовка - если будет свой - у нас своего textView нет
         //supportActionBar?.setDisplayShowTitleEnabled(false)
+
         appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
             //Отображать кнопку навигации как гамбургер , когда она не отображается как кнопка вверх
-            .setOpenableLayout(drawerLayout)
+            .setOpenableLayout(binding.drawerLayout)
             .build()
         //обработка событий экшенбара -гамбургер, кнопка вверх
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         //слушатель меню шторки -для обработки пунктов шторки
-        navView.setNavigationItemSelectedListener(this)
+        binding.navView.setNavigationItemSelectedListener(this)
 
         //получаем ip адрес сервера через MQTT
        // getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
@@ -148,12 +150,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
     }
 
-    private fun initViews() {
-        toolbar = findViewById(R.id.toolbar)
-        drawerLayout = findViewById(R.id.drawer_layout)
-        navView = findViewById(R.id.nav_view)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         //Log.d(TAG, "MainActivity onCreateOptionsMenu ")
         menuInflater.inflate(R.menu.main_menu, menu)
@@ -182,7 +178,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //todo
         // Выделяем выбранный пункт меню в шторке
         item.isChecked = true
-        drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return false
     }
 

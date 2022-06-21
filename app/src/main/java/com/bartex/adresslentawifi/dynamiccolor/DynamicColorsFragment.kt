@@ -17,20 +17,21 @@ import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
+import com.bartex.adresslentawifi.databinding.FragmentActionBinding
+import com.bartex.adresslentawifi.databinding.FragmentDynamicsBinding
 
 class DynamicColorsFragment : Fragment(), Server.MessageListener{
+    private var _binding: FragmentDynamicsBinding? = null
+    private val binding get() = _binding!!
 
     private val dynamicColorViewModel: DynamicColorViewModel by activityViewModels()
     private val model: SharedViewModel by activityViewModels()
 
-    private lateinit var baseUrl:String
+    private var baseUrl:String = ""
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
     private var brightness:String? = "50"
     private var speed:String? = "200"
-    private lateinit var seekBarPlayBrightness: SeekBar
-    private lateinit var seekBarPlaySpeed: SeekBar
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,8 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_dynamics,container, false )
+        _binding = FragmentDynamicsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,27 +65,29 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         dynamicColorViewModel.saveSpeedBrightness(nameOfEffect,speed,brightness)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun initViews(view: View) {
-        seekBarPlayBrightness = view.findViewById(R.id.seekBarBrDin)
-        seekBarPlaySpeed = view.findViewById(R.id.seekBarSpDin)
         //если пламя, оставляем только яркость
         if (nameOfEffect == requireActivity().getString(R.string.flame) ){
-            seekBarPlaySpeed.visibility = View.GONE
-            view.findViewById<TextView>(R.id.tvSpDin).visibility = View.GONE
+            binding.cardViewSpeedStat.visibility = View.GONE
         }
     }
 
     private fun getSpeedAndBrightness() {
         speed =  dynamicColorViewModel.getSpeed(nameOfEffect)
-        seekBarPlaySpeed.progress = seekBarPlaySpeed.max - Integer.parseInt(speed!!) //преобразуем шкалу
+        binding.seekBarSpDin.progress = binding.seekBarSpDin.max - Integer.parseInt(speed!!) //преобразуем шкалу
 
         brightness = dynamicColorViewModel.getBrightness(nameOfEffect)
-        seekBarPlayBrightness.progress = Integer.parseInt(brightness!!)
+        binding.seekBarBrDin.progress = Integer.parseInt(brightness!!)
         //Log.d(TAG, "DynamicColorsFragment getSpeedAndBrightness speed= $speed brightness = $brightness")
     }
 
     private fun initSeekBarBrightness() {
-        seekBarPlayBrightness.setOnSeekBarChangeListener(
+        binding.seekBarBrDin.setOnSeekBarChangeListener(
             object : OnSeekBarChangeListener{
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -96,16 +100,16 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     }
 
     private fun getBrightness(): String {
-        var br = seekBarPlayBrightness.progress
+        var br =  binding.seekBarBrDin.progress
         if (br < 5) {
             br = 5
-            seekBarPlayBrightness.progress = 5
+            binding.seekBarBrDin.progress = 5
         }
         return br.toString()
     }
 
     private fun initSeekBarSpeed() {
-       seekBarPlaySpeed.setOnSeekBarChangeListener(
+        binding.seekBarSpDin.setOnSeekBarChangeListener(
             object : OnSeekBarChangeListener{
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -126,10 +130,10 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     }
 
     private fun getSpeed(): String {
-        var sp =seekBarPlaySpeed.max - seekBarPlaySpeed.progress
+        var sp =binding.seekBarSpDin.max - binding.seekBarSpDin.progress
         if (sp < 5) {
             sp = 5
-            seekBarPlaySpeed.progress = seekBarPlaySpeed.max - 5
+            binding.seekBarSpDin.progress = binding.seekBarSpDin.max - 5
         }
         return sp.toString()
     }

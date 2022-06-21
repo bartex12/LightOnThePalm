@@ -14,16 +14,17 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.ActionAdapter
 import com.bartex.adresslentawifi.constants.Constants
+import com.bartex.adresslentawifi.databinding.FragmentActionBinding
 import com.bartex.adresslentawifi.entity.ListOfActions
 
 class ActionFragment : Fragment(){
+    private var _binding: FragmentActionBinding? = null
+    private val binding get() = _binding!!
+
     private val listViewModel: ActionViewModel by activityViewModels()
     private lateinit var navController: NavController
-    private  lateinit var rvActions: RecyclerView
-    private  lateinit var tvName: TextView
     private var rvAdapter: ActionAdapter? = null
     private var nameTag:String = ""
 
@@ -32,8 +33,9 @@ class ActionFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(Constants.TAG, "ActionFragment onCreateView")
-        return inflater.inflate(R.layout.fragment_action, container, false)
+        //Log.d(Constants.TAG, "ActionFragment onCreateView")
+        _binding = FragmentActionBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,27 +43,26 @@ class ActionFragment : Fragment(){
         Log.d(Constants.TAG, "ActionFragment onViewCreated")
 
         navController = Navigation.findNavController(view)
-        initViews(view)
         initAdapter()
         listViewModel.loadData()
         listViewModel.getListOfActions().observe(this, {
             renderData(it)
         })
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun renderData(data: List<ListOfActions>?) {
         data?. let{ rvAdapter?.listOfActions = it}
     }
 
-    private fun initViews(view: View) {
-        rvActions = view.findViewById(R.id.rv_action)
-        tvName = view.findViewById(R.id.tvNameAction)
-        tvName.text = getString(R.string.chooseAction)
-    }
-
     private fun  initAdapter() {
-        rvActions.layoutManager = LinearLayoutManager(requireActivity())
+        binding.rvAction.layoutManager = LinearLayoutManager(requireActivity())
         rvAdapter = ActionAdapter(nameTag, getOnClickListener())
-        rvActions.adapter = rvAdapter
+        binding.rvAction.adapter= rvAdapter
     }
 
     private fun getOnClickListener(): ActionAdapter.OnActionClickListener =

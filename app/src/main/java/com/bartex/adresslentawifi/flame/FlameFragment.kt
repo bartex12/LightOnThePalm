@@ -21,6 +21,7 @@ class FlameFragment: Fragment(), Server.MessageListener {
 
     private var _binding:FragmentFlameBinding? = null
     private val binding get() = _binding!!
+
     private var brightness:String? = "50"
     private var heightFlame:String? = "55"
     private var sparkFlame:String? = "120"
