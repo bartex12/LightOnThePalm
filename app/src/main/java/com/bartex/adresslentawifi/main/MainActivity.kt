@@ -199,18 +199,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Toast.LENGTH_SHORT ).show()
             }
         }
-        if (requestCode == 110) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, resources.getString(R.string.permission),
-                    Toast.LENGTH_SHORT).show()
-                //повторный вызов onCreate
-                recreate()
-            }else {
-                Toast.makeText(this, resources.getString(R.string.notPermission),
-                    Toast.LENGTH_SHORT ).show()
-            }
-        }
     }
 
 }

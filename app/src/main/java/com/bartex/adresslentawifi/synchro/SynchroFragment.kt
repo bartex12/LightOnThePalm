@@ -86,14 +86,20 @@ class SynchroFragment:Fragment(), Server.MessageListener {
             override fun onReceive(context: Context, intent: Intent) {
                 val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
                 if (success) {
-                    // обрабатываем успех
-                    scanSuccess()
+                    scanSuccess()  // обрабатываем успех
                 } else {
-                    // обрабатываем неудачу
-                    scanFailure()
+                    scanFailure()  // обрабатываем неудачу
                 }
             }
         }
+        //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
+        setHasOptionsMenu(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "SynchroFragment onResume ")
+
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
         requireActivity().registerReceiver(wifiScanReceiver,intentFilter)
         val success = wifiManager.startScan()
@@ -103,14 +109,6 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         }
         tvInfo.text = getString(R.string.StartScan)
 
-        //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
-        setHasOptionsMenu(true)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "SynchroFragment onResume ")
-        requireActivity().registerReceiver(wifiScanReceiver,intentFilter)
         //проверяем текущую сеть WiFi
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
         isNodeMcu = ssid == Constants.NODE_MCU

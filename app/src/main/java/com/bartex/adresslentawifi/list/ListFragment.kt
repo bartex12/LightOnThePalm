@@ -50,7 +50,6 @@ class   ListFragment : Fragment(), Server.MessageListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,8 +68,8 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 getString(R.string.postPosition, getString(R.string._position)),
                 this@ListFragment).start()
         }
-        updateSSID()
 
+        updateSSID()
         //следим за изменением заголовка тулбара и показываем новый заголовок
         listViewModel.getToolbarTitle().observe(this, {
             (activity as MainActivity).supportActionBar?.title = it

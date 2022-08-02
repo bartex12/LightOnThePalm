@@ -53,10 +53,10 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
         private val imageRound: ImageView = view.findViewById(R.id.iv_round_dis)
         private val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
 
-        fun bind(itemView: ListOfEffects){
+        fun bind(item: ListOfEffects){
             //Log.d(TAG, "RvAdapter ViewHolder bind: nameTag = $nameTag")
-            name.text = itemView.name
-            triangle.tag = itemView.name
+            name.text = item.name
+            triangle.tag = item.name
 
             when(triangle.tag == nameTag){
                 true -> {
@@ -70,13 +70,13 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
             }
 
             Picasso.get()
-                .load(itemView.icon)
+                .load(item.icon)
                 .placeholder(R.drawable.trio_200)
                 .error(R.drawable.mistake)
                 .into(imageRound)
 
-            this.itemView.setOnClickListener {
-                listener.onClick(itemView)
+            itemView.setOnClickListener {
+                listener.onClick(item)
             }
         }
     }
