@@ -88,7 +88,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
                 if (success) {
                     scanSuccess()  // обрабатываем успех
                 } else {
-                    scanFailure()  // обрабатываем неудачу
+                    scanFailure()  // обрабатываем неудачуЫн
                 }
             }
         }
