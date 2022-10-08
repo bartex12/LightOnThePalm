@@ -8,8 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -17,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
@@ -27,11 +24,10 @@ import com.bartex.adresslentawifi.constants.Constants.IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
-import com.bartex.adresslentawifi.databinding.FragmentFlameBinding
 import com.bartex.adresslentawifi.databinding.FragmentListBinding
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
-import java.util.*
+
 
 class   ListFragment : Fragment(), Server.MessageListener {
 
@@ -39,8 +35,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private val binding get() = _binding!!
 
     private val listViewModel: ListViewModel by activityViewModels()
-    private val model: SharedViewModel by activityViewModels()
-    private lateinit var wifiManager: WifiManager
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var navController: NavController
     private lateinit var pref: SharedPreferences
     private var rvAdapter: RvAdapter? = null
@@ -49,7 +44,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding.root  //fragment_list
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,10 +53,11 @@ class   ListFragment : Fragment(), Server.MessageListener {
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
 
-        getIp()
+        getIp()  //получаем ip адрес из преференсис - если лента выключена, будет старый сохранённый ip
+
         initAdapter()  //иначе при отключенной ленте будет пустой экран
-        if (model.isFirstLaunch){
-            Log.d(TAG, "ListFragment onViewCreated model.isFirstLaunch")
+        if (sharedViewModel.isFirstLaunch){
+            Log.d(TAG, "ListFragment onViewCreated sharedViewModel.isFirstLaunch")
             //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
             // при включении приложения при работающей ленте
             Server(getString(R.string.baseUrl, binding.edIp.text.toString()),
@@ -69,29 +65,30 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 this@ListFragment).start()
         }
 
-        updateSSID()
+        updateSSID() //получаем название wifi сети от wifiManager
+
         //следим за изменением заголовка тулбара и показываем новый заголовок
-        listViewModel.getToolbarTitle().observe(this, {
+        listViewModel.getToolbarTitle().observe(viewLifecycleOwner) {
             (activity as MainActivity).supportActionBar?.title = it
-        })
+        }
         //следим за тем, что пришло от сервера и передаём в адаптер
         //чтобы выставить правильный указатель при включении приложения при работающей ленте
-        model.getNameOfEffect().observe(viewLifecycleOwner, { newTag ->
+        sharedViewModel.getNameOfEffect().observe(viewLifecycleOwner) { newTag ->
             nameTag = newTag
-        })
+        }
 
         //наблюдаем за WIFI_IP адресом, который получаем от ESP через MQTT сервер broker.hivemq.com
-        model.getIpAddress().observe(viewLifecycleOwner, {addressIp->
+        sharedViewModel.getIpAddress().observe(viewLifecycleOwner) { addressIp ->
             Log.d(TAG, "***ListFragment onViewCreated addressIp = $addressIp")
-            if (binding.edIp.text.toString()!=addressIp){
+            if (binding.edIp.text.toString() != addressIp) {
                 binding.edIp.setText(addressIp)
                 Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
             }
-        })
+        }
         //наблюдаем за SSID и обновляем текстовое поле
-        model.getSSID().observe(viewLifecycleOwner,{
+        sharedViewModel.getSSID().observe(viewLifecycleOwner) {
             binding.tvNameList.text = it
-        })
+        }
         //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
         setHasOptionsMenu(true)
 }
@@ -109,6 +106,25 @@ class   ListFragment : Fragment(), Server.MessageListener {
         _binding = null
     }
 
+    override fun onMessage(message: String) {
+        //сюда попадаем 1 раз - при первом включении - для установки позиции адаптера
+        try {
+            requireActivity().runOnUiThread {
+                Log.d(TAG, "*****ListFragment onMessage message= $message")
+                sharedViewModel.updateNameOfEffect(message)
+                initAdapter()
+                if (sharedViewModel.isFirstLaunch){
+                    val position = getAdapterPosition()
+                    Log.d(TAG, "###ListFragment onViewCreated  nameTag= $nameTag position = $position")
+                    binding.rvEffects.scrollToPosition(position)
+                    sharedViewModel.isNotFirstLaunch() //меняем флаг
+                }
+            }
+        } catch (e:IllegalStateException){
+            Log.d(TAG, "ListFragment Exception message= ${e.message}")
+        }
+    }
+
     private fun getAdapterPosition():Int {
         val list:List<ListOfEffects>? = rvAdapter?.listOfEffects
         list?. let{
@@ -122,13 +138,62 @@ class   ListFragment : Fragment(), Server.MessageListener {
     }
 
     private fun updateSSID() {
-        wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
+       val  wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-        model.updateSSID(ssid)
-        if (ssid == getString(R.string.localNetworkName)){
-        model.updateIpAddress(getString(R.string.hotpointIp))
+        Log.d(TAG, "ListFragment updateSSID ssid= $ssid")
+        when (ssid) {
+            getString(R.string.localNetworkName) -> {
+                sharedViewModel.updateSSID(ssid)
+                sharedViewModel.updateIpAddress(getString(R.string.hotpointIp))
+            }
+            getString(R.string.unknownSsid) -> {
+                sharedViewModel.updateSSID(getString(R.string.wf_network))
+            }
+            else -> {
+                sharedViewModel.updateSSID(ssid)
+            }
         }
     }
+
+//    fun aa(){
+//        val wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager?
+//
+//        val wifiInfo: WifiInfo = wifiManager!!.connectionInfo
+//        if (wifiInfo.supplicantState == SupplicantState.COMPLETED) {
+//            val ssid = wifiInfo.ssid
+//        }
+//    }
+//
+
+//    private fun updateSSID_NO () {
+//        val request = NetworkRequest.Builder()
+//            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+//            .build()
+//
+//        val connManager = requireActivity().getSystemService(ConnectivityManager::class.java)
+//        connManager.requestNetwork(request, object : ConnectivityManager.NetworkCallback() {
+//            override fun onCapabilitiesChanged(
+//                network: Network,
+//                networkCapabilities: NetworkCapabilities
+//            ) {
+//                var ssid = getString(R.string.wf_network)
+//                val transportInfo = networkCapabilities.transportInfo
+//                transportInfo?. let{
+//                    val wifiInfo = networkCapabilities.transportInfo as WifiInfo
+//                    ssid = wifiInfo.ssid
+//                    Log.d(TAG, "ListFragment updateSSID in ssid= $ssid")
+//                }
+//                requireActivity().runOnUiThread {
+//                    sharedViewModel.updateSSID(ssid)
+//                    if (ssid == getString(R.string.localNetworkName)){
+//                        sharedViewModel.updateIpAddress(getString(R.string.hotpointIp))
+//                    }
+//                }
+//                Log.d(TAG, "ListFragment updateSSID after ssid= $ssid")
+//            }
+//        })
+//
+//    }
 
     private fun getIp(){
         val ip = pref.getString(IP, "")
@@ -141,7 +206,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
         val editor = pref.edit()
         editor.putString(IP, ip)
         editor.apply()
-        model.updateIpAddress(ip)
+        sharedViewModel.updateIpAddress(ip)
     }
 
     private fun  initAdapter() {
@@ -208,22 +273,4 @@ class   ListFragment : Fragment(), Server.MessageListener {
         navController.navigate(frag, bundle)
     }
 
-    override fun onMessage(message: String) {
-        //сюда попадаем 1 раз - при первом включении - для установки позиции адаптера
-        try {
-            requireActivity().runOnUiThread {
-                Log.d(TAG, "*****ListFragment onMessage message= $message")
-                model.updateNameOfEffect(message)
-                initAdapter()
-                if (model.isFirstLaunch){
-                    val position = getAdapterPosition()
-                    Log.d(TAG, "###ListFragment onViewCreated  nameTag= $nameTag position = $position")
-                    binding.rvEffects.scrollToPosition(position)
-                    model.isNotFirstLaunch() //меняем флаг
-                }
-            }
-            } catch (e:IllegalStateException){
-                Log.d(TAG, "ListFragment Exception message= $e.message")
-            }
-        }
     }

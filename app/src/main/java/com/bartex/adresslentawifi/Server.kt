@@ -17,8 +17,8 @@ class Server(
     private val client = OkHttpClient()
 
     init {
-       // Log.d(TAG, "$baseUrl/$post")
-    }
+    // Log.d(TAG, "$baseUrl/$post")
+      }
 
 
     override fun run() {

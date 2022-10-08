@@ -80,7 +80,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         getIpFromMqtt(MqttHive().client, MqttHive().connection, getString(R.string.topic_user_bartex_test_hive))
         //запрашиваем разрешение на определение местоположения
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 100)
+            requestPermissions(arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.ACCESS_NETWORK_STATE), 100)
         }
     }
 
@@ -188,8 +192,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == 100) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED){
+//            if ((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+//                        == PackageManager.PERMISSION_GRANTED)
+//            ){
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)  {
                 Toast.makeText(this, resources.getString(R.string.permission),
                     Toast.LENGTH_SHORT).show()
                 //повторный вызов onCreate

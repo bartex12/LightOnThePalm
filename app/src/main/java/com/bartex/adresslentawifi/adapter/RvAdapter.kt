@@ -17,9 +17,7 @@ import com.squareup.picasso.Picasso
 
 class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
 
-    init {
-        Log.d(TAG, "RvAdapter init nameTag = $nameTag")
-    }
+    init { Log.d(TAG, "RvAdapter init nameTag = $nameTag")}
 
     var listOfEffects:List<ListOfEffects> = listOf()
     set(value) {

@@ -32,10 +32,10 @@ class ActionFragment : Fragment(){
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         //Log.d(Constants.TAG, "ActionFragment onCreateView")
         _binding = FragmentActionBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding.root //fragment_action
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

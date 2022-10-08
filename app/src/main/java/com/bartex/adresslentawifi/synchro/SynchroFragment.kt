@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.ScanResult
+import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
@@ -30,6 +31,7 @@ import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.ACTION_NAME
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+
 
 class SynchroFragment:Fragment(), Server.MessageListener {
 
@@ -85,10 +87,11 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         wifiScanReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
+                Log.d(TAG, "SynchroFragment onViewCreated onReceive success =$success")
                 if (success) {
                     scanSuccess()  // обрабатываем успех
                 } else {
-                    scanFailure()  // обрабатываем неудачуЫн
+                    scanFailure()  // обрабатываем неудачу
                 }
             }
         }
@@ -113,7 +116,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
         isNodeMcu = ssid == Constants.NODE_MCU
         model.updateSSID(ssid)
-        Log.d(TAG, "SynchroFragment onViewCreated ssid =$ssid isNodeMcu =$isNodeMcu")
+        Log.d(TAG, "SynchroFragment onResume ssid =$ssid isNodeMcu =$isNodeMcu")
     }
 
     override fun onPause() {
@@ -287,6 +290,16 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         "Доступно WiFi сетей:  ${results.size}".also { tvInfo.text = it }
         Log.d(TAG, "scanSuccess: results size = ${results.size}")
 
+        val listOfConfigurations: List<WifiConfiguration> = wifiManager.getConfiguredNetworks()
+        val info = wifiManager.connectionInfo
+        //val qq =info.ssid
+        for (index in listOfConfigurations.indices) {
+            val configuration = listOfConfigurations[index]
+            if (configuration.networkId == info.networkId) {
+                Log.d(TAG, "scanSuccess: имя текущей сети = ${configuration.SSID}")
+            }
+        }
+
         wifiList.clear() // чтобы при обновлении не накапливалось
         for (i in results.indices) {
             val ssid = results[i].SSID.toString()
@@ -305,7 +318,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         // consider using old scan results: these are the OLD results!
         val results = wifiManager.scanResults
         //... potentially use older scan results ...
-        Log.d(TAG, "scanFailure ")
+        Log.d(TAG, "SynchroFragment scanFailure results = $results")
     }
 
     private fun enableWifi() {

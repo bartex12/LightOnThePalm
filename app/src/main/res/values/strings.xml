@@ -162,4 +162,6 @@
     <string name="ligthOnHand">Свет на ладони</string>
     <string name="you_net">Введите имя своей WiFi сети</string>
     <string name="you_net_pass">Введите пароль своей WiFi сети</string>
+    <string name="wf_network">Адрес в WiFi сети</string>
+    <string name="unknownSsid"><![CDATA[<unknown ssid>]]></string>
 </resources>

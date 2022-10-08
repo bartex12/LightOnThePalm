@@ -67,9 +67,9 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
         sendMessageToServer()
 
         viewModel.loadStaticColors()
-        viewModel.getStaticColors().observe(this, {
+        viewModel.getStaticColors().observe(viewLifecycleOwner) {
             renderData(it)
-        })
+        }
     }
 
     override fun onPause() {
