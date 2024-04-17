@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimaryDarkBlack">
 
     <TextView
@@ -30,5 +31,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameAction" />
+        app:layout_constraintTop_toBottomOf="@+id/tvNameAction"
+        tools:listitem="@layout/item_list_actions"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

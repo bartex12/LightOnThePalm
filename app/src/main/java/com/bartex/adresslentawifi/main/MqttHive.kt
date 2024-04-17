@@ -8,19 +8,21 @@ import java.util.concurrent.CompletableFuture
 
 class MqttHive {
     //Создание клиента
-    val client: Mqtt3AsyncClient = MqttClient.builder()
-        .useMqttVersion3()
-        .identifier(UUID.randomUUID().toString())
-        .serverHost("broker.hivemq.com")
-        .serverPort(1883)
-        .buildAsync()
+    val client: Mqtt3AsyncClient =
+        MqttClient.builder()
+             .useMqttVersion3()
+             .identifier(UUID.randomUUID().toString())
+             .serverHost("broker.hivemq.com")
+             .serverPort(1883)
+             .buildAsync()
     //Подключение к брокеру
-    val connection:CompletableFuture<Mqtt3ConnAck> = client.connectWith()
-        .simpleAuth()
-        .username("bartex")
-        .password("Kukamon@1".toByteArray())
-        .applySimpleAuth()
-        .send()
+    val connection:CompletableFuture<Mqtt3ConnAck> =
+        client.connectWith()
+            .simpleAuth()
+            .username("bartex")
+            .password("Kukamon@1".toByteArray())
+            .applySimpleAuth()
+            .send()
     //это перенесено в mainActivity
 //           .whenComplete { connAck: Mqtt3ConnAck?, throwable: Throwable? ->
 //                if (throwable != null) {

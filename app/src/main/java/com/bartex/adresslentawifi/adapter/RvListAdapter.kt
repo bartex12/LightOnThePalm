@@ -15,9 +15,9 @@ import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.squareup.picasso.Picasso
 
-class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerView.Adapter<RvAdapter.ViewHolder>() {
+class RvListAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerView.Adapter<RvListAdapter.ViewHolder>() {
 
-    init { Log.d(TAG, "RvAdapter init nameTag = $nameTag")}
+    init { Log.d(TAG, "RvListAdapter init nameTag = $nameTag")}
 
     var listOfEffects:List<ListOfEffects> = listOf()
     set(value) {
@@ -31,7 +31,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //Log.d(TAG, "RvAdapter onCreateViewHolder: nameTag = $nameTag")
+        //Log.d(TAG, "RvListAdapter onCreateViewHolder: nameTag = $nameTag")
         context =parent.context
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list_effects,parent, false )
         return ViewHolder(view)
@@ -52,7 +52,7 @@ class RvAdapter(val nameTag:String, val listener: OnItemClickListener):RecyclerV
         private val clList: ConstraintLayout = view.findViewById(R.id.cl_list)
 
         fun bind(item: ListOfEffects){
-            //Log.d(TAG, "RvAdapter ViewHolder bind: nameTag = $nameTag")
+            //Log.d(TAG, "RvListAdapter ViewHolder bind: nameTag = $nameTag")
             name.text = item.name
             triangle.tag = item.name
 

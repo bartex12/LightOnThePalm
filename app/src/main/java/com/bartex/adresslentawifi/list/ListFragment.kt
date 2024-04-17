@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
-import com.bartex.adresslentawifi.adapter.RvAdapter
+import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
@@ -38,7 +38,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var navController: NavController
     private lateinit var pref: SharedPreferences
-    private var rvAdapter: RvAdapter? = null
+    private var rvAdapter: RvListAdapter? = null
 
     private var nameTag:String? = ""
 
@@ -65,7 +65,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 this@ListFragment).start()
         }
 
-        updateSSID() //получаем название wifi сети от wifiManager
+        updateSSIDandIP() //получаем название wifi сети от wifiManager
 
         //следим за изменением заголовка тулбара и показываем новый заголовок
         listViewModel.getToolbarTitle().observe(viewLifecycleOwner) {
@@ -137,7 +137,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
         return -1
     }
 
-    private fun updateSSID() {
+    private fun updateSSIDandIP() {
        val  wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
         Log.d(TAG, "ListFragment updateSSID ssid= $ssid")
@@ -212,13 +212,13 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private fun  initAdapter() {
         Log.d(TAG, "ListFragment initAdapter nameTag = $nameTag")
         binding.rvEffects.layoutManager = LinearLayoutManager(requireActivity())
-        nameTag?. let{rvAdapter = RvAdapter(it, getOnClickListener())}
+        nameTag?. let{rvAdapter = RvListAdapter(it, getOnClickListener())}
         binding. rvEffects.adapter = rvAdapter
         listViewModel.getListOfEffects().value?. let{rvAdapter?.listOfEffects = it}
     }
 
-    private fun getOnClickListener(): RvAdapter.OnItemClickListener =
-        object : RvAdapter.OnItemClickListener{
+    private fun getOnClickListener(): RvListAdapter.OnItemClickListener =
+        object : RvListAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
                 nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
