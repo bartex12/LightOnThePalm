@@ -50,6 +50,8 @@
     <string name="_northernLights">northernLights</string>
     <string name="_runningLights">runningLights</string>
     <string name="_test">test</string>
+    <string name="_ssid">ssid</string>
+
 
     <string name="_1"> #FF0000</string>//Red
     <string name="_2"> #FF4500</string>//OrangeRed

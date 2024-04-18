@@ -1,7 +1,10 @@
 package com.bartex.adresslentawifi.main
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.net.nsd.NsdManager
+import android.net.nsd.NsdServiceInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -18,17 +20,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.SharedViewModel
-import com.bartex.adresslentawifi.constants.Constants
-import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.databinding.ActivityMainBinding
-import com.bartex.adresslentawifi.databinding.AppBarMainBinding
 import com.google.android.material.navigation.NavigationView
-import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
-import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck
-import java.io.File
-import java.util.concurrent.CompletableFuture
 
-import kotlin.text.Charsets.UTF_8
 //управление адресной лентой через NodeMCU с WiFi в режиме STA и AT
 //две библиотеки, + режим STA через параметры достаём цвет, яркость, скорость, количество точек
 //в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
@@ -43,9 +37,17 @@ import kotlin.text.Charsets.UTF_8
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
+    companion object {
+        const val TAG = "33333"
+        const val SERVICE_TYPE = "_http._tcp"
+    }
+
     lateinit var binding:ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var  appBarConfiguration:AppBarConfiguration
+    val espName:String = "esp8266"
+    lateinit var nsdManager: NsdManager
+
     private val model: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
     }
@@ -56,6 +58,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = binding.root
         setContentView(view)
 
+        //определяем NsdManager менеджер
+        nsdManager = (getSystemService(Context.NSD_SERVICE) as NsdManager)
         //находим NavController
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         //пока не понятно как через binding
@@ -76,9 +80,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //слушатель меню шторки -для обработки пунктов шторки
         binding.navView.setNavigationItemSelectedListener(this)
 
-        //получаем ip адрес сервера через MQTT
-       // getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
-        getIpFromMqtt(MqttHive().client, MqttHive().connection, getString(R.string.topic_user_bartex_test_hive))
         //запрашиваем разрешение на определение местоположения
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(
@@ -89,79 +90,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        nsdManager.stopServiceDiscovery(discoveryListener)
+    }
+
     override fun onDestroy() {
+        nsdManager.stopServiceDiscovery(discoveryListener)
         super.onDestroy()
-        disconnectMqtt( MqttHive().client)
+
     }
 
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
     // в иерархии действий приложения из панели действий (экшенбара)
     override fun onSupportNavigateUp(): Boolean {
-       // Log.d(TAG, "MainActivity onSupportNavigateUp ")
-        if (navController.currentDestination?.id ==  R.id.syncroFragment){
-            // после перехода из фрагмента синхронизации перезапускаем связь с Mqtt сервером
-            //иначе он сам не перезапустится - а почему он встаёт?
-           //getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
-            getIpFromMqtt(MqttHive().client, MqttHive().connection, getString(R.string.topic_user_bartex_test_hive))
-        }
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 ||super.onSupportNavigateUp()
     }
 
-    private fun disconnectMqtt(client: Mqtt3AsyncClient){
-        client.disconnect()
-            .whenComplete { cl, e ->
-                if (e != null) {
-                    // Handle failure to subscribe
-                    Log.d(TAG, "MainActivity onDestroy: e = ${e.message} ")
-                } else {
-                    // Handle successful subscription, e.g. logging or incrementing a metric
-                    Log.d(TAG, "MainActivity onDestroy: cl = $cl ")
-                }
-            }
-    }
-
-    private fun getIpFromMqtt(client: Mqtt3AsyncClient, connection: CompletableFuture<Mqtt3ConnAck>, topicFilter:String ){
-        connection.whenComplete { _, error ->
-                if (error != null) {
-                    // Обрабатываем ошибку подключения
-                    Log.d(TAG, "MainActivity onCreate: throwable.conn = ${error.message} ")
-                    //если в локальной сети - будет повторяться снова и снова
-                    if (model.getSSID().value != Constants.NODE_MCU){
-                        //если нет соединения со стороны ESP , будет повторяться снова и снова
-                        //getIpFromMqtt(MqttBy().client, MqttBy().connection, getString(R.string.topic_user_bartex_test))
-                    }
-                } else {
-                    // подключение успешно -> можно подписаться на топик testtt или опубликовать что то
-                    client.subscribeWith()
-                        .topicFilter(topicFilter)
-                        .callback { publish ->
-                            val addressIp = String(publish.payloadAsBytes, UTF_8)
-                            // Обрабатываем принятое сообщение
-                            //Log.d(TAG, "***MainActivity onCreate: topic = ${publish.topic} ip = $addressIp\n")
-                            runOnUiThread {
-                                model.updateIpAddress(addressIp)
-                            }
-                        }
-                        .send()
-                        .whenComplete { _, err ->
-                            if (err != null) {
-                                // Обрабатываем ошибку подписки
-                                Log.d(TAG, "MainActivity onCreate: throwable = ${err.message} ")
-                            }
-                        }
-                }
-            }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //Log.d(TAG, "MainActivity onCreateOptionsMenu ")
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-       // Log.d(TAG, "MainActivity onPrepareOptionsMenu ")
         menu?.findItem(R.id.sync)?.isVisible =
             navController.currentDestination?.id ==  R.id.listFragment
 
@@ -169,9 +126,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //Log.d(TAG, "MainActivity onOptionsItemSelected ")
         when(item.itemId){
-           //R.id.sync -> navController.navigate(R.id.action_listFragment_to_syncroFragment)
             R.id.sync -> navController.navigate(R.id.action_listFragment_to_actionFragment)
         }
         return super.onOptionsItemSelected(item)
@@ -203,6 +158,63 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }else {
                 Toast.makeText(this, resources.getString(R.string.notPermission),
                     Toast.LENGTH_SHORT ).show()
+            }
+        }
+    }
+
+    // Instantiate a new DiscoveryListener
+    private val discoveryListener = object : NsdManager.DiscoveryListener {
+        // Called as soon as service discovery begins.
+        override fun onDiscoveryStarted(regType: String) {
+            Log.d(TAG, "Service discovery started")
+        }
+        override fun onServiceFound(service: NsdServiceInfo) {
+            // A service was found! Do something with it.
+            Log.d(TAG, "Service discovery success   $service")
+            if (service.serviceName.contains(espName)){
+                Log.d(TAG, "serviceName.contains(\"esp8266\")")
+                nsdManager.resolveService(service, resolveListener)
+            }
+        }
+        override fun onServiceLost(service: NsdServiceInfo) {
+            // When the network service is no longer available.
+            // Internal bookkeeping code goes here.
+            Log.d(TAG, "service lost: $service")
+            Log.d(TAG, "-----------------------")
+            runOnUiThread {model.updateIpAddress("*.*.*.*") }
+        }
+        override fun onDiscoveryStopped(serviceType: String) {
+            Log.d(TAG, "Discovery stopped: $serviceType")
+            Log.d(TAG, "-----------------------")
+            runOnUiThread {model.updateIpAddress("*.*.*.*") }
+        }
+        override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+            Log.d(TAG, "Discovery failed: Error code:$errorCode")
+            nsdManager.stopServiceDiscovery(this)
+        }
+        override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+            Log.d(TAG, "Discovery failed: Error code:$errorCode")
+            Log.d(TAG, "-----------------------")
+            nsdManager.stopServiceDiscovery(this)
+        }
+    }
+
+    private val resolveListener = object : NsdManager.ResolveListener {
+        override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+            // Called when the resolve fails. Use the error code to debug.
+            Log.d(TAG, "Resolve failed: $errorCode")
+        }
+        override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+            Log.d(TAG, "Resolve Succeeded. $serviceInfo")
+            val port: Int = serviceInfo.port
+            val ip: String? = serviceInfo.host.hostAddress
+            val serviceName = serviceInfo.serviceName
+           val attr = serviceInfo.attributes
+            Log.d(TAG, "port = $port ip = $ip serviceName = $serviceName   attr = $attr")
+            Log.d(TAG, "-----------------------")
+
+            runOnUiThread {
+                ip?.let { model.updateIpAddress(it)}
             }
         }
     }

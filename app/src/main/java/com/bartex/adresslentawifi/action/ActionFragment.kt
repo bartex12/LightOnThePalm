@@ -5,14 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.adapter.ActionAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -45,9 +43,9 @@ class ActionFragment : Fragment(){
         navController = Navigation.findNavController(view)
         initAdapter()
         listViewModel.loadData()
-        listViewModel.getListOfActions().observe(this, {
+        listViewModel.getListOfActions().observe(viewLifecycleOwner) {
             renderData(it)
-        })
+        }
     }
 
     override fun onDestroyView() {

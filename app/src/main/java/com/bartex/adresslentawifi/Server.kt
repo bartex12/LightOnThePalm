@@ -1,7 +1,6 @@
 package com.bartex.adresslentawifi
 
 import android.util.Log
-import androidx.fragment.app.activityViewModels
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,10 +15,9 @@ class Server(
     private var request: Request = Request.Builder().url("${baseUrl.trim()}/$post").build()
     private val client = OkHttpClient()
 
-    init {
-    // Log.d(TAG, "$baseUrl/$post")
-      }
-
+    interface MessageListener{
+        fun onMessage(message:String)
+    }
 
     override fun run() {
         try {
@@ -35,8 +33,4 @@ class Server(
             Log.d(TAG, "Server IOException = ${i.message}")
         }
     }
-    interface MessageListener{
-        fun onMessage(message:String)
-    }
-
 }

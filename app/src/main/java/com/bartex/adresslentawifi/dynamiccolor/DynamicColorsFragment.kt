@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bartex.adresslentawifi.R
@@ -17,7 +16,6 @@ import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
-import com.bartex.adresslentawifi.databinding.FragmentActionBinding
 import com.bartex.adresslentawifi.databinding.FragmentDynamicsBinding
 
 class DynamicColorsFragment : Fragment(), Server.MessageListener{
@@ -44,7 +42,7 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDynamicsBinding.inflate(inflater, container, false)
         return binding.root
     }
