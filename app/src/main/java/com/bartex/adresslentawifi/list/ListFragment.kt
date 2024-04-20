@@ -3,6 +3,8 @@ package com.bartex.adresslentawifi.list
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.net.nsd.NsdManager
+import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +34,10 @@ import com.bartex.adresslentawifi.main.MainActivity
 
 class   ListFragment : Fragment(), Server.MessageListener {
 
+    companion object {
+        const val SERVICE_TYPE = "_http._tcp"
+    }
+
     private var _binding:FragmentListBinding? = null
     private val binding get() = _binding!!
 
@@ -40,8 +46,10 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private lateinit var navController: NavController
     private lateinit var pref: SharedPreferences
     private var rvAdapter: RvListAdapter? = null
-
     private var nameTag:String? = ""
+
+    val espName:String = "esp8266"
+    lateinit var nsdManager: NsdManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "@@@ListFragment onCreateView")
@@ -55,18 +63,21 @@ class   ListFragment : Fragment(), Server.MessageListener {
 
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
+        //определяем NsdManager менеджер
+        nsdManager = requireActivity().getSystemService(Context.NSD_SERVICE) as NsdManager
 
         getIp()  //получаем ip адрес из преференсис - если лента выключена, будет старый сохранённый ip
 
         initAdapter()  //иначе при отключенной ленте будет пустой экран
-        if (sharedViewModel.isFirstLaunch){
-            Log.d(TAG, "ListFragment onViewCreated sharedViewModel.isFirstLaunch")
-            //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
-            // при включении приложения при работающей ленте
-            Server(getString(R.string.baseUrl, binding.edIpEsp.text.toString()),
-                getString(R.string.postPosition, getString(R.string._position)),
-                this@ListFragment).start()
-        }
+        //todo восстановить запрос по указателю
+//        if (sharedViewModel.isFirstLaunch){
+//            Log.d(TAG, "ListFragment onViewCreated sharedViewModel.isFirstLaunch")
+//            //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
+//            // при включении приложения при работающей ленте
+//            Server(getString(R.string.baseUrl, binding.edIpEsp.text.toString()),
+//                getString(R.string.postPosition, getString(R.string._position)),
+//                this@ListFragment).start()
+//        }
 
         //следим за изменением заголовка тулбара и показываем новый заголовок
         listViewModel.getToolbarTitle().observe(viewLifecycleOwner) {
@@ -106,7 +117,9 @@ class   ListFragment : Fragment(), Server.MessageListener {
 
     override fun onResume() {
         super.onResume()
-        updateSSIDandIP() //получаем название wifi сети от wifiManager
+        Log.d(TAG, "@@@ListFragment onResume")
+        nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+        updateSSIDandIP() //получаем название wifi и Ip сети телефона  от wifiManager
     }
 
     override fun onPause() {
@@ -115,6 +128,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
         if(binding.edIpEsp.text.isNotEmpty()){
             saveIp(binding.edIpEsp.text.toString())
         }
+        nsdManager.stopServiceDiscovery(discoveryListener)
     }
 
     override fun onDestroyView() {
@@ -256,6 +270,81 @@ class   ListFragment : Fragment(), Server.MessageListener {
             }
         } catch (e:IllegalStateException){
             Log.d(TAG, "ListFragment Exception message= ${e.message}")
+        }
+    }
+
+    // Instantiate a new DiscoveryListener
+    private val discoveryListener = object : NsdManager.DiscoveryListener {
+        // Called as soon as service discovery begins.
+        override fun onDiscoveryStarted(regType: String) {
+            Log.d(TAG, "Service discovery started")
+            requireActivity().runOnUiThread {
+                sharedViewModel.updateEspNetworkSsid("?")
+            }
+        }
+        override fun onServiceLost(service: NsdServiceInfo) {
+            // When the network service is no longer available.
+            // Internal bookkeeping code goes here.
+            Log.d(TAG, "service lost: $service")
+            Log.d(TAG, "-----------------------")
+            //при потере сервиса выставляем звёздочки
+            //runOnUiThread {model.updateIpAddressEsp("*.*.*.*") }
+        }
+        override fun onDiscoveryStopped(serviceType: String) {
+            Log.d(TAG, "Discovery stopped: $serviceType")
+            Log.d(TAG, "-----------------------")
+            //при остановке сервиса выставляем звёздочки
+            //runOnUiThread {model.updateIpAddressEsp("*.*.*.*") }
+        }
+        override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+            Log.d(TAG, "Discovery failed: Error code:$errorCode")
+            nsdManager.stopServiceDiscovery(this)
+        }
+        override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+            Log.d(TAG, "Discovery failed: Error code:$errorCode")
+            Log.d(TAG, "-----------------------")
+            nsdManager.stopServiceDiscovery(this)
+        }
+
+        override fun onServiceFound(service: NsdServiceInfo) {
+            // A service was found! Do something with it.
+            Log.d(TAG, "Service discovery success   $service")
+            if (service.serviceName.contains(espName)){
+                Log.d(TAG, "serviceName.contains(\"esp8266\")")
+                nsdManager.resolveService(service, object : NsdManager.ResolveListener {
+                    override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                        // Called when the resolve fails. Use the error code to debug.
+                        Log.d(TAG, "Resolve failed: $errorCode")
+                    }
+                    override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+                        Log.d(TAG, "Resolve Succeeded. $serviceInfo")
+                        val port: Int = serviceInfo.port
+                        val ip: String? = serviceInfo.host.hostAddress
+                        val serviceName = serviceInfo.serviceName
+                        val attr = serviceInfo.attributes
+                        Log.d(TAG, "port = $port ip = $ip serviceName = $serviceName   attr = $attr")
+                        Log.d(TAG, "-----------------------")
+
+                        requireActivity().runOnUiThread {
+                            ip?.let {
+                                Log.d(TAG, "runOnUiThread ip =$ip")
+                                sharedViewModel.updateIpAddressEsp(it)
+                                val zapros =getString(R.string.baseUrl, it)+ getString(R.string.postPosition, getString(R.string._esp))
+                                Log.d(TAG, "runOnUiThread zapros =$zapros")
+                                //посылаем запрос на ESP на имя сети, к которой подключена ESP
+                                Server(getString(R.string.baseUrl, it),
+                                    getString(R.string.postPosition, getString(R.string._esp)),
+                                    object : Server.MessageListener{
+                                        override fun onMessage(message: String) {
+                                            sharedViewModel.updateEspNetworkSsid(message)
+                                        }
+                                    }).start()
+                            }
+                        }
+                    }
+                })
+
+            }
         }
     }
 }

@@ -21,6 +21,8 @@ import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
+import com.bartex.adresslentawifi.constants.Constants
+import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 
@@ -38,16 +40,9 @@ import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
-    companion object {
-        const val TAG = "33333"
-        const val SERVICE_TYPE = "_http._tcp"
-    }
-
     lateinit var binding:ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var  appBarConfiguration:AppBarConfiguration
-    val espName:String = "esp8266"
-    lateinit var nsdManager: NsdManager
 
     private val model: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
@@ -61,8 +56,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = binding.root
         setContentView(view)
 
-        //определяем NsdManager менеджер
-        nsdManager = (getSystemService(Context.NSD_SERVICE) as NsdManager)
         //находим NavController
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         //пока не понятно как через binding
@@ -91,25 +84,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.ACCESS_NETWORK_STATE), 100)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "@@@MainActivity onResume")
-        //запускаем поиск сервиса с именем "esp8266"
-        nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //останавливаем поиск сервиса
-        nsdManager.stopServiceDiscovery(discoveryListener)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //останавливаем поиск сервиса
-       // nsdManager.stopServiceDiscovery(discoveryListener)
     }
 
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
@@ -164,75 +138,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    // Instantiate a new DiscoveryListener
-    private val discoveryListener = object : NsdManager.DiscoveryListener {
-        // Called as soon as service discovery begins.
-        override fun onDiscoveryStarted(regType: String) {
-            Log.d(TAG, "Service discovery started")
-        }
-        override fun onServiceLost(service: NsdServiceInfo) {
-            // When the network service is no longer available.
-            // Internal bookkeeping code goes here.
-            Log.d(TAG, "service lost: $service")
-            Log.d(TAG, "-----------------------")
-            //при потере сервиса выставляем звёздочки
-            //runOnUiThread {model.updateIpAddressEsp("*.*.*.*") }
-        }
-        override fun onDiscoveryStopped(serviceType: String) {
-            Log.d(TAG, "Discovery stopped: $serviceType")
-            Log.d(TAG, "-----------------------")
-            //при остановке сервиса выставляем звёздочки
-            //runOnUiThread {model.updateIpAddressEsp("*.*.*.*") }
-        }
-        override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-            Log.d(TAG, "Discovery failed: Error code:$errorCode")
-            nsdManager.stopServiceDiscovery(this)
-        }
-        override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-            Log.d(TAG, "Discovery failed: Error code:$errorCode")
-            Log.d(TAG, "-----------------------")
-            nsdManager.stopServiceDiscovery(this)
-        }
-
-        override fun onServiceFound(service: NsdServiceInfo) {
-            // A service was found! Do something with it.
-            Log.d(TAG, "Service discovery success   $service")
-            if (service.serviceName.contains(espName)){
-                Log.d(TAG, "serviceName.contains(\"esp8266\")")
-                nsdManager.resolveService(service, object : NsdManager.ResolveListener {
-                    override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                        // Called when the resolve fails. Use the error code to debug.
-                        Log.d(TAG, "Resolve failed: $errorCode")
-                    }
-                    override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                        Log.d(TAG, "Resolve Succeeded. $serviceInfo")
-                        val port: Int = serviceInfo.port
-                        val ip: String? = serviceInfo.host.hostAddress
-                        val serviceName = serviceInfo.serviceName
-                        val attr = serviceInfo.attributes
-                        Log.d(TAG, "port = $port ip = $ip serviceName = $serviceName   attr = $attr")
-                        Log.d(TAG, "-----------------------")
-
-                        runOnUiThread {
-                            ip?.let {
-                                Log.d(TAG, "runOnUiThread ip =$ip")
-                                model.updateIpAddressEsp(it)
-                                val zapros =getString(R.string.baseUrl, it)+ getString(R.string.postPosition, getString(R.string._esp))
-                                Log.d(TAG, "runOnUiThread zapros =$zapros")
-                                //посылаем запрос на ESP на имя сети, к которой подключена ESP
-                                Server(getString(R.string.baseUrl, it),
-                                    getString(R.string.postPosition, getString(R.string._esp)),
-                                    object : Server.MessageListener{
-                                        override fun onMessage(message: String) {
-                                            model.updateEspNetworkSsid(message      )
-                                        }
-                                    }).start()
-                            }
-                        }
-                    }
-                })
-
-            }
-        }
-    }
 }
