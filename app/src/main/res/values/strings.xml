@@ -50,7 +50,7 @@
     <string name="_northernLights">northernLights</string>
     <string name="_runningLights">runningLights</string>
     <string name="_test">test</string>
-    <string name="_ssid">ssid</string>
+    <string name="_esp">esp</string>
 
 
     <string name="_1"> #FF0000</string>//Red
@@ -140,7 +140,7 @@
     <string name="inputPass">Введите пароль</string>
     <string name="inputPassWiFi">Пароль WiFi сети</string>
     <string name="inputIp">Введите IP</string>
-    <string name="homeNetworkName">WL500GPv2_GbcK</string>
+    <string name="homeNetworkName">bartex</string>
     <string name="homeNetworkPass">aassddff</string>
     <string name="localNetworkPass">12345678</string>
     <string name="localNetworkName">NodeMCU</string>

@@ -115,7 +115,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         //проверяем текущую сеть WiFi
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
         isNodeMcu = ssid == Constants.NODE_MCU
-        model.updateSSID(ssid)
+        model.updateTlfSSID(ssid)
         Log.d(TAG, "SynchroFragment onResume ssid =$ssid isNodeMcu =$isNodeMcu")
     }
 
@@ -145,7 +145,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         }
         btnNext = view.findViewById(R.id.btnNext)
         btnNext.setOnClickListener {
-            model.updateIpAddress(getString(R.string.hotpointIp))
+            model.updateIpAddressEsp(getString(R.string.hotpointIp))
             profileHome.visibility = View.VISIBLE
             headerHome.text = requireActivity().getString(R.string.bottom_shit_title22)
             descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr2)
@@ -232,7 +232,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
             Log.d(TAG, "SynchroFragment sendNamePassToServerHome" +
                     "  name = $name password = $password")
             if (name.isNotEmpty()&& password.isNotEmpty()){
-               val ip = model.getIpAddress().value
+               val ip = model.getIpAddressEsp().value
 
                 when(actionTag){
                     getString(R.string.firstInclusion),
@@ -247,7 +247,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddress(getString(R.string.hotpointZero))
+                        model.updateIpAddressEsp(getString(R.string.hotpointZero))
                         model.updateNameOfEffect("")
                     }
 
@@ -260,7 +260,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
                         ).start()
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddress(getString(R.string.hotpointZero))
+                        model.updateIpAddressEsp(getString(R.string.hotpointZero))
                     }
 
                     getString(R.string.createHotpoint) ->{
@@ -271,7 +271,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
                         ).start()
                         profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
                         buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddress(getString(R.string.hotpointIp))
+                        model.updateIpAddressEsp(getString(R.string.hotpointIp))
                         model.updateNameOfEffect("")
                     }
                 }

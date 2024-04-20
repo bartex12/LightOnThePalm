@@ -19,6 +19,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "@@@MainActivity onCreate")
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -92,18 +95,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "@@@MainActivity onResume")
+        //запускаем поиск сервиса с именем "esp8266"
         nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
     }
 
     override fun onPause() {
         super.onPause()
+        //останавливаем поиск сервиса
         nsdManager.stopServiceDiscovery(discoveryListener)
     }
 
     override fun onDestroy() {
-        nsdManager.stopServiceDiscovery(discoveryListener)
         super.onDestroy()
-
+        //останавливаем поиск сервиса
+       // nsdManager.stopServiceDiscovery(discoveryListener)
     }
 
     // Этот метод вызывается всякий раз, когда пользователь выбирает переход вверх
@@ -121,7 +127,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.sync)?.isVisible =
             navController.currentDestination?.id ==  R.id.listFragment
-
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -147,9 +152,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == 100) {
-//            if ((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-//                        == PackageManager.PERMISSION_GRANTED)
-//            ){
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)  {
                 Toast.makeText(this, resources.getString(R.string.permission),
                     Toast.LENGTH_SHORT).show()
@@ -168,25 +170,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         override fun onDiscoveryStarted(regType: String) {
             Log.d(TAG, "Service discovery started")
         }
-        override fun onServiceFound(service: NsdServiceInfo) {
-            // A service was found! Do something with it.
-            Log.d(TAG, "Service discovery success   $service")
-            if (service.serviceName.contains(espName)){
-                Log.d(TAG, "serviceName.contains(\"esp8266\")")
-                nsdManager.resolveService(service, resolveListener)
-            }
-        }
         override fun onServiceLost(service: NsdServiceInfo) {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
             Log.d(TAG, "service lost: $service")
             Log.d(TAG, "-----------------------")
-            runOnUiThread {model.updateIpAddress("*.*.*.*") }
+            //при потере сервиса выставляем звёздочки
+            //runOnUiThread {model.updateIpAddressEsp("*.*.*.*") }
         }
         override fun onDiscoveryStopped(serviceType: String) {
             Log.d(TAG, "Discovery stopped: $serviceType")
             Log.d(TAG, "-----------------------")
-            runOnUiThread {model.updateIpAddress("*.*.*.*") }
+            //при остановке сервиса выставляем звёздочки
+            //runOnUiThread {model.updateIpAddressEsp("*.*.*.*") }
         }
         override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
             Log.d(TAG, "Discovery failed: Error code:$errorCode")
@@ -197,26 +193,46 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Log.d(TAG, "-----------------------")
             nsdManager.stopServiceDiscovery(this)
         }
-    }
 
-    private val resolveListener = object : NsdManager.ResolveListener {
-        override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-            // Called when the resolve fails. Use the error code to debug.
-            Log.d(TAG, "Resolve failed: $errorCode")
-        }
-        override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-            Log.d(TAG, "Resolve Succeeded. $serviceInfo")
-            val port: Int = serviceInfo.port
-            val ip: String? = serviceInfo.host.hostAddress
-            val serviceName = serviceInfo.serviceName
-           val attr = serviceInfo.attributes
-            Log.d(TAG, "port = $port ip = $ip serviceName = $serviceName   attr = $attr")
-            Log.d(TAG, "-----------------------")
+        override fun onServiceFound(service: NsdServiceInfo) {
+            // A service was found! Do something with it.
+            Log.d(TAG, "Service discovery success   $service")
+            if (service.serviceName.contains(espName)){
+                Log.d(TAG, "serviceName.contains(\"esp8266\")")
+                nsdManager.resolveService(service, object : NsdManager.ResolveListener {
+                    override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                        // Called when the resolve fails. Use the error code to debug.
+                        Log.d(TAG, "Resolve failed: $errorCode")
+                    }
+                    override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+                        Log.d(TAG, "Resolve Succeeded. $serviceInfo")
+                        val port: Int = serviceInfo.port
+                        val ip: String? = serviceInfo.host.hostAddress
+                        val serviceName = serviceInfo.serviceName
+                        val attr = serviceInfo.attributes
+                        Log.d(TAG, "port = $port ip = $ip serviceName = $serviceName   attr = $attr")
+                        Log.d(TAG, "-----------------------")
 
-            runOnUiThread {
-                ip?.let { model.updateIpAddress(it)}
+                        runOnUiThread {
+                            ip?.let {
+                                Log.d(TAG, "runOnUiThread ip =$ip")
+                                model.updateIpAddressEsp(it)
+                                val zapros =getString(R.string.baseUrl, it)+ getString(R.string.postPosition, getString(R.string._esp))
+                                Log.d(TAG, "runOnUiThread zapros =$zapros")
+                                //посылаем запрос на ESP на имя сети, к которой подключена ESP
+                                Server(getString(R.string.baseUrl, it),
+                                    getString(R.string.postPosition, getString(R.string._esp)),
+                                    object : Server.MessageListener{
+                                        override fun onMessage(message: String) {
+                                            model.updateEspNetworkSsid(message      )
+                                        }
+                                    }).start()
+                            }
+                        }
+                    }
+                })
+
             }
         }
     }
-
 }

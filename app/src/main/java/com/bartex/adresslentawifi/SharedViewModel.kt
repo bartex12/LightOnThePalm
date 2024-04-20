@@ -7,8 +7,11 @@ import androidx.lifecycle.ViewModel
 class SharedViewModel: ViewModel() {
 
     private val nameOfEffect = MutableLiveData<String>()
-    private val ipAddress = MutableLiveData<String>()
-    private val ssidNetwork = MutableLiveData<String>()
+    private val ipAddressEsp = MutableLiveData<String>()
+    private val ssidNetworkEsp = MutableLiveData<String>()
+    private val ipAddressTlf = MutableLiveData<String>()
+    private val ssidNetworkTlf = MutableLiveData<String>()
+
     var isFirstLaunch = true //флаг первого запуска
 
     fun getNameOfEffect():LiveData<String>{
@@ -19,24 +22,41 @@ class SharedViewModel: ViewModel() {
         nameOfEffect.value = name
     }
 
-    fun updateIpAddress(addressIp: String) {
-        ipAddress.value = addressIp
+    fun updateIpAddressEsp(addressIp: String) {
+        ipAddressEsp.value = addressIp
     }
 
-    fun getIpAddress():LiveData<String>{
-        return ipAddress
+    fun getIpAddressEsp():LiveData<String>{
+        return ipAddressEsp
     }
 
-    fun updateSSID(ssid: String) {
-        ssidNetwork.value = ssid
+    fun updateTlfSSID(ssid: String) {
+        ssidNetworkTlf.value = ssid
     }
 
-    fun getSSID():LiveData<String>{
-        return ssidNetwork
+    fun getTlfSSID():LiveData<String>{
+        return ssidNetworkTlf
     }
 
     fun isNotFirstLaunch() {
         isFirstLaunch = false
+    }
+
+//postValue так как запрос сервера делается в новом потоке
+    fun updateEspNetworkSsid(espNetworkName: String) {
+        ssidNetworkEsp.postValue(espNetworkName)
+    }
+
+    fun getEspNetworkSsid():LiveData<String>{
+        return ssidNetworkEsp
+    }
+
+    fun updateTlfIp(ip: String?) {
+        ipAddressTlf.value = ip
+    }
+
+    fun getTlfIp():LiveData<String>{
+        return ipAddressTlf
     }
 
 }

@@ -22,8 +22,8 @@ class Server(
     override fun run() {
         try {
             val response = client.newCall(request).execute()
-            //Log.d(TAG, "Server request = $request")
-            //Log.d(TAG, "Server response = $response")
+            Log.d(TAG, "Server request = $request")
+            Log.d(TAG, "Server response = $response")
             if(response.isSuccessful){
                 val resultText = response.body()?.string()
                 Log.d(TAG, "Server resultText = $resultText")

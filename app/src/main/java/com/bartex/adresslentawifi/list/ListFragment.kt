@@ -2,6 +2,7 @@ package com.bartex.adresslentawifi.list
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
@@ -43,12 +44,14 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private var nameTag:String? = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        Log.d(TAG, "@@@ListFragment onCreateView")
         _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root  //fragment_list
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "@@@ListFragment onViewCreated")
 
         pref = requireActivity().getSharedPreferences("MyPref", AppCompatActivity.MODE_PRIVATE)
         navController = Navigation.findNavController(view)
@@ -60,7 +63,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
             Log.d(TAG, "ListFragment onViewCreated sharedViewModel.isFirstLaunch")
             //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
             // при включении приложения при работающей ленте
-            Server(getString(R.string.baseUrl, binding.edIp.text.toString()),
+            Server(getString(R.string.baseUrl, binding.edIpEsp.text.toString()),
                 getString(R.string.postPosition, getString(R.string._position)),
                 this@ListFragment).start()
         }
@@ -74,34 +77,43 @@ class   ListFragment : Fragment(), Server.MessageListener {
         sharedViewModel.getNameOfEffect().observe(viewLifecycleOwner) { newTag ->
             nameTag = newTag
         }
-
-        //наблюдаем за WIFI_IP адресом, который получаем от ESP через DNS-SD
-        sharedViewModel.getIpAddress().observe(viewLifecycleOwner) { addressIp ->
+        //наблюдаем за IP адресом ESP, который получаем от ESP на телефон через DNS-SD
+        sharedViewModel.getIpAddressEsp().observe(viewLifecycleOwner) { addressIp ->
             Log.d(TAG, "***ListFragment onViewCreated addressIp = $addressIp")
-            if (binding.edIp.text.toString() != addressIp) {
-                binding.edIp.setText(addressIp)
-                Log.d(TAG, "ListFragment onViewCreated new Ip = $addressIp")
+            if (binding.edIpEsp.text.toString() != addressIp) {
+                binding.edIpEsp.setText(addressIp)
+                Log.d(TAG, "ListFragment onViewCreated new ESP Ip = $addressIp")
             }
         }
-        //наблюдаем за SSID и обновляем текстовое поле
-        sharedViewModel.getSSID().observe(viewLifecycleOwner) {
-            binding.tvNameList.text = it
+        //наблюдаем за SSID сети ESP, который получаем от ESP через запрос к ESP после получения его Id
+        sharedViewModel.getEspNetworkSsid().observe(viewLifecycleOwner) {espNetworkSsid->
+            binding.nameEsp.text = espNetworkSsid
+            Log.d(TAG, "### ListFragment onViewCreated SSID сети ESP = $espNetworkSsid")
         }
+        sharedViewModel.getTlfIp().observe(viewLifecycleOwner) {tlfIp->
+            binding.edIpTlf.setText(tlfIp)
+           // Log.d(TAG, "### ListFragment onViewCreated Ip сети ТЛФ = $tlfIp")
+        }
+        //наблюдаем за SSID сети телефона, который получаем от wifiManager и обновляем текстовое поле
+        sharedViewModel.getTlfSSID().observe(viewLifecycleOwner) {tlfNetworkSsid->
+            binding.nameTlf.text = tlfNetworkSsid
+            //Log.d(TAG, "### ListFragment onViewCreated SSID сети ТЛФ = $tlfNetworkSsid")
+        }
+
         //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
         setHasOptionsMenu(true)
 }
 
     override fun onResume() {
         super.onResume()
-
         updateSSIDandIP() //получаем название wifi сети от wifiManager
     }
 
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "ListFragment onPause")
-        if(binding.edIp.text.isNotEmpty()){
-            saveIp(binding.edIp.text.toString())
+        if(binding.edIpEsp.text.isNotEmpty()){
+            saveIp(binding.edIpEsp.text.toString())
         }
     }
 
@@ -125,17 +137,27 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private fun updateSSIDandIP() {
        val  wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-        Log.d(TAG, "ListFragment updateSSID ssid= $ssid")
+        //не всегда ip идёт первым, поэтому это вызывает крэш и надо искать другой метод
+//        //https://stackoverflow.com/questions/71003749/android-wifiinfo-getipaddress-deprecated
+//        var ip:String? = ""
+//        fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
+//            getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
+//        }
+//        ip = context?.let { getIpAddress(it) }
+//        Log.d(TAG, "*#*# ListFragment updateSSIDandIP ТЛФ:    ssid= $ssid  networkId = $ip")
+//        sharedViewModel.updateTlfIp(ip)
+
         when (ssid) {
             getString(R.string.localNetworkName) -> {
-                sharedViewModel.updateSSID(ssid)
-                sharedViewModel.updateIpAddress(getString(R.string.hotpointIp))
+                sharedViewModel.updateTlfSSID(ssid)
+                sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
             }
             getString(R.string.unknownSsid) -> {
-                sharedViewModel.updateSSID(getString(R.string.wf_network))
+                sharedViewModel.updateTlfSSID(getString(R.string.wf_network))
             }
             else -> {
-                sharedViewModel.updateSSID(ssid)
+                sharedViewModel.updateTlfSSID(ssid)
             }
         }
     }
@@ -143,7 +165,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
     private fun getIp(){
         val ip = pref.getString(IP, "")
         if(ip != null){
-            if(ip.isNotEmpty()) binding.edIp.setText(ip)
+            if(ip.isNotEmpty()) binding.edIpEsp.setText(ip)
         }
     }
 
@@ -151,7 +173,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
         val editor = pref.edit()
         editor.putString(IP, ip)
         editor.apply()
-        sharedViewModel.updateIpAddress(ip)
+        sharedViewModel.updateIpAddressEsp(ip)
     }
 
     private fun  initAdapter() {
@@ -167,7 +189,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
             override fun onClick(item: ListOfEffects) {
                 nameTag = item.name
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
-                val baseUrl = String.format(getString(R.string.baseUrl), binding.edIp.text.toString())
+                val baseUrl = String.format(getString(R.string.baseUrl), binding.edIpEsp.text.toString())
                 when(item.name){
                     getString(R.string.staticColors) -> {
                         navigateTo(baseUrl,item, getString(R.string._static),R.id.action_listFragment_to_staticColorFragment)

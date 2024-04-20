@@ -7,35 +7,91 @@
     android:background="@color/colorPrimaryDarkBlack">
 
     <TextView
-        android:id="@+id/tvNameList"
+        android:id="@+id/tvNameEsp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
-        android:text="@string/ssid_"
+        android:text="Имя сети ESP "
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/edIp"
-        app:layout_constraintEnd_toStartOf="@+id/edIp"
+        app:layout_constraintEnd_toStartOf="@+id/edIpEsp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/edIp" />
+        app:layout_constraintTop_toTopOf="@id/edIpEsp" />
+
+    <TextView
+        android:id="@+id/nameEsp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="Имя "
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/edIpEsp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNameEsp" />
 
     <EditText
-        android:id="@+id/edIp"
+        android:id="@+id/edIpEsp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:gravity="start"
-        android:hint="@string/inputIp"
+        android:hint="Ip сети ESP"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="14sp"
-
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvNameList"
+        app:layout_constraintStart_toEndOf="@+id/tvNameEsp"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNameTlf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="Имя сети ТЛФ "
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/edIpTlf"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edIpTlf" />
+
+    <TextView
+        android:id="@+id/nameTlf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="Имя"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/edIpTlf"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNameTlf" />
+
+    <EditText
+        android:id="@+id/edIpTlf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start"
+        android:hint="Ip сети ТЛФ"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/rv_effects"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvNameTlf"
+        app:layout_constraintTop_toBottomOf="@+id/edIpEsp" />
 
     <TextView
         android:id="@+id/empty_view_effects"
@@ -57,7 +113,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edIp"
+        app:layout_constraintTop_toBottomOf="@+id/edIpTlf"
         tools:listitem="@layout/item_list_effects"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
