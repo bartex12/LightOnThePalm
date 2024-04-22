@@ -51,12 +51,12 @@ class SharedViewModel: ViewModel() {
         return ssidNetworkEsp
     }
 
-    fun updateTlfIp(ip: String?) {
-        ipAddressTlf.value = ip
-    }
-
-    fun getTlfIp():LiveData<String>{
-        return ipAddressTlf
-    }
+//    fun updateTlfIp(ip: String?) {
+//        ipAddressTlf.value = ip
+//    }
+//
+//    fun getTlfIp():LiveData<String>{
+//        return ipAddressTlf
+//    }
 
 }

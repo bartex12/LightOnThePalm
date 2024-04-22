@@ -159,11 +159,11 @@
     <string name="createHotpoint">Создание локальной WiFi сети NodeMCU</string>
     <string name="toHomeFromLocal">Привязка к домашней сети WiFi из локальной сети</string>
     <string name="toDifferentFromLocal">Привязка к другой сети WiFi из локальной сети</string>
-    <string name="Redmi">Redmi</string>
-    <string name="passRedmi">b480192ed5ec</string>
+    <string name="Xiaomi">Xiaomi 13T</string>
+    <string name="passRedmi">aassddff</string>
     <string name="ligthOnHand">Свет на ладони</string>
     <string name="you_net">Введите имя своей WiFi сети</string>
     <string name="you_net_pass">Введите пароль своей WiFi сети</string>
-    <string name="wf_network">Адрес в WiFi сети</string>
+    <string name="network_name">Неизвестное имя</string>
     <string name="unknownSsid"><![CDATA[<unknown ssid>]]></string>
 </resources>

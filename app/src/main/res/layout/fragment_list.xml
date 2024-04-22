@@ -6,92 +6,117 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDarkBlack">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/infoGroup"
+        android:visibility="gone"
+        app:constraint_referenced_ids=
+            "tvNameEsp,nameEsp, tvIpEsp, edIpEsp, tvNameTlf, nameTlf"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        tools:visibility="visible"/>
+<!--1-->
     <TextView
         android:id="@+id/tvNameEsp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="8dp"
-        android:gravity="center"
         android:text="Имя сети ESP "
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/edIpEsp"
+app:layout_constraintEnd_toStartOf="@id/nameEsp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/edIpEsp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
+<!--2-->
     <TextView
         android:id="@+id/nameEsp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="Имя "
+        android:text="NodeMCU "
         android:textColor="@color/white"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/edIpEsp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvNameEsp" />
-
-    <EditText
-        android:id="@+id/edIpEsp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="start"
-        android:hint="Ip сети ESP"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvNameEsp"
         app:layout_constraintTop_toTopOf="parent" />
 
+<!--    3-->
     <TextView
-        android:id="@+id/tvNameTlf"
+        android:id="@+id/tvIpEsp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="Адрес сети ESP"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/edIpEsp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameEsp" />
+
+<!--    4-->
+    <TextView
+        android:id="@+id/edIpEsp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="Имя сети ТЛФ "
+        android:hint="192.168.1.1"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvIpEsp"
+        app:layout_constraintTop_toBottomOf="@+id/nameEsp" />
+    <!--5-->
+    <TextView
+        android:id="@+id/tvNameTlf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Имя сети телефона "
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/edIpTlf"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/edIpTlf" />
+        app:layout_constraintTop_toBottomOf="@id/tvIpEsp"
+        app:layout_constraintEnd_toStartOf="@id/nameTlf"/>
 
+    <!--    6-->
     <TextView
         android:id="@+id/nameTlf"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="Имя"
+        android:layout_marginBottom="8dp"
+        android:text="bartex"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/edIpTlf"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvNameTlf" />
-
-    <EditText
-        android:id="@+id/edIpTlf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="start"
-        android:hint="Ip сети ТЛФ"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/rv_effects"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvNameTlf"
-        app:layout_constraintTop_toBottomOf="@+id/edIpEsp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edIpEsp" />
+
+<!--    7-->
+<!--    <TextView-->
+<!--        android:id="@+id/edIpTlf"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:hint="Ip сети ТЛФ"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textColorHint="@color/white"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/rv_effects"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/tvNameTlf"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/edIpEsp" />-->
 
     <TextView
         android:id="@+id/empty_view_effects"
@@ -108,12 +133,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edIpTlf"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameTlf"
         tools:listitem="@layout/item_list_effects"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

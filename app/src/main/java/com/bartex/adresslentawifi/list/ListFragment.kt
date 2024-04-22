@@ -2,19 +2,20 @@ package com.bartex.adresslentawifi.list
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +33,7 @@ import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
 
 
-class   ListFragment : Fragment(), Server.MessageListener {
+class   ListFragment : Fragment(), Server.MessageListener{
 
     companion object {
         const val SERVICE_TYPE = "_http._tcp"
@@ -51,6 +52,9 @@ class   ListFragment : Fragment(), Server.MessageListener {
     val espName:String = "esp8266"
     lateinit var nsdManager: NsdManager
 
+    private var isShowInfo: Boolean = true
+    lateinit var info: Group
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "@@@ListFragment onCreateView")
         _binding = FragmentListBinding.inflate(inflater, container, false)
@@ -65,6 +69,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
         navController = Navigation.findNavController(view)
         //определяем NsdManager менеджер
         nsdManager = requireActivity().getSystemService(Context.NSD_SERVICE) as NsdManager
+        info = binding.infoGroup
 
         getIp()  //получаем ip адрес из преференсис - если лента выключена, будет старый сохранённый ip
 
@@ -96,24 +101,54 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 Log.d(TAG, "ListFragment onViewCreated new ESP Ip = $addressIp")
             }
         }
-        //наблюдаем за SSID сети ESP, который получаем от ESP через запрос к ESP после получения его Id
+        //наблюдаем за именем (SSID) сети ESP, который получаем от ESP через запрос к ESP после получения его Id
         sharedViewModel.getEspNetworkSsid().observe(viewLifecycleOwner) {espNetworkSsid->
             binding.nameEsp.text = espNetworkSsid
             Log.d(TAG, "### ListFragment onViewCreated SSID сети ESP = $espNetworkSsid")
         }
-        sharedViewModel.getTlfIp().observe(viewLifecycleOwner) {tlfIp->
-            binding.edIpTlf.setText(tlfIp)
-           // Log.d(TAG, "### ListFragment onViewCreated Ip сети ТЛФ = $tlfIp")
-        }
-        //наблюдаем за SSID сети телефона, который получаем от wifiManager и обновляем текстовое поле
+        //наблюдаем за IP адресом телефона - пока нет, так как пока неправильно определяется Ip телефона
+//        sharedViewModel.getTlfIp().observe(viewLifecycleOwner) {tlfIp->
+//            binding.edIpTlf.setText(tlfIp)
+//           // Log.d(TAG, "### ListFragment onViewCreated Ip сети ТЛФ = $tlfIp")
+//        }
+        //наблюдаем за именем (SSID) сети телефона, который получаем от wifiManager и обновляем текстовое поле
         sharedViewModel.getTlfSSID().observe(viewLifecycleOwner) {tlfNetworkSsid->
             binding.nameTlf.text = tlfNetworkSsid
             //Log.d(TAG, "### ListFragment onViewCreated SSID сети ТЛФ = $tlfNetworkSsid")
         }
 
-        //приводим меню тулбара в соответствии с onPrepareOptionsMenu в MainActivity
-        setHasOptionsMenu(true)
-}
+        initMenu()
+    }
+
+    private fun initMenu(){
+        // The usage of an interface lets you inject your own implementation
+            requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.main_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.sync -> {
+                        navController.navigate(R.id.action_listFragment_to_actionFragment)
+                        true
+                    }
+                    R.id.info-> {
+                        if(isShowInfo){
+                            info.visibility = View.VISIBLE
+                        }else{
+                            info.visibility = View.GONE
+                        }
+                        isShowInfo = !isShowInfo
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -168,7 +203,7 @@ class   ListFragment : Fragment(), Server.MessageListener {
                 sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
             }
             getString(R.string.unknownSsid) -> {
-                sharedViewModel.updateTlfSSID(getString(R.string.wf_network))
+                sharedViewModel.updateTlfSSID(getString(R.string.network_name))
             }
             else -> {
                 sharedViewModel.updateTlfSSID(ssid)
@@ -268,8 +303,8 @@ class   ListFragment : Fragment(), Server.MessageListener {
                     sharedViewModel.isNotFirstLaunch() //меняем флаг
                 }
             }
-        } catch (e:IllegalStateException){
-            Log.d(TAG, "ListFragment Exception message= ${e.message}")
+        } catch (e:Exception){
+            Log.d(TAG, "***##***ListFragment Exception message= ${e.message}")
         }
     }
 
@@ -326,19 +361,23 @@ class   ListFragment : Fragment(), Server.MessageListener {
                         Log.d(TAG, "-----------------------")
 
                         requireActivity().runOnUiThread {
-                            ip?.let {
-                                Log.d(TAG, "runOnUiThread ip =$ip")
-                                sharedViewModel.updateIpAddressEsp(it)
-                                val zapros =getString(R.string.baseUrl, it)+ getString(R.string.postPosition, getString(R.string._esp))
-                                Log.d(TAG, "runOnUiThread zapros =$zapros")
-                                //посылаем запрос на ESP на имя сети, к которой подключена ESP
-                                Server(getString(R.string.baseUrl, it),
-                                    getString(R.string.postPosition, getString(R.string._esp)),
-                                    object : Server.MessageListener{
-                                        override fun onMessage(message: String) {
-                                            sharedViewModel.updateEspNetworkSsid(message)
-                                        }
-                                    }).start()
+                            try {
+                                ip?.let {
+                                    Log.d(TAG, "runOnUiThread ip =$ip")
+                                    sharedViewModel.updateIpAddressEsp(it)
+                                    val zapros =getString(R.string.baseUrl, it)+ getString(R.string.postPosition, getString(R.string._esp))
+                                    Log.d(TAG, "runOnUiThread zapros =$zapros")
+                                    //посылаем запрос на ESP на имя сети, к которой подключена ESP
+                                    Server(getString(R.string.baseUrl, it),
+                                        getString(R.string.postPosition, getString(R.string._esp)),
+                                        object : Server.MessageListener{
+                                            override fun onMessage(message: String) {
+                                                sharedViewModel.updateEspNetworkSsid(message)
+                                            }
+                                        }).start()
+                                }
+                            }catch (e:Exception){
+                                Log.d(TAG, "@@@ListFragment onServiceResolved error = ${e.message} ")
                             }
                         }
                     }

@@ -172,7 +172,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
                 //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText(getString(R.string.Redmi))
+                nameWiFi.setText(getString(R.string.Xiaomi))
                 passWiFi.setText(getString(R.string.passRedmi))
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different)
@@ -218,7 +218,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
                 //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText(getString(R.string.Redmi))
+                nameWiFi.setText(getString(R.string.Xiaomi))
                 passWiFi.setText(getString(R.string.passRedmi))
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different_from_local)
