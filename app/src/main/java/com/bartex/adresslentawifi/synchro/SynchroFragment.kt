@@ -1,5 +1,6 @@
 package com.bartex.adresslentawifi.synchro
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -285,12 +286,13 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun scanSuccess() {
         val results:MutableList<ScanResult> = wifiManager.scanResults
         "Доступно WiFi сетей:  ${results.size}".also { tvInfo.text = it }
         Log.d(TAG, "scanSuccess: results size = ${results.size}")
 
-        val listOfConfigurations: List<WifiConfiguration> = wifiManager.getConfiguredNetworks()
+        val listOfConfigurations: List<WifiConfiguration> = wifiManager.configuredNetworks
         val info = wifiManager.connectionInfo
         //val qq =info.ssid
         for (index in listOfConfigurations.indices) {
@@ -313,6 +315,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         //Settings.Global.putInt(contentResolver, "captive_portal_detection_enabled", 0)
     }
 
+    @SuppressLint("MissingPermission")
     private fun scanFailure() {
         // handle failure: new scan did NOT succeed
         // consider using old scan results: these are the OLD results!

@@ -11,7 +11,6 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.os.bundleOf
-import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -214,7 +213,7 @@ class   ListFragment : Fragment(), Server.MessageListener{
     private fun getIp(){
         val ip = pref.getString(IP, "")
         if(ip != null){
-            if(ip.isNotEmpty()) binding.edIpEsp.setText(ip)
+            if(ip.isNotEmpty()) binding.edIpEsp.text = ip
         }
     }
 
