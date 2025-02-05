@@ -32,10 +32,13 @@ import com.google.android.material.navigation.NavigationView
 //управление адресной лентой через NodeMCU с WiFi в режиме STA и AT
 //две библиотеки, + режим STA через параметры достаём цвет, яркость, скорость, количество точек
 //в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
-// код Андроид   F:\AndroidStudioProjects\Android14 Wifi\AdressLentaWiFi   ветка 13_WiFi_Scan
+// код Андроид   F:\AndroidStudioProjects\Android14 Wifi\AdressLentaWiFi   ветка 15_WiFi_DNS-SD_in_List
 //скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_012_AP_STA_MQTT_EEPROM_ALL_sketch_jun09b
 //варианты - бег строка , pride, flame, статич цвета,конфетти,радуги
-//добавлено обращение на MQTT сервер для передачи ip адреса - используется HiveMQ но есть класс и для mqtt.by
+//Вместо обращения  на MQTT сервер для передачи ip адреса используется NsdManager, который выполняет
+//поиск службы, зарегистрированной ESP8266, и получения IP-адреса ESP8266, который ей был присвоен в сети.
+//Таким образом, ESP8266 будет регистрировать службу с использованием NSD (Network Service Discovery),
+// а приложение на Android будет обнаруживать эту службу и получать её IP-адрес
 //при этом делается 1 обращение в 5 сек  - в loop
 //добавлено чтение и запись в EEPROM имени и пароля сети через функции set_String(0,1,ssidHome) и set_String(31,32,passHome)
 //https://russianblogs.com/article/26471580690/  для создания подключения к домашней сети

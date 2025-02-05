@@ -135,6 +135,7 @@ class   ListFragment : Fragment(), Server.MessageListener{
                         true
                     }
                     R.id.info-> {
+                        //Log.d(TAG, "### ListFragment onMenuItemSelected isShowInfo = $isShowInfo")
                         if(isShowInfo){
                             info.visibility = View.VISIBLE
                         }else{
@@ -154,6 +155,7 @@ class   ListFragment : Fragment(), Server.MessageListener{
         Log.d(TAG, "@@@ListFragment onResume")
         nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
         updateSSIDandIP() //получаем название wifi и Ip сети телефона  от wifiManager
+        isShowInfo = true //чтобы при возврате из эффекта по щелчку открыть инфо
     }
 
     override fun onPause() {
