@@ -22,7 +22,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG

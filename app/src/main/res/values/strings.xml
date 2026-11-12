@@ -23,14 +23,6 @@
 
     <string name="urlHotpoint">http://192.168.1.1</string>
     <string name="baseUrl">http://%1$s</string>
-    <string name="postPosition">%1$s</string>
-    <string name="postHome">%1$s?name=%2$s&amp;password=%3$s</string>
-    <string name="postLocal">%1$s?name=%2$s&amp;password=%3$s</string>
-    <string name="postDifferent">%1$s?name=%2$s&amp;password=%3$s</string>
-    <string name="postStaticPos">%1$s?color=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
-    <string name="postDynamicPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;position=%4$s</string>
-    <string name="postFlame">%1$s?brightness=%2$s&amp;height=%3$s&amp;spark=%4$s&amp;position=%5$s</string>
-    <string name="postRunPos">%1$s?speed=%2$s&amp;brightness=%3$s&amp;numbers=%4$s&amp;color=%5$s&amp;position=%6$s</string>
 
 
     <string name="_home">home</string>
@@ -140,8 +132,6 @@
     <string name="inputPass">Введите пароль</string>
     <string name="inputPassWiFi">Пароль WiFi сети</string>
     <string name="inputIp">Введите IP</string>
-    <string name="homeNetworkName">bartex</string>
-    <string name="homeNetworkPass">aassddff</string>
     <string name="localNetworkPass">12345678</string>
     <string name="localNetworkName">NodeMCU</string>
     <string name="hotpointIp">192.168.1.1</string>
@@ -159,8 +149,11 @@
     <string name="createHotpoint">Создание локальной WiFi сети NodeMCU</string>
     <string name="toHomeFromLocal">Привязка к домашней сети WiFi из локальной сети</string>
     <string name="toDifferentFromLocal">Привязка к другой сети WiFi из локальной сети</string>
-    <string name="Xiaomi">Xiaomi 13T</string>
-    <string name="passRedmi">aassddff</string>
+    <string name="noConnection">Нет связи с лентой</string>
+    <string name="sendFailed">Не удалось передать данные в блок управления. Проверьте, что телефон подключен к нужной сети WiFi, и повторите</string>
+    <string name="emptyNameOrPass">Имя и пароль не должны быть пустыми</string>
+    <string name="tooLongName">Имя сети слишком длинное: блок управления хранит не более 30 символов</string>
+    <string name="tooLongPass">Пароль слишком длинный: блок управления хранит не более 32 символов</string>
     <string name="ligthOnHand">Свет на ладони</string>
     <string name="you_net">Введите имя своей WiFi сети</string>
     <string name="you_net_pass">Введите пароль своей WiFi сети</string>

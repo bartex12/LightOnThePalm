@@ -11,7 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.EspApi
+import com.bartex.adresslentawifi.toastNoConnection
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -19,7 +20,7 @@ import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
 import java.util.*
 
-class RunningColorsFragment: Fragment(), Server.MessageListener {
+class RunningColorsFragment: Fragment() {
 
     private val runningViewModel: RunningViewModel  by activityViewModels()
     private val model: SharedViewModel by activityViewModels()
@@ -163,8 +164,12 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
     }
 
     fun sendMessageToServer(){
-        Server(baseUrl,  getString(R.string.postRunPos, keyWord, speed, brightness, number, color,nameOfEffect),
-            this@RunningColorsFragment).start()
+        //порядок параметров важен: скетч читает их по номеру
+        EspApi.get(baseUrl, keyWord,
+            listOf("speed" to speed, "brightness" to brightness, "numbers" to number,
+                "color" to color, "position" to nameOfEffect),
+            onError = { toastNoConnection() },
+            onSuccess = { if (isAdded) model.updateNameOfEffect(it) })
     }
     private fun getSpeedFromSeekBar(): String {
         seekBarRunSpeed.max = 70 //чтобы посылать на сервер от 5 до 70 мс задержку
@@ -188,14 +193,4 @@ class RunningColorsFragment: Fragment(), Server.MessageListener {
         return num.toString()
     }
 
-    override fun onMessage(message: String) {
-        try{
-            requireActivity().runOnUiThread {
-                //Log.d(TAG, "RunningColorsFragment onMessage message= $message")
-                model.updateNameOfEffect(message)
-            }
-        }catch (e:IllegalStateException){
-            Log.d(TAG, "RunningColorsFragment Exception message= $e.message")
-        }
-    }
 }
