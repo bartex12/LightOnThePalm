@@ -72,21 +72,28 @@ object EspApi {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (it.isSuccessful) {
-                        val body = try {
-                            it.body()?.string() ?: ""
-                        } catch (e: IOException) {
-                            Log.d(TAG, "EspApi /$path ошибка чтения ответа: ${e.message}")
-                            mainHandler.post { onError(e.message ?: "ошибка чтения ответа") }
-                            return
-                        }
-                        Log.d(TAG, "EspApi /$path ответ получен")
-                        mainHandler.post { onSuccess(body) }
+                //читаем ответ в фоновом потоке, результат отдаём в главный
+                var body: String? = null
+                var error: String? = null
+                try {
+                    if (response.isSuccessful) {
+                        body = response.body()?.string() ?: ""
                     } else {
-                        Log.d(TAG, "EspApi /$path код ответа ${it.code()}")
-                        mainHandler.post { onError("код ответа ${it.code()}") }
+                        error = "код ответа ${response.code()}"
                     }
+                } catch (e: IOException) {
+                    error = e.message ?: "ошибка чтения ответа"
+                } finally {
+                    response.close()
+                }
+                val result = body
+                if (result != null) {
+                    Log.d(TAG, "EspApi /$path ответ получен")
+                    mainHandler.post { onSuccess(result) }
+                } else {
+                    val message = error ?: "нет ответа"
+                    Log.d(TAG, "EspApi /$path ошибка: $message")
+                    mainHandler.post { onError(message) }
                 }
             }
         })
