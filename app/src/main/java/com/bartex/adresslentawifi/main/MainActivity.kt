@@ -32,7 +32,7 @@ import com.google.android.material.navigation.NavigationView
 //две библиотеки, + режим STA через параметры достаём цвет, яркость, скорость, количество точек
 //в loop исполняем несколько вариантов , которые определены в setup в функции server.on()
 // код Андроид   F:\AndroidStudioProjects\Android14 Wifi\AdressLentaWiFi   ветка 15_WiFi_DNS-SD_in_List
-//скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_012_AP_STA_MQTT_EEPROM_ALL_sketch_jun09b
+//скетч F:\Arduino\004 АРДУИНО с диска E\010 Адресная лента\_013_AP_STA_MQTT_NSD_EEPROM_ALL_sketch_170424_ino
 //варианты - бег строка , pride, flame, статич цвета,конфетти,радуги
 //Вместо обращения  на MQTT сервер для передачи ip адреса используется NsdManager, который выполняет
 //поиск службы, зарегистрированной ESP8266, и получения IP-адреса ESP8266, который ей был присвоен в сети.
