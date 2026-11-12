@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
@@ -25,7 +26,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.WiFiListAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -34,7 +35,7 @@ import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
-class SynchroFragment:Fragment(), Server.MessageListener {
+class SynchroFragment:Fragment() {
 
     private var wifiList: MutableList<String> = mutableListOf()
     private lateinit var rvWiFi: RecyclerView
@@ -58,6 +59,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
     private var actionTag:String? = ""
     private val model: SharedViewModel by activityViewModels()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var pref: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +80,7 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "SynchroFragment onViewCreated ")
+        pref = requireActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE)
         initView(view)
         wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
         //Проверяем включен ли WiFi, если нет то включаем
@@ -159,6 +162,11 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetHome)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
+        //подставляем имя сети, которое вводили в прошлый раз (пароль не храним)
+        //для локальной сети ниже оно заменяется на NodeMCU
+        nameWiFi.setText(pref.getString(ssidPrefKey(), ""))
+        passWiFi.setText("")
+
         when(actionTag){
             //Привязка к сети WiFi при первом включении
             getString(R.string.firstInclusion),
@@ -170,11 +178,8 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
             //Переключиться на другую сеть WiFi
             getString(R.string.toDifferent) ->{
-                //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText(getString(R.string.Xiaomi))
-                passWiFi.setText(getString(R.string.passRedmi))
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)
@@ -182,11 +187,8 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
             //Переключиться на домашнюю сеть WiFi из другой сети
             getString(R.string.toHome) ->{
-                //todo брать из сохр в преференсис так как дом сети - разные могут быть, а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText(R.string.homeNetworkName)
-                passWiFi.setText((R.string.homeNetworkPass))
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_home)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_home )
@@ -216,11 +218,8 @@ class SynchroFragment:Fragment(), Server.MessageListener {
 
             //Переключиться на другую сеть WiFi из локальной сети
             getString(R.string.toDifferentFromLocal) -> {
-                //todo брать из сохр в преференсис а лучше из списка
                 btnPrev.visibility = View.GONE
                 btnNext.visibility = View.GONE
-                nameWiFi.setText(getString(R.string.Xiaomi))
-                passWiFi.setText(getString(R.string.passRedmi))
                 profileHome.visibility = View.VISIBLE
                 headerHome.text = requireActivity().getString(R.string.bottom_shit_title_different_from_local)
                 descriptionHome.text = requireActivity().getString(R.string.bottom_shit_descr_different)
@@ -230,54 +229,16 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         sendNamePassToServerHome.setOnClickListener {
             val name = nameWiFi.text.toString()
             val password = passWiFi.text.toString()
-            Log.d(TAG, "SynchroFragment sendNamePassToServerHome" +
-                    "  name = $name password = $password")
-            if (name.isNotEmpty()&& password.isNotEmpty()){
-               val ip = model.getIpAddressEsp().value
-
-                when(actionTag){
-                    getString(R.string.firstInclusion),
-                    getString(R.string.reconnecting),
-                    getString(R.string.toHomeFromLocal),
-                    getString(R.string.toDifferentFromLocal)->{
-                        Server(
-                            getString(R.string.urlHotpoint ),
-                            getString(R.string.postHome, getString(R.string._home),name, password),
-                            this@SynchroFragment
-                        ).start()
-
-                        profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
-                        buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddressEsp(getString(R.string.hotpointZero))
-                        model.updateNameOfEffect("")
-                    }
-
-                    getString(R.string.toHome),
-                    getString(R.string.toDifferent) ->{
-                        Server(
-                            getString(R.string.baseUrl,ip ),
-                            getString(R.string.postHome, getString(R.string._home),name, password),
-                            this@SynchroFragment
-                        ).start()
-                        profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
-                        buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddressEsp(getString(R.string.hotpointZero))
-                    }
-
-                    getString(R.string.createHotpoint) ->{
-                        Server(
-                            getString(R.string.baseUrl,ip ),
-                            getString(R.string.postLocal, getString(R.string._hotpoint),name, password),
-                            this@SynchroFragment
-                        ).start()
-                        profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
-                        buttonToSettingHome.visibility = View.VISIBLE
-                        model.updateIpAddressEsp(getString(R.string.hotpointIp))
-                        model.updateNameOfEffect("")
-                    }
-                }
-            }else{
-                Toast.makeText(requireActivity(), "имя и пароль не должны быть пустыми", Toast.LENGTH_LONG).show()
+            Log.d(TAG, "SynchroFragment sendNamePassToServerHome name = $name") //пароль в лог не пишем
+            when {
+                name.isEmpty() || password.isEmpty() ->
+                    Toast.makeText(requireActivity(), R.string.emptyNameOrPass, Toast.LENGTH_LONG).show()
+                //в скетче под имя отведено 30 байт EEPROM, под пароль - 32
+                name.toByteArray().size > MAX_SSID_BYTES ->
+                    Toast.makeText(requireActivity(), R.string.tooLongName, Toast.LENGTH_LONG).show()
+                password.toByteArray().size > MAX_PASS_BYTES ->
+                    Toast.makeText(requireActivity(), R.string.tooLongPass, Toast.LENGTH_LONG).show()
+                else -> sendNameAndPassword(name, password)
             }
         }
 
@@ -342,8 +303,75 @@ class SynchroFragment:Fragment(), Server.MessageListener {
         }
     }
 
-    override fun onMessage(message: String) {
-        Log.d(TAG, "onMessage message = $message")
+    //ключ настроек, под которым запоминаем имя сети для текущего сценария
+    private fun ssidPrefKey(): String = when(actionTag){
+        getString(R.string.toDifferent),
+        getString(R.string.toDifferentFromLocal) -> Constants.DIFFERENT_SSID
+        else -> Constants.HOME_SSID
     }
 
+    //передаём в блок управления имя и пароль сети
+    private fun sendNameAndPassword(name: String, password: String) {
+        val ip = model.getIpAddressEsp().value
+        val baseUrl: String   //куда шлём
+        val path: String      //команда скетча
+        val newIp: String     //адрес ленты после выполнения команды
+        val resetEffect: Boolean
+
+        when(actionTag){
+            //телефон подключен к точке доступа NodeMCU
+            getString(R.string.firstInclusion),
+            getString(R.string.reconnecting),
+            getString(R.string.toHomeFromLocal),
+            getString(R.string.toDifferentFromLocal)->{
+                baseUrl = getString(R.string.urlHotpoint)
+                path = getString(R.string._home)
+                newIp = getString(R.string.hotpointZero)
+                resetEffect = true
+            }
+            //телефон и лента в одной WiFi сети
+            getString(R.string.toHome),
+            getString(R.string.toDifferent) ->{
+                baseUrl = getString(R.string.baseUrl, ip)
+                path = getString(R.string._home)
+                newIp = getString(R.string.hotpointZero)
+                resetEffect = false
+            }
+            getString(R.string.createHotpoint) ->{
+                baseUrl = getString(R.string.baseUrl, ip)
+                path = getString(R.string._hotpoint)
+                newIp = getString(R.string.hotpointIp)
+                resetEffect = true
+            }
+            else -> return
+        }
+
+        if (actionTag != getString(R.string.createHotpoint)) {
+            pref.edit().putString(ssidPrefKey(), name).apply()
+        }
+        sendNamePassToServerHome.isEnabled = false //от повторных нажатий, пока ждём ответ
+
+        //порядок параметров важен: скетч читает их по номеру
+        EspApi.get(baseUrl, path,
+            listOf("name" to name, "password" to password),
+            onError = {
+                if (view == null) return@get
+                sendNamePassToServerHome.isEnabled = true
+                //форму не убираем - можно исправить и повторить
+                Toast.makeText(requireActivity(), R.string.sendFailed, Toast.LENGTH_LONG).show()
+            },
+            onSuccess = {
+                if (view == null) return@get
+                sendNamePassToServerHome.isEnabled = true
+                profileHome.visibility = View.GONE  //убираем с экрана чтобы не путаться
+                buttonToSettingHome.visibility = View.VISIBLE
+                model.updateIpAddressEsp(newIp)
+                if (resetEffect) model.updateNameOfEffect("")
+            })
+    }
+
+    companion object {
+        private const val MAX_SSID_BYTES = 30
+        private const val MAX_PASS_BYTES = 32
+    }
 }

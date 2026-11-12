@@ -7,6 +7,8 @@ object Constants {
     const val WIFI_IP  = "WIFI_IP"
     const val WIFI_NAME  = "WIFI_NAME"
     const val WIFI_PASSWORD  = "WIFI_PASSWORD"
+    const val HOME_SSID  = "HOME_SSID"            //имя домашней сети, введённое в прошлый раз
+    const val DIFFERENT_SSID  = "DIFFERENT_SSID"  //имя другой сети, введённое в прошлый раз
 
     const val BASE_URL  = "BASE_URL"
     const val ITEM_NAME  = "ITEM_NAME"

@@ -19,7 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -32,7 +32,7 @@ import com.bartex.adresslentawifi.entity.ListOfEffects
 import com.bartex.adresslentawifi.main.MainActivity
 
 
-class   ListFragment : Fragment(), Server.MessageListener{
+class   ListFragment : Fragment() {
 
     companion object {
         const val SERVICE_TYPE = "_http._tcp"
@@ -78,9 +78,8 @@ class   ListFragment : Fragment(), Server.MessageListener{
 //            Log.d(TAG, "ListFragment onViewCreated sharedViewModel.isFirstLaunch")
 //            //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
 //            // при включении приложения при работающей ленте
-//            Server(getString(R.string.baseUrl, binding.edIpEsp.text.toString()),
-//                getString(R.string.postPosition, getString(R.string._position)),
-//                this@ListFragment).start()
+//            EspApi.get(getString(R.string.baseUrl, binding.edIpEsp.text.toString()),
+//                getString(R.string._position), onSuccess = { onPositionReceived(it) })
 //        }
 
         //следим за изменением заголовка тулбара и показываем новый заголовок
@@ -290,22 +289,17 @@ class   ListFragment : Fragment(), Server.MessageListener{
         navController.navigate(frag, bundle)
     }
 
-    override fun onMessage(message: String) {
-        //сюда попадаем 1 раз - при первом включении - для установки позиции адаптера
-        try {
-            requireActivity().runOnUiThread {
-                Log.d(TAG, "*****ListFragment onMessage message= $message")
-                sharedViewModel.updateNameOfEffect(message)
-                initAdapter()
-                if (sharedViewModel.isFirstLaunch){
-                    val position = getAdapterPosition()
-                    Log.d(TAG, "###ListFragment onViewCreated  nameTag= $nameTag position = $position")
-                    binding.rvEffects.scrollToPosition(position)
-                    sharedViewModel.isNotFirstLaunch() //меняем флаг
-                }
-            }
-        } catch (e:Exception){
-            Log.d(TAG, "***##***ListFragment Exception message= ${e.message}")
+    //ответ ESP на запрос позиции - для установки позиции адаптера при первом включении
+    //(EspApi вызывает колбэки в главном потоке)
+    private fun onPositionReceived(message: String) {
+        if (!isAdded || _binding == null) return
+        Log.d(TAG, "*****ListFragment onPositionReceived message= $message")
+        sharedViewModel.updateNameOfEffect(message)
+        initAdapter()
+        if (sharedViewModel.isFirstLaunch){
+            val position = getAdapterPosition()
+            binding.rvEffects.scrollToPosition(position)
+            sharedViewModel.isNotFirstLaunch() //меняем флаг
         }
     }
 
@@ -314,9 +308,7 @@ class   ListFragment : Fragment(), Server.MessageListener{
         // Called as soon as service discovery begins.
         override fun onDiscoveryStarted(regType: String) {
             Log.d(TAG, "Service discovery started")
-            requireActivity().runOnUiThread {
-                sharedViewModel.updateEspNetworkSsid("?")
-            }
+            sharedViewModel.updateEspNetworkSsid("?") //внутри postValue - можно из любого потока
         }
         override fun onServiceLost(service: NsdServiceInfo) {
             // When the network service is no longer available.
@@ -361,25 +353,15 @@ class   ListFragment : Fragment(), Server.MessageListener{
                         Log.d(TAG, "port = $port ip = $ip serviceName = $serviceName   attr = $attr")
                         Log.d(TAG, "-----------------------")
 
-                        requireActivity().runOnUiThread {
-                            try {
-                                ip?.let {
-                                    Log.d(TAG, "runOnUiThread ip =$ip")
-                                    sharedViewModel.updateIpAddressEsp(it)
-                                    val zapros =getString(R.string.baseUrl, it)+ getString(R.string.postPosition, getString(R.string._esp))
-                                    Log.d(TAG, "runOnUiThread zapros =$zapros")
-                                    //посылаем запрос на ESP на имя сети, к которой подключена ESP
-                                    Server(getString(R.string.baseUrl, it),
-                                        getString(R.string.postPosition, getString(R.string._esp)),
-                                        object : Server.MessageListener{
-                                            override fun onMessage(message: String) {
-                                                sharedViewModel.updateEspNetworkSsid(message)
-                                            }
-                                        }).start()
-                                }
-                            }catch (e:Exception){
-                                Log.d(TAG, "@@@ListFragment onServiceResolved error = ${e.message} ")
-                            }
+                        //колбэк NSD приходит не в главном потоке, а фрагмент к этому
+                        //моменту может быть уже закрыт - тогда activity == null
+                        activity?.runOnUiThread {
+                            if (!isAdded || ip == null) return@runOnUiThread
+                            Log.d(TAG, "runOnUiThread ip =$ip")
+                            sharedViewModel.updateIpAddressEsp(ip)
+                            //посылаем запрос на ESP на имя сети, к которой подключена ESP
+                            EspApi.get(getString(R.string.baseUrl, ip), getString(R.string._esp),
+                                onSuccess = { sharedViewModel.updateEspNetworkSsid(it) })
                         }
                     }
                 })

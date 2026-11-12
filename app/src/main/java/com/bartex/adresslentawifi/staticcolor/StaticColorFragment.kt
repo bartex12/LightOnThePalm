@@ -13,7 +13,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.EspApi
+import com.bartex.adresslentawifi.toastNoConnection
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -24,7 +25,7 @@ import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.entity.ButtonColor
 
-class StaticColorFragment: Fragment(), Server.MessageListener {
+class StaticColorFragment: Fragment() {
 
     private val viewModel: StaticColorsViewModel by activityViewModels()
     private val model: SharedViewModel by activityViewModels()
@@ -132,16 +133,10 @@ class StaticColorFragment: Fragment(), Server.MessageListener {
     }
 
     private fun sendMessageToServer() {
-        Server(baseUrl, getString(R.string.postStaticPos, keyWord, color, brightness, nameOfEffect),
-            this@StaticColorFragment).start()
-    }
-    override fun onMessage(message: String) {
-        try{
-            requireActivity().runOnUiThread {
-                model.updateNameOfEffect(message)
-            }
-        }catch (e:IllegalStateException){
-            Log.d(Constants.TAG, "StaticColorFragment Exception message= $e.message")
-        }
+        //порядок параметров важен: скетч читает их по номеру
+        EspApi.get(baseUrl, keyWord,
+            listOf("color" to color, "brightness" to brightness, "position" to nameOfEffect),
+            onError = { toastNoConnection() },
+            onSuccess = { if (isAdded) model.updateNameOfEffect(it) })
     }
 }

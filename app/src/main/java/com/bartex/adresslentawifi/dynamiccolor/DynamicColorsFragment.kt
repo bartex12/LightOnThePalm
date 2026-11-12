@@ -10,7 +10,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.EspApi
+import com.bartex.adresslentawifi.toastNoConnection
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -18,7 +19,7 @@ import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.databinding.FragmentDynamicsBinding
 
-class DynamicColorsFragment : Fragment(), Server.MessageListener{
+class DynamicColorsFragment : Fragment() {
     private var _binding: FragmentDynamicsBinding? = null
     private val binding get() = _binding!!
 
@@ -120,9 +121,11 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
     }
 
     private fun sendMessageToServer() {
-        Server(baseUrl,
-            getString(R.string.postDynamicPos, keyWord, speed, brightness, nameOfEffect),
-            this@DynamicColorsFragment).start()
+        //порядок параметров важен: скетч читает их по номеру
+        EspApi.get(baseUrl, keyWord,
+            listOf("speed" to speed, "brightness" to brightness, "position" to nameOfEffect),
+            onError = { toastNoConnection() },
+            onSuccess = { if (isAdded) model.updateNameOfEffect(it) })
 //        Log.d(TAG, "DynamicColorsFragment sendMessageToServer " +
 //                "speed= $speed brightness = $brightness nameOfEffect = $nameOfEffect")
     }
@@ -136,13 +139,4 @@ class DynamicColorsFragment : Fragment(), Server.MessageListener{
         return sp.toString()
     }
 
-    override fun onMessage(message: String) {
-        try{
-        requireActivity().runOnUiThread {
-            model.updateNameOfEffect(message)
-        }
-            }catch (e:IllegalStateException){
-                Log.d(Constants.TAG, "DynamicColorsFragment Exception message= $e.message")
-            }
-    }
 }

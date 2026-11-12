@@ -10,14 +10,15 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.bartex.adresslentawifi.R
-import com.bartex.adresslentawifi.Server
+import com.bartex.adresslentawifi.EspApi
+import com.bartex.adresslentawifi.toastNoConnection
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.FLAME_BRIGHTNESS
 import com.bartex.adresslentawifi.constants.Constants.HEIGHT_FLAME
 import com.bartex.adresslentawifi.constants.Constants.SPARK_FLAME
 import com.bartex.adresslentawifi.databinding.FragmentFlameBinding
 
-class FlameFragment: Fragment(), Server.MessageListener {
+class FlameFragment: Fragment() {
 
     private var _binding:FragmentFlameBinding? = null
     private val binding get() = _binding!!
@@ -65,7 +66,7 @@ class FlameFragment: Fragment(), Server.MessageListener {
     }
 
     private fun initSeekBarSpark() {
-        binding.seekBarBrFlame.setOnSeekBarChangeListener(
+        binding.seekBarSparkFlame.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {}
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -149,14 +150,12 @@ class FlameFragment: Fragment(), Server.MessageListener {
     }
 
     private fun sendMessageToServer() {
-        Server(baseUrl,
-            getString(R.string.postFlame, keyWord, brightness, heightFlame, sparkFlame, nameOfEffect),
-            this@FlameFragment).start()
+        //порядок параметров важен: скетч читает их по номеру
+        EspApi.get(baseUrl, keyWord,
+            listOf("brightness" to brightness, "height" to heightFlame,
+                "spark" to sparkFlame, "position" to nameOfEffect),
+            onError = { toastNoConnection() },
+            onSuccess = { Log.d(Constants.TAG, "FlameFragment ответ = $it") })
     }
 
-    override fun onMessage(message: String) {
-        requireActivity().runOnUiThread {
-            Log.d(Constants.TAG, "FlameFragment  onMessage message= $message")
-        }
-    }
 }
