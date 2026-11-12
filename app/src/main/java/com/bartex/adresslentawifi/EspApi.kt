@@ -6,6 +6,7 @@ import android.util.Log
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.ConnectionPool
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Единая точка отправки HTTP-запросов на ESP8266.
  *
- * - один OkHttpClient на всё приложение (общий пул потоков и соединений);
+ * - один OkHttpClient на всё приложение (общий пул потоков), соединение на каждый запрос новое;
  * - параметры запроса кодируются (пробелы, &, #, кириллица в имени сети/пароле/эффекта);
  * - порядок параметров сохраняется: скетч читает их по номеру — server.arg(0), server.arg(1)...;
  * - onSuccess и onError всегда вызываются в главном потоке;
@@ -24,9 +25,10 @@ import java.util.concurrent.TimeUnit
  */
 object EspApi {
 
-    //эффекты в скетче блокируют loop() до секунды и больше, поэтому таймауты с запасом
-    private const val CONNECT_TIMEOUT_SEC = 5L
-    private const val READ_TIMEOUT_SEC = 7L
+    //эффекты в скетче блокируют loop() до нескольких секунд, поэтому таймауты с запасом
+    //(10 секунд - как было по умолчанию в прежнем классе Server)
+    private const val CONNECT_TIMEOUT_SEC = 10L
+    private const val READ_TIMEOUT_SEC = 10L
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -34,7 +36,10 @@ object EspApi {
         .connectTimeout(CONNECT_TIMEOUT_SEC, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT_SEC, TimeUnit.SECONDS)
         .writeTimeout(READ_TIMEOUT_SEC, TimeUnit.SECONDS)
-        .retryOnConnectionFailure(false) //команды не повторяем автоматически
+        //ESP8266WebServer обслуживает одного клиента за раз и сам закрывает соединение.
+        //Поэтому соединения не переиспользуем: на каждый запрос - новое, как было в Server.
+        //Иначе OkHttp берёт из пула уже закрытое лентой соединение и запрос падает.
+        .connectionPool(ConnectionPool(0, 1, TimeUnit.SECONDS))
         .build()
 
     /**
@@ -63,7 +68,10 @@ object EspApi {
         for ((name, value) in params) {
             urlBuilder.addQueryParameter(name, value ?: "")
         }
-        val request = Request.Builder().url(urlBuilder.build()).build()
+        val request = Request.Builder()
+            .url(urlBuilder.build())
+            .header("Connection", "close") //просим ESP не держать соединение открытым
+            .build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
