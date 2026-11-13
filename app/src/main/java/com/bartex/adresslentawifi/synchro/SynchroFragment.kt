@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.isVpnActive
+import com.bartex.adresslentawifi.showMessage
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.WiFiListAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -233,12 +234,12 @@ class SynchroFragment:Fragment() {
             Log.d(TAG, "SynchroFragment sendNamePassToServerHome name = $name") //пароль в лог не пишем
             when {
                 name.isEmpty() || password.isEmpty() ->
-                    Toast.makeText(requireActivity(), R.string.emptyNameOrPass, Toast.LENGTH_LONG).show()
+                    showMessage(R.string.emptyNameOrPass)
                 //в скетче под имя отведено 30 байт EEPROM, под пароль - 32
                 name.toByteArray().size > MAX_SSID_BYTES ->
-                    Toast.makeText(requireActivity(), R.string.tooLongName, Toast.LENGTH_LONG).show()
+                    showMessage(R.string.tooLongName)
                 password.toByteArray().size > MAX_PASS_BYTES ->
-                    Toast.makeText(requireActivity(), R.string.tooLongPass, Toast.LENGTH_LONG).show()
+                    showMessage(R.string.tooLongPass)
                 else -> sendNameAndPassword(name, password)
             }
         }
@@ -361,7 +362,7 @@ class SynchroFragment:Fragment() {
                 //форму не убираем - можно исправить и повторить
                 val text = if (requireContext().isVpnActive()) R.string.noConnectionVpn
                            else R.string.sendFailed
-                Toast.makeText(requireActivity(), text, Toast.LENGTH_LONG).show()
+                showMessage(text)
             },
             onSuccess = {
                 if (view == null) return@get

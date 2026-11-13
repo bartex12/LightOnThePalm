@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.os.bundleOf
@@ -24,6 +23,7 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.EspLink
 import com.bartex.adresslentawifi.isVpnActive
+import com.bartex.adresslentawifi.showMessage
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -159,10 +159,7 @@ class   ListFragment : Fragment() {
         }
     }
 
-    private fun toast(text: String) {
-        if (!isAdded) return
-        Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
-    }
+    private fun toast(text: String) = showMessage(text)
 
     //ВРЕМЕННО (этап 2): пункт меню подключает к NodeMCU или отключает от неё
     private fun toggleEspLink() {

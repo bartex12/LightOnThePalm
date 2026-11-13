@@ -54,6 +54,15 @@
             android:id="@+id/action_actionFragment_to_syncroFragment"
             app:destination="@id/syncroFragment"
             app:popUpTo="@id/listFragment" />
+        <action
+            android:id="@+id/action_actionFragment_to_provisionFragment"
+            app:destination="@id/provisionFragment"
+            app:popUpTo="@id/listFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/provisionFragment"
+        android:name="com.bartex.adresslentawifi.provision.ProvisionFragment"
+        android:label="@string/provLabel"
+        tools:layout="@layout/fragment_provision" />
 
 </navigation>

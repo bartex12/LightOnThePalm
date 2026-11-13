@@ -3,8 +3,11 @@ package com.bartex.adresslentawifi
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.widget.Toast
+import android.view.View
+import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * Включён ли на телефоне VPN.
@@ -24,15 +27,32 @@ fun Context.isVpnActive(): Boolean {
 }
 
 /**
- * Сообщение "нет связи с лентой"; если включён VPN - с подсказкой про него.
- * Безопасно, если фрагмент уже закрыт.
+ * Сообщение внизу экрана. В отличие от Toast (на Android 12+ он обрезается до двух строк),
+ * показывает текст целиком. Безопасно, если фрагмент уже закрыт.
  */
+fun Fragment.showMessage(text: CharSequence) {
+    if (!isAdded) return
+    val root = activity?.findViewById<View>(android.R.id.content) ?: return
+    //чем длиннее текст, тем дольше показываем: от 3 до 8 секунд
+    val duration = (2000 + text.length * 50).coerceIn(3000, 8000)
+    val snackbar = Snackbar.make(root, text, duration)
+    snackbar.view
+        .findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        ?.maxLines = 8
+    snackbar.show()
+}
+
+fun Fragment.showMessage(@StringRes textId: Int) {
+    if (!isAdded) return
+    showMessage(getString(textId))
+}
+
+/** Сообщение "нет связи с лентой"; если включён VPN - с подсказкой про него. */
 fun Fragment.toastNoConnection() {
     if (!isAdded) return
-    val ctx = requireContext()
-    if (ctx.isVpnActive()) {
-        Toast.makeText(ctx, R.string.noConnectionVpn, Toast.LENGTH_LONG).show()
+    if (requireContext().isVpnActive()) {
+        showMessage(R.string.noConnectionVpn)
     } else {
-        Toast.makeText(ctx, R.string.noConnection, Toast.LENGTH_SHORT).show()
+        showMessage(R.string.noConnection)
     }
 }

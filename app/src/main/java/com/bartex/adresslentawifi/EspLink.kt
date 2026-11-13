@@ -105,6 +105,14 @@ object EspLink {
         }
     }
 
+    /** Сбросить состояние FAILED/LOST в IDLE, когда результат уже обработан и показан. */
+    fun clearResult() {
+        val s = stateLiveData.value
+        if (callback == null && (s == State.FAILED || s == State.LOST)) {
+            stateLiveData.postValue(State.IDLE)
+        }
+    }
+
     /** Отключиться от точки доступа ленты. Телефон вернётся в обычную сеть WiFi. */
     @Synchronized
     fun release(context: Context) {
