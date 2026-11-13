@@ -7,10 +7,10 @@
         android:title="Info"
         android:icon="@drawable/ic_baseline_info_24"
         app:showAsAction="ifRoom"/>
-    <!-- временно, для проверки этапа 2: подключение к NodeMCU из приложения -->
+    <!-- прямое подключение телефона к точке доступа ленты NodeMCU (Android 10+) -->
     <item
-        android:id="@+id/testLink"
-        android:title="@string/testLinkConnect"
+        android:id="@+id/directLink"
+        android:title="@string/directLinkConnect"
         app:showAsAction="never"/>
     <item
         android:id="@+id/sync"

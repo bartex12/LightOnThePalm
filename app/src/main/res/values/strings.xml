@@ -149,8 +149,8 @@
     <string name="createHotpoint">Создание локальной WiFi сети NodeMCU</string>
     <string name="toHomeFromLocal">Привязка к домашней сети WiFi из локальной сети</string>
     <string name="toDifferentFromLocal">Привязка к другой сети WiFi из локальной сети</string>
-    <string name="testLinkConnect">Тест: подключиться к NodeMCU</string>
-    <string name="testLinkDisconnect">Тест: отключиться от NodeMCU</string>
+    <string name="directLinkConnect">Подключиться к ленте напрямую (NodeMCU)</string>
+    <string name="directLinkDisconnect">Отключиться от NodeMCU</string>
     <string name="linkConnecting">Подключение к NodeMCU…</string>
     <string name="linkConnected">Подключено к NodeMCU. Лента отвечает, её сеть: %1$s</string>
     <string name="linkConnectedNoAnswer">Подключено к NodeMCU, но лента не ответила на запрос</string>
@@ -161,6 +161,14 @@
     <string name="provDescription">Лента должна быть в режиме точки доступа: по ней бежит красный или фиолетовый огонёк.\n\nВведите имя и пароль сети WiFi, к которой нужно привязать ленту, и нажмите «Привязать». Приложение само подключится к ленте, передаст ей данные и найдёт её в сети.\n\nТелефон должен знать эту сеть (подключался к ней раньше), чтобы вернуться в неё автоматически.</string>
     <string name="provVpnWarning">На телефоне включён VPN. С ним связь с лентой обычно не работает — отключите VPN или добавьте приложение в его исключения.</string>
     <string name="provStart">Привязать</string>
+    <string name="provDescriptionHotpoint">Лента создаст собственную сеть WiFi с именем NodeMCU, и телефон будет управлять ею напрямую, без роутера.\n\nСейчас телефон и лента должны быть в одной сети WiFi.\n\nПока телефон подключен к NodeMCU, интернета через WiFi на нём не будет. При следующих запусках приложение будет подключаться к ленте само.</string>
+    <string name="provStartHotpoint">Создать сеть NodeMCU</string>
+    <string name="provHotStep1">Передача ленте команды создать сеть NodeMCU</string>
+    <string name="provHotStep3">Проверка связи с лентой</string>
+    <string name="provSuccessHotpoint">Готово! Лента создала сеть NodeMCU, телефон подключен к ней напрямую.</string>
+    <string name="provErrorHotSend">Лента не ответила. Проверьте, что она включена и находится в одной сети WiFi с телефоном, и повторите.</string>
+    <string name="provErrorHotAp">Лента приняла команду, но подключиться к сети NodeMCU не удалось. Повторите попытку.</string>
+    <string name="provErrorHotCheck">Телефон подключился к сети NodeMCU, но лента не отвечает. Повторите попытку.</string>
     <string name="provRetry">Повторить</string>
     <string name="provDone">Готово</string>
     <string name="provStep1">Подключение к ленте (сеть NodeMCU). Если появится окно системы — подтвердите в нём подключение</string>

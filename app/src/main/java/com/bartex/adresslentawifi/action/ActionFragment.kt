@@ -68,9 +68,10 @@ class ActionFragment : Fragment(){
         object : ActionAdapter.OnActionClickListener {
             override fun onClick(item: ListOfActions) {
                 nameTag = item.nameOfAction
-                //Сценарии, в которых лента работает как точка доступа NodeMCU.
-                //На Android 10+ их выполняет мастер привязки, на старых - прежняя инструкция.
+                //Сценарии, в которых телефон подключается к точке доступа ленты NodeMCU.
+                //На Android 10+ их выполняет мастер, на старых - прежняя инструкция.
                 val viaAccessPoint = nameTag == getString(R.string.firstInclusion) ||
+                        nameTag == getString(R.string.createHotpoint) ||
                         nameTag == getString(R.string.reconnecting) ||
                         nameTag == getString(R.string.toHomeFromLocal) ||
                         nameTag == getString(R.string.toDifferentFromLocal)

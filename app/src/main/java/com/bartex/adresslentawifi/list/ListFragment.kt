@@ -22,8 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.EspLink
-import com.bartex.adresslentawifi.isVpnActive
-import com.bartex.adresslentawifi.showMessage
+import com.bartex.adresslentawifi.LocalMode
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -120,55 +119,23 @@ class   ListFragment : Fragment() {
         }
 
         initMenu()
-        observeEspLink()
     }
 
-    //ВРЕМЕННО (этап 2): показываем состояние прямого подключения к NodeMCU
-    private var lastLinkState: EspLink.State? = null
-    private fun observeEspLink() {
-        EspLink.state.observe(viewLifecycleOwner) { state ->
-            requireActivity().invalidateOptionsMenu() //обновить текст пункта меню
-            //LiveData повторно отдаёт последнее значение при возврате на экран - его пропускаем
-            if (state == lastLinkState) return@observe
-            val isFirst = lastLinkState == null
-            lastLinkState = state
-            if (isFirst && state == EspLink.State.IDLE) return@observe
-            when (state) {
-                EspLink.State.CONNECTING -> toast(getString(R.string.linkConnecting))
-                EspLink.State.CONNECTED -> {
-                    //лента в режиме точки доступа всегда на этом адресе
-                    sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
-                    EspApi.get(getString(R.string.urlHotpoint), getString(R.string._esp),
-                        onError = {
-                            if (isAdded && requireContext().isVpnActive()) {
-                                toast(getString(R.string.noConnectionVpn))
-                            } else {
-                                toast(getString(R.string.linkConnectedNoAnswer))
-                            }
-                        },
-                        onSuccess = {
-                            sharedViewModel.updateEspNetworkSsid(it)
-                            toast(getString(R.string.linkConnected, it))
-                        })
-                }
-                EspLink.State.FAILED -> toast(getString(R.string.linkFailed))
-                EspLink.State.LOST -> toast(getString(R.string.linkLost))
-                EspLink.State.IDLE -> toast(getString(R.string.linkReleased))
-                else -> {}
-            }
-        }
-    }
-
-    private fun toast(text: String) = showMessage(text)
-
-    //ВРЕМЕННО (этап 2): пункт меню подключает к NodeMCU или отключает от неё
-    private fun toggleEspLink() {
+    //пункт меню: подключить телефон к точке доступа ленты NodeMCU или отключить от неё
+    //(сообщения о результате показывает MainActivity)
+    private fun toggleDirectLink() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        val context = requireContext()
         when (EspLink.state.value) {
-            EspLink.State.CONNECTING, EspLink.State.CONNECTED ->
-                EspLink.release(requireContext())
-            else -> EspLink.connect(requireContext(),
-                getString(R.string.localNetworkName), getString(R.string.localNetworkPass))
+            EspLink.State.CONNECTING, EspLink.State.CONNECTED -> {
+                LocalMode.setEnabled(context, false) //больше не подключаться автоматически
+                EspLink.release(context)
+            }
+            else -> {
+                LocalMode.setEnabled(context, true)  //и при следующих запусках тоже
+                LocalMode.autoConnectBlocked = true  //подключаемся сами, прямо сейчас
+                LocalMode.connect(context)
+            }
         }
     }
 
@@ -181,18 +148,18 @@ class   ListFragment : Fragment() {
             }
 
             override fun onPrepareMenu(menu: Menu) {
-                val item = menu.findItem(R.id.testLink) ?: return
+                val item = menu.findItem(R.id.directLink) ?: return
                 item.isVisible = EspLink.isSupported //только Android 10+
                 val linked = EspLink.state.value == EspLink.State.CONNECTING ||
                         EspLink.state.value == EspLink.State.CONNECTED
-                item.setTitle(if (linked) R.string.testLinkDisconnect else R.string.testLinkConnect)
+                item.setTitle(if (linked) R.string.directLinkDisconnect else R.string.directLinkConnect)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // Handle the menu selection
                 return when (menuItem.itemId) {
-                    R.id.testLink -> {
-                        toggleEspLink()
+                    R.id.directLink -> {
+                        toggleDirectLink()
                         true
                     }
                     R.id.sync -> {

@@ -23,9 +23,10 @@ import com.bartex.adresslentawifi.provision.ProvisionViewModel.Step
 import com.bartex.adresslentawifi.showMessage
 
 /**
- * Мастер привязки ленты к сети WiFi (Android 10+): одно поле имени, одно поле пароля и кнопка.
- * Подключение к точке доступа ленты, передачу данных и проверку результата выполняет
- * [ProvisionViewModel]; здесь только показ.
+ * Мастер переключения ленты между сетями (Android 10+).
+ * - привязка к сети WiFi: поле имени, поле пароля и кнопка;
+ * - создание локальной сети NodeMCU: только кнопка.
+ * Всю работу выполняет [ProvisionViewModel]; здесь только показ.
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 class ProvisionFragment : Fragment() {
@@ -38,6 +39,10 @@ class ProvisionFragment : Fragment() {
     private lateinit var pref: SharedPreferences
     private var actionTag = ""
     private var successHandled = false
+
+    //true - сценарий "Создание локальной сети NodeMCU", false - привязка к сети WiFi
+    private val toHotpoint: Boolean
+        get() = actionTag == getString(R.string.createHotpoint)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +61,8 @@ class ProvisionFragment : Fragment() {
         pref = requireActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE)
 
         binding.tvTitle.text = actionTag
+        binding.tvDescription.setText(
+            if (toHotpoint) R.string.provDescriptionHotpoint else R.string.provDescription)
         if (savedInstanceState == null) {
             //подставляем имя сети, которое вводили в прошлый раз (пароль не храним)
             binding.edName.setText(pref.getString(ssidPrefKey(), ""))
@@ -85,6 +92,11 @@ class ProvisionFragment : Fragment() {
         else Constants.HOME_SSID
 
     private fun onStartClick() {
+        if (toHotpoint) {
+            val ip = sharedViewModel.getIpAddressEsp().value ?: ""
+            viewModel.startToHotpoint(ip)
+            return
+        }
         val name = binding.edName.text?.toString()?.trim() ?: ""
         val password = binding.edPass.text?.toString() ?: ""
         when {
@@ -95,7 +107,7 @@ class ProvisionFragment : Fragment() {
             else -> {
                 pref.edit().putString(ssidPrefKey(), name).apply()
                 hideKeyboard()
-                viewModel.start(name, password)
+                viewModel.startToNetwork(name, password)
             }
         }
     }
@@ -114,10 +126,16 @@ class ProvisionFragment : Fragment() {
         //форма ввода
         val formVisibility = if (formVisible) View.VISIBLE else View.GONE
         binding.tvDescription.visibility = formVisibility
-        binding.tilName.visibility = formVisibility
-        binding.tilPass.visibility = formVisibility
+        //для локальной сети имя и пароль не нужны - они заданы в скетче
+        val inputsVisibility = if (formVisible && !toHotpoint) View.VISIBLE else View.GONE
+        binding.tilName.visibility = inputsVisibility
+        binding.tilPass.visibility = inputsVisibility
         binding.btnStart.visibility = formVisibility
-        binding.btnStart.setText(if (step == Step.ERROR) R.string.provRetry else R.string.provStart)
+        binding.btnStart.setText(when {
+            step == Step.ERROR -> R.string.provRetry
+            toHotpoint -> R.string.provStartHotpoint
+            else -> R.string.provStart
+        })
 
         //ход работы
         binding.progress.visibility = if (inProgress) View.VISIBLE else View.GONE
@@ -129,13 +147,16 @@ class ProvisionFragment : Fragment() {
         when (step) {
             Step.SUCCESS -> {
                 binding.tvResult.visibility = View.VISIBLE
-                binding.tvResult.text = getString(R.string.provSuccess, state.espSsid, state.espIp)
+                binding.tvResult.text =
+                    if (toHotpoint) getString(R.string.provSuccessHotpoint)
+                    else getString(R.string.provSuccess, state.espSsid, state.espIp)
                 if (!successHandled) {
                     successHandled = true
                     //главный экран берёт адрес и имя сети ленты отсюда
                     sharedViewModel.updateIpAddressEsp(state.espIp)
                     sharedViewModel.updateEspNetworkSsid(state.espSsid)
                     sharedViewModel.updateNameOfEffect("")
+                    if (toHotpoint) sharedViewModel.updateTlfSSID(state.espSsid)
                 }
             }
             Step.ERROR -> {
@@ -149,19 +170,13 @@ class ProvisionFragment : Fragment() {
     //список шагов с отметками: выполнен, выполняется, ещё не начат
     private fun stepsText(state: ProvisionViewModel.UiState): String {
         //номер текущего шага: 0, 1 или 2; 3 - все выполнены
-        val current = when (state.step) {
-            Step.FORM, Step.CONNECTING -> 0
-            Step.SENDING -> 1
-            Step.SWITCHING, Step.SEARCHING -> 2
-            Step.SUCCESS -> 3
-            Step.ERROR -> when (state.failure) {
-                Failure.AP_NOT_FOUND -> 0
-                Failure.NOT_DELIVERED -> 1
-                else -> 2
-            }
-        }
+        val current = state.stepIndex
         val failed = state.step == Step.ERROR
-        val titles = listOf(
+        val titles = if (toHotpoint) listOf(
+            getString(R.string.provHotStep1),
+            getString(R.string.provStep1),
+            getString(R.string.provHotStep3)
+        ) else listOf(
             getString(R.string.provStep1),
             getString(R.string.provStep2),
             getString(R.string.provStep3, state.ssid)
@@ -178,7 +193,11 @@ class ProvisionFragment : Fragment() {
     }
 
     private fun failureText(state: ProvisionViewModel.UiState): String {
-        val text = when (state.failure) {
+        val text = if (toHotpoint) when (state.failure) {
+            Failure.AP_NOT_FOUND -> getString(R.string.provErrorHotAp)
+            Failure.NOT_DELIVERED -> getString(R.string.provErrorHotSend)
+            else -> getString(R.string.provErrorHotCheck)
+        } else when (state.failure) {
             Failure.AP_NOT_FOUND -> getString(R.string.provErrorAp)
             Failure.NOT_DELIVERED -> getString(R.string.provErrorSend)
             else -> getString(R.string.provErrorSearch, state.ssid)
