@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -21,7 +24,12 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.bartex.adresslentawifi.EspApi
+import com.bartex.adresslentawifi.EspLink
+import com.bartex.adresslentawifi.LocalMode
 import com.bartex.adresslentawifi.R
+import com.bartex.adresslentawifi.isVpnActive
+import com.bartex.adresslentawifi.showMessage
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
@@ -81,6 +89,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //слушатель меню шторки -для обработки пунктов шторки
         binding.navView.setNavigationItemSelectedListener(this)
 
+        //следим за прямым подключением к ленте (точка доступа NodeMCU)
+        EspLink.state.observe(this) { onLinkState(it) }
+
         //запрашиваем разрешение на определение местоположения
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(
@@ -91,6 +102,80 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Manifest.permission.CHANGE_NETWORK_STATE,
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.ACCESS_NETWORK_STATE), 100)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mainHandler.removeCallbacks(releaseLinkInBackground)
+        autoConnectLocalMode()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        //Пока телефон подключен к NodeMCU, обычного WiFi на нём нет. Если приложение надолго
+        //убрали с экрана - отключаемся, чтобы телефон вернулся в свою сеть.
+        //При возврате в приложение подключимся снова (onStart).
+        if (!isChangingConfigurations && EspLink.network != null) {
+            mainHandler.postDelayed(releaseLinkInBackground, BACKGROUND_RELEASE_MS)
+        }
+    }
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    private val releaseLinkInBackground = Runnable {
+        Log.d(TAG, "MainActivity: приложение давно в фоне - отключаемся от NodeMCU")
+        LocalMode.autoConnectBlocked = false //при возврате подключиться снова
+        EspLink.release(applicationContext)
+    }
+
+    //В локальном режиме (лента - точка доступа NodeMCU) подключаемся к ленте сами
+    private fun autoConnectLocalMode() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (!LocalMode.isEnabled(this) || LocalMode.autoConnectBlocked) return
+        //на экране мастера подключением управляет сам мастер
+        if (navController.currentDestination?.id == R.id.provisionFragment) return
+        val state = EspLink.state.value
+        if (state == EspLink.State.CONNECTING || state == EspLink.State.CONNECTED) return
+        LocalMode.autoConnectBlocked = true //одна попытка; см. описание флага
+        LocalMode.connect(this)
+    }
+
+    //Состояние прямого подключения к ленте: сообщения и данные для главного экрана
+    private fun onLinkState(state: EspLink.State) {
+        invalidateOptionsMenu() //обновить текст пункта меню
+        val previous = model.lastLinkState
+        if (state == previous) return //LiveData повторно отдала то же значение
+        model.lastLinkState = state
+        if (previous == null && state == EspLink.State.IDLE) return //запуск приложения
+
+        if (previous == EspLink.State.CONNECTED && state == EspLink.State.LOST) {
+            LocalMode.autoConnectBlocked = false //связь была и пропала - можно пробовать снова
+        }
+        //на экране мастера всё показывает сам мастер
+        if (navController.currentDestination?.id == R.id.provisionFragment) return
+
+        when (state) {
+            EspLink.State.CONNECTING -> showMessage(getString(R.string.linkConnecting))
+            EspLink.State.CONNECTED -> {
+                //лента в режиме точки доступа всегда на этом адресе
+                model.updateIpAddressEsp(getString(R.string.hotpointIp))
+                model.updateTlfSSID(getString(R.string.localNetworkName))
+                EspApi.get(getString(R.string.urlHotpoint), getString(R.string._esp),
+                    onError = {
+                        showMessage(getString(
+                            if (isVpnActive()) R.string.noConnectionVpn
+                            else R.string.linkConnectedNoAnswer))
+                    },
+                    onSuccess = {
+                        model.updateEspNetworkSsid(it)
+                        showMessage(getString(R.string.linkConnected, it))
+                    })
+            }
+            EspLink.State.FAILED -> showMessage(getString(R.string.linkFailed))
+            EspLink.State.LOST -> showMessage(getString(R.string.linkLost))
+            EspLink.State.IDLE ->
+                if (previous == EspLink.State.CONNECTED) showMessage(getString(R.string.linkReleased))
         }
     }
 
@@ -128,4 +213,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+
+    companion object {
+        //через сколько после ухода приложения с экрана отключаться от NodeMCU
+        private const val BACKGROUND_RELEASE_MS = 5 * 60 * 1000L
+    }
 }

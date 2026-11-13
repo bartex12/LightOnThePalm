@@ -1,5 +1,6 @@
 package com.bartex.adresslentawifi
 
+import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -32,7 +33,13 @@ fun Context.isVpnActive(): Boolean {
  */
 fun Fragment.showMessage(text: CharSequence) {
     if (!isAdded) return
-    val root = activity?.findViewById<View>(android.R.id.content) ?: return
+    activity?.showMessage(text)
+}
+
+/** То же из Activity. */
+fun Activity.showMessage(text: CharSequence) {
+    if (isFinishing || isDestroyed) return
+    val root = findViewById<View>(android.R.id.content) ?: return
     //чем длиннее текст, тем дольше показываем: от 3 до 8 секунд
     val duration = (2000 + text.length * 50).coerceIn(3000, 8000)
     val snackbar = Snackbar.make(root, text, duration)

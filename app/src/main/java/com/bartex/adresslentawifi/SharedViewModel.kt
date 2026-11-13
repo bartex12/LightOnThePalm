@@ -14,6 +14,13 @@ class SharedViewModel: ViewModel() {
 
     var isFirstLaunch = true //флаг первого запуска
 
+    //последнее обработанное состояние EspLink - чтобы не показывать сообщение повторно
+    //после поворота экрана (LiveData заново отдаёт последнее значение)
+    var lastLinkState: EspLink.State? = null
+
+    //подсказку про сохранённую в телефоне сеть NodeMCU показываем один раз за запуск
+    var savedNodeMcuHintShown = false
+
     fun getNameOfEffect():LiveData<String>{
         return nameOfEffect
     }
