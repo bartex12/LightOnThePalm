@@ -127,8 +127,10 @@ class   ListFragment : Fragment() {
     //телефона. Тогда "Отключиться от NodeMCU" не помогает: система тут же подключается
     //обратно. Удалить чужую сохранённую сеть приложение не может - подсказываем один раз.
     private fun hintIfSystemOnNodeMcu(ip: String, espSsid: String) {
+        Log.d(TAG, "hintIfSystemOnNodeMcu ip=$ip ssid=[$espSsid] " +
+                "shown=${sharedViewModel.savedNodeMcuHintShown} link=${EspLink.state.value}")
         if (!isAdded || !EspLink.isSupported || sharedViewModel.savedNodeMcuHintShown) return
-        if (ip == getString(R.string.hotpointIp) && espSsid == getString(R.string.localNetworkName)) {
+        if (ip == getString(R.string.hotpointIp) && espSsid.trim() == getString(R.string.localNetworkName)) {
             sharedViewModel.savedNodeMcuHintShown = true
             showMessage(R.string.savedNodeMcuHint)
         }
