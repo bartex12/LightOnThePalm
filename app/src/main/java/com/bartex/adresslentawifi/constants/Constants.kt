@@ -4,6 +4,7 @@ object Constants {
     const val TAG = "33333"
     const val NODE_MCU = "NodeMCU"
     const val IP  = "IP"
+    const val LAST_HOME_IP  = "LAST_HOME_IP"      //последний адрес ленты в обычной сети WiFi
     const val WIFI_IP  = "WIFI_IP"
     const val WIFI_NAME  = "WIFI_NAME"
     const val WIFI_PASSWORD  = "WIFI_PASSWORD"

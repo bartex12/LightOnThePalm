@@ -189,6 +189,11 @@
     <string name="ligthOnHand">Свет на ладони</string>
     <string name="you_net">Введите имя своей WiFi сети</string>
     <string name="you_net_pass">Введите пароль своей WiFi сети</string>
+    <string name="espIpTitle">Адрес ленты</string>
+    <string name="espIpMessage">Обычно приложение находит ленту само. Если не нашло, введите её адрес вручную — его можно посмотреть в списке устройств роутера.</string>
+    <string name="espIpHint">например, 192.168.0.144</string>
+    <string name="espIpWrong">Адрес должен состоять из четырёх чисел через точку, например 192.168.0.144</string>
+    <string name="espAnswers">Лента отвечает, её сеть: %1$s</string>
     <string name="network_name">не определено</string>
     <string name="phoneSsidNoPermission">нет разрешения (нажмите)</string>
     <string name="phoneSsidDenied">Без разрешения «Точное местоположение» Android не сообщает имя сети WiFi. На работу с лентой это не влияет. Выдать разрешение можно в настройках приложения: Разрешения → Местоположение → Точное.</string>

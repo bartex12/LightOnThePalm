@@ -289,8 +289,11 @@ class ProvisionViewModel(app: Application) : AndroidViewModel(app) {
     private fun succeed(ip: String, espSsid: String) {
         stopAll()
         //запоминаем адрес ленты - его читает главный экран
-        context.getSharedPreferences("MyPref", Context.MODE_PRIVATE)
-            .edit().putString(Constants.IP, ip).apply()
+        val editor = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE).edit()
+        editor.putString(Constants.IP, ip)
+        //адрес в обычной сети пригодится, если поиск ленту когда-нибудь не найдёт
+        if (mode == Mode.TO_NETWORK) editor.putString(Constants.LAST_HOME_IP, ip)
+        editor.apply()
         stateLiveData.value = UiState(Step.SUCCESS, 3, null, ssid, ip, espSsid)
     }
 
