@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bartex.adresslentawifi.EspLink
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.adapter.ActionAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -67,7 +68,17 @@ class ActionFragment : Fragment(){
         object : ActionAdapter.OnActionClickListener {
             override fun onClick(item: ListOfActions) {
                 nameTag = item.nameOfAction
-                navigateTo(nameTag, R.id.action_actionFragment_to_syncroFragment)
+                //Сценарии, в которых лента работает как точка доступа NodeMCU.
+                //На Android 10+ их выполняет мастер привязки, на старых - прежняя инструкция.
+                val viaAccessPoint = nameTag == getString(R.string.firstInclusion) ||
+                        nameTag == getString(R.string.reconnecting) ||
+                        nameTag == getString(R.string.toHomeFromLocal) ||
+                        nameTag == getString(R.string.toDifferentFromLocal)
+                if (viaAccessPoint && EspLink.isSupported) {
+                    navigateTo(nameTag, R.id.action_actionFragment_to_provisionFragment)
+                } else {
+                    navigateTo(nameTag, R.id.action_actionFragment_to_syncroFragment)
+                }
             }
         }
 
