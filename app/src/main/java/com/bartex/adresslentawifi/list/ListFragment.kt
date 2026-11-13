@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.EspLink
+import com.bartex.adresslentawifi.isVpnActive
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -138,7 +139,13 @@ class   ListFragment : Fragment() {
                     //лента в режиме точки доступа всегда на этом адресе
                     sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
                     EspApi.get(getString(R.string.urlHotpoint), getString(R.string._esp),
-                        onError = { toast(getString(R.string.linkConnectedNoAnswer)) },
+                        onError = {
+                            if (isAdded && requireContext().isVpnActive()) {
+                                toast(getString(R.string.noConnectionVpn))
+                            } else {
+                                toast(getString(R.string.linkConnectedNoAnswer))
+                            }
+                        },
                         onSuccess = {
                             sharedViewModel.updateEspNetworkSsid(it)
                             toast(getString(R.string.linkConnected, it))

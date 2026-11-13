@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
+import com.bartex.adresslentawifi.isVpnActive
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.WiFiListAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -358,7 +359,9 @@ class SynchroFragment:Fragment() {
                 if (view == null) return@get
                 sendNamePassToServerHome.isEnabled = true
                 //форму не убираем - можно исправить и повторить
-                Toast.makeText(requireActivity(), R.string.sendFailed, Toast.LENGTH_LONG).show()
+                val text = if (requireContext().isVpnActive()) R.string.noConnectionVpn
+                           else R.string.sendFailed
+                Toast.makeText(requireActivity(), text, Toast.LENGTH_LONG).show()
             },
             onSuccess = {
                 if (view == null) return@get
