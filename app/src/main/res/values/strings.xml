@@ -163,7 +163,7 @@
     <string name="provStart">Привязать</string>
     <string name="provRetry">Повторить</string>
     <string name="provDone">Готово</string>
-    <string name="provStep1">Подключение к ленте (сеть NodeMCU). Подтвердите подключение в окне системы</string>
+    <string name="provStep1">Подключение к ленте (сеть NodeMCU). Если появится окно системы — подтвердите в нём подключение</string>
     <string name="provStep2">Передача ленте имени и пароля сети</string>
     <string name="provStep3">Ожидание ленты в сети «%1$s» (до минуты)</string>
     <string name="provSuccess">Готово! Лента подключена к сети «%1$s», её адрес %2$s</string>
