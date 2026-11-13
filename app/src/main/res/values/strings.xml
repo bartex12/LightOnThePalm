@@ -149,6 +149,7 @@
     <string name="createHotpoint">Создание локальной WiFi сети NodeMCU</string>
     <string name="toHomeFromLocal">Привязка к домашней сети WiFi из локальной сети</string>
     <string name="toDifferentFromLocal">Привязка к другой сети WiFi из локальной сети</string>
+    <string name="savedNodeMcuHint">Телефон сам подключился к сети NodeMCU: она сохранена в настройках WiFi телефона. Чтобы подключением управляло приложение, удалите («забудьте») сеть NodeMCU в настройках WiFi.</string>
     <string name="directLinkConnect">Подключиться к ленте напрямую (NodeMCU)</string>
     <string name="directLinkDisconnect">Отключиться от NodeMCU</string>
     <string name="linkConnecting">Подключение к NodeMCU…</string>

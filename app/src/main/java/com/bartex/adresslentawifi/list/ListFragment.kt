@@ -23,6 +23,7 @@ import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.EspLink
 import com.bartex.adresslentawifi.LocalMode
+import com.bartex.adresslentawifi.showMessage
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
@@ -119,6 +120,18 @@ class   ListFragment : Fragment() {
         }
 
         initMenu()
+    }
+
+    //Лента ответила как точка доступа NodeMCU, хотя приложение к ней не подключалось.
+    //Значит, телефон подключился к NodeMCU сам - эта сеть сохранена в настройках WiFi
+    //телефона. Тогда "Отключиться от NodeMCU" не помогает: система тут же подключается
+    //обратно. Удалить чужую сохранённую сеть приложение не может - подсказываем один раз.
+    private fun hintIfSystemOnNodeMcu(ip: String, espSsid: String) {
+        if (!isAdded || !EspLink.isSupported || sharedViewModel.savedNodeMcuHintShown) return
+        if (ip == getString(R.string.hotpointIp) && espSsid == getString(R.string.localNetworkName)) {
+            sharedViewModel.savedNodeMcuHintShown = true
+            showMessage(R.string.savedNodeMcuHint)
+        }
     }
 
     //пункт меню: подключить телефон к точке доступа ленты NodeMCU или отключить от неё
@@ -393,8 +406,12 @@ class   ListFragment : Fragment() {
                             Log.d(TAG, "runOnUiThread ip =$ip")
                             sharedViewModel.updateIpAddressEsp(ip)
                             //посылаем запрос на ESP на имя сети, к которой подключена ESP
+                            val viaDirectLink = EspLink.network != null
                             EspApi.get(getString(R.string.baseUrl, ip), getString(R.string._esp),
-                                onSuccess = { sharedViewModel.updateEspNetworkSsid(it) })
+                                onSuccess = {
+                                    sharedViewModel.updateEspNetworkSsid(it)
+                                    if (!viaDirectLink) hintIfSystemOnNodeMcu(ip, it)
+                                })
                         }
                     }
                 })
