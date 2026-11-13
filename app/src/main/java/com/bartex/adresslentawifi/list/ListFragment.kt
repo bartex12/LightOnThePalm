@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -129,7 +128,7 @@ class   ListFragment : Fragment() {
     private fun hintIfSystemOnNodeMcu(ip: String, espSsid: String) {
         Log.d(TAG, "hintIfSystemOnNodeMcu ip=$ip ssid=[$espSsid] " +
                 "shown=${sharedViewModel.savedNodeMcuHintShown} link=${EspLink.state.value}")
-        if (!isAdded || !EspLink.isSupported || sharedViewModel.savedNodeMcuHintShown) return
+        if (!isAdded || sharedViewModel.savedNodeMcuHintShown) return
         if (ip == getString(R.string.hotpointIp) && espSsid.trim() == getString(R.string.localNetworkName)) {
             sharedViewModel.savedNodeMcuHintShown = true
             showMessage(R.string.savedNodeMcuHint)
@@ -139,7 +138,6 @@ class   ListFragment : Fragment() {
     //пункт меню: подключить телефон к точке доступа ленты NodeMCU или отключить от неё
     //(сообщения о результате показывает MainActivity)
     private fun toggleDirectLink() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         val context = requireContext()
         when (EspLink.state.value) {
             EspLink.State.CONNECTING, EspLink.State.CONNECTED -> {
@@ -164,7 +162,6 @@ class   ListFragment : Fragment() {
 
             override fun onPrepareMenu(menu: Menu) {
                 val item = menu.findItem(R.id.directLink) ?: return
-                item.isVisible = EspLink.isSupported //только Android 10+
                 val linked = EspLink.state.value == EspLink.State.CONNECTING ||
                         EspLink.state.value == EspLink.State.CONNECTED
                 item.setTitle(if (linked) R.string.directLinkDisconnect else R.string.directLinkConnect)
@@ -251,7 +248,11 @@ class   ListFragment : Fragment() {
                 sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
             }
             getString(R.string.unknownSsid) -> {
-                sharedViewModel.updateTlfSSID(getString(R.string.network_name))
+                //Без разрешения на геолокацию Android не сообщает имя сети WiFi.
+                //Точно известно оно только при прямом подключении к ленте.
+                sharedViewModel.updateTlfSSID(
+                    if (EspLink.network != null) getString(R.string.localNetworkName)
+                    else getString(R.string.network_name))
             }
             else -> {
                 sharedViewModel.updateTlfSSID(ssid)

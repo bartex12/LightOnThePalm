@@ -4,11 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,7 +38,6 @@ import com.bartex.adresslentawifi.constants.Constants.TAG
  *
  * Все поля меняются только в главном потоке.
  */
-@RequiresApi(Build.VERSION_CODES.Q)
 class ProvisionViewModel(app: Application) : AndroidViewModel(app) {
 
     enum class Mode { TO_NETWORK, TO_HOTPOINT }

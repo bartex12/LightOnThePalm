@@ -1,8 +1,6 @@
 package com.bartex.adresslentawifi
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.bartex.adresslentawifi.constants.Constants
 
 /**
@@ -30,7 +28,6 @@ object LocalMode {
     }
 
     /** Подключить телефон к точке доступа ленты. Результат - в EspLink.state. */
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun connect(context: Context) {
         EspLink.connect(context,
             context.getString(R.string.localNetworkName),

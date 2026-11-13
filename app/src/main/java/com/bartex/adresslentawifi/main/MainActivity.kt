@@ -1,11 +1,8 @@
 package com.bartex.adresslentawifi.main
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +10,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.Group
@@ -91,18 +87,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //следим за прямым подключением к ленте (точка доступа NodeMCU)
         EspLink.state.observe(this) { onLinkState(it) }
-
-        //запрашиваем разрешение на определение местоположения
-        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CHANGE_WIFI_STATE,
-                Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
-                Manifest.permission.CHANGE_NETWORK_STATE,
-                Manifest.permission.ACCESS_WIFI_STATE,
-                Manifest.permission.ACCESS_NETWORK_STATE), 100)
-        }
     }
 
     override fun onStart() {
@@ -131,7 +115,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //В локальном режиме (лента - точка доступа NodeMCU) подключаемся к ленте сами
     private fun autoConnectLocalMode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         if (!LocalMode.isEnabled(this) || LocalMode.autoConnectBlocked) return
         //на экране мастера подключением управляет сам мастер
         if (navController.currentDestination?.id == R.id.provisionFragment) return
@@ -194,25 +177,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return false
     }
-
-    //метод обратного вызова после запроса разрешений в onCreate
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 100) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)  {
-                Toast.makeText(this, resources.getString(R.string.permission),
-                    Toast.LENGTH_SHORT).show()
-                //повторный вызов onCreate
-                recreate()
-            }else {
-                Toast.makeText(this, resources.getString(R.string.notPermission),
-                    Toast.LENGTH_SHORT ).show()
-            }
-        }
-    }
-
 
     companion object {
         //через сколько после ухода приложения с экрана отключаться от NodeMCU

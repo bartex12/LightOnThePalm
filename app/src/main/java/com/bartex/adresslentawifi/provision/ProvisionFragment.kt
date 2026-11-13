@@ -2,13 +2,11 @@ package com.bartex.adresslentawifi.provision
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -28,7 +26,6 @@ import com.bartex.adresslentawifi.showMessage
  * - создание локальной сети NodeMCU: только кнопка.
  * Всю работу выполняет [ProvisionViewModel]; здесь только показ.
  */
-@RequiresApi(Build.VERSION_CODES.Q)
 class ProvisionFragment : Fragment() {
 
     private var _binding: FragmentProvisionBinding? = null

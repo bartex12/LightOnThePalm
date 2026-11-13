@@ -6,16 +6,14 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.WifiNetworkSpecifier
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.bartex.adresslentawifi.constants.Constants.TAG
 
 /**
  * Прямое подключение телефона к точке доступа ленты (NodeMCU) из приложения,
- * без перехода в настройки WiFi и без разрешения на геолокацию. Android 10+.
+ * без перехода в настройки WiFi и без разрешения на геолокацию.
  *
  * Как это работает:
  * - connect() показывает системный диалог с найденной сетью, пользователь подтверждает;
@@ -37,10 +35,6 @@ object EspLink {
         LOST         //соединение было и пропало (лента выключена или ушла в другую сеть)
     }
 
-    /** true, если на этом телефоне можно подключаться из приложения (Android 10 и новее) */
-    val isSupported: Boolean
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-
     private val stateLiveData = MutableLiveData(State.IDLE)
     val state: LiveData<State> get() = stateLiveData
 
@@ -55,7 +49,6 @@ object EspLink {
      * Запросить подключение к точке доступа с именем [ssid] и паролем [password].
      * Результат приходит в [state]. Повторный вызов при активном запросе ничего не делает.
      */
-    @RequiresApi(Build.VERSION_CODES.Q)
     @Synchronized
     fun connect(context: Context, ssid: String, password: String) {
         if (callback != null) {
