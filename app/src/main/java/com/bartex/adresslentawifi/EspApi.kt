@@ -1,5 +1,6 @@
 package com.bartex.adresslentawifi
 
+import android.net.Network
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -31,6 +32,24 @@ object EspApi {
     private const val READ_TIMEOUT_SEC = 10L
 
     private val mainHandler = Handler(Looper.getMainLooper())
+
+    //клиент, привязанный к сети точки доступа ленты (см. EspLink), и сама эта сеть
+    private var boundClient: OkHttpClient? = null
+    private var boundNetwork: Network? = null
+
+    /**
+     * Если телефон подключен к точке доступа ленты через EspLink, запросы надо отправлять
+     * именно через эту сеть: у неё нет интернета, и по умолчанию Android её не использует.
+     */
+    @Synchronized
+    private fun clientFor(network: Network?): OkHttpClient {
+        if (network == null) return client
+        if (network != boundNetwork) {
+            boundNetwork = network
+            boundClient = client.newBuilder().socketFactory(network.socketFactory).build()
+        }
+        return boundClient ?: client
+    }
 
     private val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT_SEC, TimeUnit.SECONDS)
@@ -73,7 +92,7 @@ object EspApi {
             .header("Connection", "close") //просим ESP не держать соединение открытым
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        clientFor(EspLink.network).newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d(TAG, "EspApi /$path ошибка: ${e.message}")
                 mainHandler.post { onError(e.message ?: "нет ответа") }

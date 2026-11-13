@@ -7,6 +7,11 @@
         android:title="Info"
         android:icon="@drawable/ic_baseline_info_24"
         app:showAsAction="ifRoom"/>
+    <!-- временно, для проверки этапа 2: подключение к NodeMCU из приложения -->
+    <item
+        android:id="@+id/testLink"
+        android:title="@string/testLinkConnect"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/sync"
         android:title="Sync"
