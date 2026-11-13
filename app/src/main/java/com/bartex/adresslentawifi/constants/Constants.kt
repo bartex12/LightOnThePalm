@@ -7,6 +7,7 @@ object Constants {
     const val WIFI_IP  = "WIFI_IP"
     const val WIFI_NAME  = "WIFI_NAME"
     const val WIFI_PASSWORD  = "WIFI_PASSWORD"
+    const val LOCATION_ASKED  = "LOCATION_ASKED"  //разрешение на местоположение уже спрашивали
     const val LOCAL_MODE  = "LOCAL_MODE"          //лента работает как точка доступа NodeMCU
     const val HOME_SSID  = "HOME_SSID"            //имя домашней сети, введённое в прошлый раз
     const val DIFFERENT_SSID  = "DIFFERENT_SSID"  //имя другой сети, введённое в прошлый раз

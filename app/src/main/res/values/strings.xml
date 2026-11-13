@@ -190,5 +190,8 @@
     <string name="you_net">Введите имя своей WiFi сети</string>
     <string name="you_net_pass">Введите пароль своей WiFi сети</string>
     <string name="network_name">не определено</string>
+    <string name="phoneSsidNoPermission">нет разрешения (нажмите)</string>
+    <string name="phoneSsidDenied">Без разрешения «Точное местоположение» Android не сообщает имя сети WiFi. На работу с лентой это не влияет. Выдать разрешение можно в настройках приложения: Разрешения → Местоположение → Точное.</string>
+    <string name="phoneSsidUnknown">Имя сети не определено: телефон не подключен к WiFi или на нём выключена геолокация.</string>
     <string name="unknownSsid"><![CDATA[<unknown ssid>]]></string>
 </resources>

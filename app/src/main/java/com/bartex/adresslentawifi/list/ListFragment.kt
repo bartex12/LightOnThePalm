@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -118,6 +117,11 @@ class   ListFragment : Fragment() {
             //Log.d(TAG, "### ListFragment onViewCreated SSID сети ТЛФ = $tlfNetworkSsid")
         }
 
+        //нажатие на имя сети телефона: если имя не показано - объясняем почему и просим разрешение
+        binding.nameTlf.setOnClickListener {
+            (activity as? MainActivity)?.onPhoneSsidClick()
+        }
+
         initMenu()
     }
 
@@ -198,7 +202,7 @@ class   ListFragment : Fragment() {
         super.onResume()
         Log.d(TAG, "@@@ListFragment onResume")
         nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
-        updateSSIDandIP() //получаем название wifi и Ip сети телефона  от wifiManager
+        (activity as? MainActivity)?.refreshPhoneSsid() //имя сети WiFi телефона
         isShowInfo = true //чтобы при возврате из эффекта по щелчку открыть инфо
     }
 
@@ -226,38 +230,6 @@ class   ListFragment : Fragment() {
             }
         }
         return -1
-    }
-
-    private fun updateSSIDandIP() {
-       val  wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-        //не всегда ip идёт первым, поэтому это вызывает крэш и надо искать другой метод
-//        //https://stackoverflow.com/questions/71003749/android-wifiinfo-getipaddress-deprecated
-//        var ip:String? = ""
-//        fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//        fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
-//            getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
-//        }
-//        ip = context?.let { getIpAddress(it) }
-//        Log.d(TAG, "*#*# ListFragment updateSSIDandIP ТЛФ:    ssid= $ssid  networkId = $ip")
-//        sharedViewModel.updateTlfIp(ip)
-
-        when (ssid) {
-            getString(R.string.localNetworkName) -> {
-                sharedViewModel.updateTlfSSID(ssid)
-                sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
-            }
-            getString(R.string.unknownSsid) -> {
-                //Без разрешения на геолокацию Android не сообщает имя сети WiFi.
-                //Точно известно оно только при прямом подключении к ленте.
-                sharedViewModel.updateTlfSSID(
-                    if (EspLink.network != null) getString(R.string.localNetworkName)
-                    else getString(R.string.network_name))
-            }
-            else -> {
-                sharedViewModel.updateTlfSSID(ssid)
-            }
-        }
     }
 
     private fun getIp(){
