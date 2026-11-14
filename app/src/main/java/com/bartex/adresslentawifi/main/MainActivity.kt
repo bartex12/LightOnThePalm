@@ -3,9 +3,12 @@ package com.bartex.adresslentawifi.main
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +16,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.Group
@@ -92,16 +95,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //следим за прямым подключением к ленте (точка доступа NodeMCU)
         EspLink.state.observe(this) { onLinkState(it) }
 
-        //запрашиваем разрешение на определение местоположения
-        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CHANGE_WIFI_STATE,
-                Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
-                Manifest.permission.CHANGE_NETWORK_STATE,
-                Manifest.permission.ACCESS_WIFI_STATE,
-                Manifest.permission.ACCESS_NETWORK_STATE), 100)
+        //Разрешение на местоположение необязательное: оно нужно только чтобы показать имя
+        //сети WiFi телефона. Спрашиваем один раз, при первом запуске; позже его можно
+        //выдать нажатием на имя сети на главном экране.
+        val pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE)
+        if (savedInstanceState == null && !hasFineLocation() &&
+            !pref.getBoolean(Constants.LOCATION_ASKED, false)) {
+            pref.edit().putBoolean(Constants.LOCATION_ASKED, true).apply()
+            requestLocationPermission()
         }
     }
 
@@ -109,6 +110,86 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStart()
         mainHandler.removeCallbacks(releaseLinkInBackground)
         autoConnectLocalMode()
+        //следим за сменой сети, чтобы имя сети телефона на главном экране было актуальным
+        try {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        } catch (e: RuntimeException) {
+            Log.d(TAG, "MainActivity registerDefaultNetworkCallback ошибка: ${e.message}")
+        }
+        refreshPhoneSsid()
+    }
+
+    private val connectivityManager: ConnectivityManager by lazy {
+        getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    //колбэки приходят не в главном потоке; имя сети обновляется чуть позже самой сети
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) = scheduleSsidRefresh()
+        override fun onLost(network: Network) = scheduleSsidRefresh()
+        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) =
+            scheduleSsidRefresh()
+    }
+
+    private val ssidRefresh = Runnable { refreshPhoneSsid() }
+
+    private fun scheduleSsidRefresh() {
+        mainHandler.removeCallbacks(ssidRefresh)
+        mainHandler.postDelayed(ssidRefresh, SSID_REFRESH_DELAY_MS)
+    }
+
+    private fun hasFineLocation(): Boolean =
+        checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
+
+    /**
+     * Определить имя сети WiFi телефона и показать его на главном экране.
+     * Android сообщает имя сети только при разрешении "Точное местоположение"
+     * и включённой геолокации; иначе показываем, почему имени нет.
+     */
+    fun refreshPhoneSsid() {
+        val name: String = if (EspLink.network != null) {
+            getString(R.string.localNetworkName) //прямое подключение к ленте - имя известно точно
+        } else {
+            val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            @Suppress("DEPRECATION")
+            val ssid = wifiManager.connectionInfo?.ssid?.removeSurrounding("\"") ?: ""
+            when {
+                ssid.isNotEmpty() && ssid != getString(R.string.unknownSsid) -> ssid
+                !hasFineLocation() -> getString(R.string.phoneSsidNoPermission)
+                else -> getString(R.string.network_name)
+            }
+        }
+        model.updateTlfSSID(name)
+        //телефон в сети ленты - её адрес известен
+        if (name == getString(R.string.localNetworkName)) {
+            model.updateIpAddressEsp(getString(R.string.hotpointIp))
+        }
+    }
+
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        refreshPhoneSsid()
+        if (!hasFineLocation()) showMessage(getString(R.string.phoneSsidDenied))
+    }
+
+    private fun requestLocationPermission() {
+        locationPermissionLauncher.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION))
+    }
+
+    /** Нажатие на имя сети телефона на главном экране. */
+    fun onPhoneSsidClick() {
+        if (!hasFineLocation()) {
+            requestLocationPermission()
+        } else {
+            refreshPhoneSsid()
+            if (model.getTlfSSID().value == getString(R.string.network_name)) {
+                showMessage(getString(R.string.phoneSsidUnknown))
+            }
+        }
     }
 
     override fun onStop() {
@@ -116,6 +197,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //Пока телефон подключен к NodeMCU, обычного WiFi на нём нет. Если приложение надолго
         //убрали с экрана - отключаемся, чтобы телефон вернулся в свою сеть.
         //При возврате в приложение подключимся снова (onStart).
+        try {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+        } catch (e: RuntimeException) {
+            //колбэк не был зарегистрирован
+        }
+        mainHandler.removeCallbacks(ssidRefresh)
         if (!isChangingConfigurations && EspLink.network != null) {
             mainHandler.postDelayed(releaseLinkInBackground, BACKGROUND_RELEASE_MS)
         }
@@ -131,7 +218,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //В локальном режиме (лента - точка доступа NodeMCU) подключаемся к ленте сами
     private fun autoConnectLocalMode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         if (!LocalMode.isEnabled(this) || LocalMode.autoConnectBlocked) return
         //на экране мастера подключением управляет сам мастер
         if (navController.currentDestination?.id == R.id.provisionFragment) return
@@ -144,6 +230,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //Состояние прямого подключения к ленте: сообщения и данные для главного экрана
     private fun onLinkState(state: EspLink.State) {
         invalidateOptionsMenu() //обновить текст пункта меню
+        scheduleSsidRefresh()   //имя сети телефона могло измениться
         val previous = model.lastLinkState
         if (state == previous) return //LiveData повторно отдала то же значение
         model.lastLinkState = state
@@ -195,27 +282,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return false
     }
 
-    //метод обратного вызова после запроса разрешений в onCreate
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 100) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)  {
-                Toast.makeText(this, resources.getString(R.string.permission),
-                    Toast.LENGTH_SHORT).show()
-                //повторный вызов onCreate
-                recreate()
-            }else {
-                Toast.makeText(this, resources.getString(R.string.notPermission),
-                    Toast.LENGTH_SHORT ).show()
-            }
-        }
-    }
-
-
     companion object {
         //через сколько после ухода приложения с экрана отключаться от NodeMCU
         private const val BACKGROUND_RELEASE_MS = 5 * 60 * 1000L
+        //имя сети WiFi обновляется чуть позже, чем приходит событие о смене сети
+        private const val SSID_REFRESH_DELAY_MS = 1500L
     }
 }

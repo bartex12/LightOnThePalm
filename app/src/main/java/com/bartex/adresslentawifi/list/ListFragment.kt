@@ -4,9 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.net.wifi.WifiManager
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.os.Handler
+import android.os.Looper
+import android.text.InputType
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +29,12 @@ import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.EspLink
 import com.bartex.adresslentawifi.LocalMode
 import com.bartex.adresslentawifi.showMessage
+import com.bartex.adresslentawifi.toastNoConnection
 import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.adapter.RvListAdapter
 import com.bartex.adresslentawifi.constants.Constants.BASE_URL
 import com.bartex.adresslentawifi.constants.Constants.IP
+import com.bartex.adresslentawifi.constants.Constants.LAST_HOME_IP
 import com.bartex.adresslentawifi.constants.Constants.ITEM_NAME
 import com.bartex.adresslentawifi.constants.Constants.KEY_WORD
 import com.bartex.adresslentawifi.constants.Constants.TAG
@@ -40,6 +47,8 @@ class   ListFragment : Fragment() {
 
     companion object {
         const val SERVICE_TYPE = "_http._tcp"
+        //сколько ждём поиск, прежде чем пробовать прежний адрес ленты
+        private const val PROBE_DELAY_MS = 6000L
     }
 
     private var _binding:FragmentListBinding? = null
@@ -119,6 +128,14 @@ class   ListFragment : Fragment() {
             //Log.d(TAG, "### ListFragment onViewCreated SSID сети ТЛФ = $tlfNetworkSsid")
         }
 
+        //нажатие на адрес ленты: ввести его вручную, если поиск ленту не находит
+        binding.edIpEsp.setOnClickListener { showIpDialog() }
+
+        //нажатие на имя сети телефона: если имя не показано - объясняем почему и просим разрешение
+        binding.nameTlf.setOnClickListener {
+            (activity as? MainActivity)?.onPhoneSsidClick()
+        }
+
         initMenu()
     }
 
@@ -129,17 +146,24 @@ class   ListFragment : Fragment() {
     private fun hintIfSystemOnNodeMcu(ip: String, espSsid: String) {
         Log.d(TAG, "hintIfSystemOnNodeMcu ip=$ip ssid=[$espSsid] " +
                 "shown=${sharedViewModel.savedNodeMcuHintShown} link=${EspLink.state.value}")
-        if (!isAdded || !EspLink.isSupported || sharedViewModel.savedNodeMcuHintShown) return
+        if (!isAdded || sharedViewModel.savedNodeMcuHintShown) return
         if (ip == getString(R.string.hotpointIp) && espSsid.trim() == getString(R.string.localNetworkName)) {
             sharedViewModel.savedNodeMcuHintShown = true
-            showMessage(R.string.savedNodeMcuHint)
+            //окно с кнопкой, а не короткое сообщение: здесь от пользователя требуется действие
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.savedNodeMcuTitle)
+                .setMessage(R.string.savedNodeMcuHint)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNeutralButton(R.string.savedNodeMcuSettings) { _, _ ->
+                    startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                }
+                .show()
         }
     }
 
     //пункт меню: подключить телефон к точке доступа ленты NodeMCU или отключить от неё
     //(сообщения о результате показывает MainActivity)
     private fun toggleDirectLink() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         val context = requireContext()
         when (EspLink.state.value) {
             EspLink.State.CONNECTING, EspLink.State.CONNECTED -> {
@@ -164,7 +188,6 @@ class   ListFragment : Fragment() {
 
             override fun onPrepareMenu(menu: Menu) {
                 val item = menu.findItem(R.id.directLink) ?: return
-                item.isVisible = EspLink.isSupported //только Android 10+
                 val linked = EspLink.state.value == EspLink.State.CONNECTING ||
                         EspLink.state.value == EspLink.State.CONNECTED
                 item.setTitle(if (linked) R.string.directLinkDisconnect else R.string.directLinkConnect)
@@ -200,8 +223,15 @@ class   ListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "@@@ListFragment onResume")
-        nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
-        updateSSIDandIP() //получаем название wifi и Ip сети телефона  от wifiManager
+        try {
+            nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+        } catch (e: RuntimeException) {
+            Log.d(TAG, "ListFragment discoverServices ошибка: ${e.message}")
+        }
+        (activity as? MainActivity)?.refreshPhoneSsid() //имя сети WiFi телефона
+        //если поиск ленту не найдёт - попробуем адрес, по которому она отвечала раньше
+        espFound = false
+        mainHandler.postDelayed(probeLastHomeIp, PROBE_DELAY_MS)
         isShowInfo = true //чтобы при возврате из эффекта по щелчку открыть инфо
     }
 
@@ -211,7 +241,72 @@ class   ListFragment : Fragment() {
         if(binding.edIpEsp.text.isNotEmpty()){
             saveIp(binding.edIpEsp.text.toString())
         }
-        nsdManager.stopServiceDiscovery(discoveryListener)
+        mainHandler.removeCallbacks(probeLastHomeIp)
+        try {
+            nsdManager.stopServiceDiscovery(discoveryListener)
+        } catch (e: RuntimeException) {
+            //поиск не был запущен
+        }
+    }
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var espFound = false //лента найдена с момента последнего показа экрана
+
+    //Запасной путь, когда поиск (mDNS) ленту не находит: проверяем адрес, по которому
+    //она отвечала в обычной сети в прошлый раз. Роутер обычно выдаёт ленте тот же адрес.
+    private val probeLastHomeIp = Runnable {
+        val ip = pref.getString(LAST_HOME_IP, "") ?: ""
+        if (isAdded && !espFound && EspLink.network == null && ip.isNotEmpty()) {
+            Log.d(TAG, "ListFragment: поиск ленту не нашёл, пробуем прежний адрес $ip")
+            checkEspAt(ip, byUser = false)
+        }
+    }
+
+    //Проверить, отвечает ли лента по адресу ip; если да - использовать этот адрес
+    private fun checkEspAt(ip: String, byUser: Boolean) {
+        val viaDirectLink = EspLink.network != null
+        EspApi.get(getString(R.string.baseUrl, ip), getString(R.string._esp),
+            onError = { if (byUser) toastNoConnection() },
+            onSuccess = {
+                if (isAdded && (byUser || !espFound)) {
+                    espFound = true
+                    sharedViewModel.updateIpAddressEsp(ip)
+                    sharedViewModel.updateEspNetworkSsid(it)
+                    rememberHomeIp(ip)
+                    if (byUser) showMessage(getString(R.string.espAnswers, it))
+                    if (!viaDirectLink) hintIfSystemOnNodeMcu(ip, it)
+                }
+            })
+    }
+
+    //запоминаем адрес ленты в обычной сети (не адрес её точки доступа)
+    private fun rememberHomeIp(ip: String) {
+        if (ip != getString(R.string.hotpointIp)) {
+            pref.edit().putString(LAST_HOME_IP, ip).apply()
+        }
+    }
+
+    //нажатие на адрес ленты: ввести адрес вручную (например, из списка устройств роутера)
+    private fun showIpDialog() {
+        val input = EditText(requireContext())
+        input.inputType = InputType.TYPE_CLASS_PHONE
+        input.setText(binding.edIpEsp.text)
+        input.hint = getString(R.string.espIpHint)
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.espIpTitle)
+            .setMessage(R.string.espIpMessage)
+            .setView(input)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val ip = input.text.toString().trim()
+                if (Regex("\\d{1,3}(\\.\\d{1,3}){3}").matches(ip)) {
+                    sharedViewModel.updateIpAddressEsp(ip)
+                    checkEspAt(ip, byUser = true)
+                } else {
+                    showMessage(R.string.espIpWrong)
+                }
+            }
+            .show()
     }
 
     override fun onDestroyView() {
@@ -229,34 +324,6 @@ class   ListFragment : Fragment() {
             }
         }
         return -1
-    }
-
-    private fun updateSSIDandIP() {
-       val  wifiManager = requireActivity().getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ssid = wifiManager.connectionInfo.ssid.removeSurrounding("\"")
-        //не всегда ip идёт первым, поэтому это вызывает крэш и надо искать другой метод
-//        //https://stackoverflow.com/questions/71003749/android-wifiinfo-getipaddress-deprecated
-//        var ip:String? = ""
-//        fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//        fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
-//            getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
-//        }
-//        ip = context?.let { getIpAddress(it) }
-//        Log.d(TAG, "*#*# ListFragment updateSSIDandIP ТЛФ:    ssid= $ssid  networkId = $ip")
-//        sharedViewModel.updateTlfIp(ip)
-
-        when (ssid) {
-            getString(R.string.localNetworkName) -> {
-                sharedViewModel.updateTlfSSID(ssid)
-                sharedViewModel.updateIpAddressEsp(getString(R.string.hotpointIp))
-            }
-            getString(R.string.unknownSsid) -> {
-                sharedViewModel.updateTlfSSID(getString(R.string.network_name))
-            }
-            else -> {
-                sharedViewModel.updateTlfSSID(ssid)
-            }
-        }
     }
 
     private fun getIp(){
@@ -406,7 +473,9 @@ class   ListFragment : Fragment() {
                         activity?.runOnUiThread {
                             if (!isAdded || ip == null) return@runOnUiThread
                             Log.d(TAG, "runOnUiThread ip =$ip")
+                            espFound = true
                             sharedViewModel.updateIpAddressEsp(ip)
+                            rememberHomeIp(ip)
                             //посылаем запрос на ESP на имя сети, к которой подключена ESP
                             val viaDirectLink = EspLink.network != null
                             EspApi.get(getString(R.string.baseUrl, ip), getString(R.string._esp),

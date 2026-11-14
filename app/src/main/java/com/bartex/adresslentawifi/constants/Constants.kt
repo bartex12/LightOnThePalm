@@ -4,9 +4,11 @@ object Constants {
     const val TAG = "33333"
     const val NODE_MCU = "NodeMCU"
     const val IP  = "IP"
+    const val LAST_HOME_IP  = "LAST_HOME_IP"      //последний адрес ленты в обычной сети WiFi
     const val WIFI_IP  = "WIFI_IP"
     const val WIFI_NAME  = "WIFI_NAME"
     const val WIFI_PASSWORD  = "WIFI_PASSWORD"
+    const val LOCATION_ASKED  = "LOCATION_ASKED"  //разрешение на местоположение уже спрашивали
     const val LOCAL_MODE  = "LOCAL_MODE"          //лента работает как точка доступа NodeMCU
     const val HOME_SSID  = "HOME_SSID"            //имя домашней сети, введённое в прошлый раз
     const val DIFFERENT_SSID  = "DIFFERENT_SSID"  //имя другой сети, введённое в прошлый раз

@@ -11,7 +11,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bartex.adresslentawifi.EspLink
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.adapter.ActionAdapter
 import com.bartex.adresslentawifi.constants.Constants
@@ -68,17 +67,15 @@ class ActionFragment : Fragment(){
         object : ActionAdapter.OnActionClickListener {
             override fun onClick(item: ListOfActions) {
                 nameTag = item.nameOfAction
-                //Сценарии, в которых телефон подключается к точке доступа ленты NodeMCU.
-                //На Android 10+ их выполняет мастер, на старых - прежняя инструкция.
-                val viaAccessPoint = nameTag == getString(R.string.firstInclusion) ||
-                        nameTag == getString(R.string.createHotpoint) ||
-                        nameTag == getString(R.string.reconnecting) ||
-                        nameTag == getString(R.string.toHomeFromLocal) ||
-                        nameTag == getString(R.string.toDifferentFromLocal)
-                if (viaAccessPoint && EspLink.isSupported) {
-                    navigateTo(nameTag, R.id.action_actionFragment_to_provisionFragment)
-                } else {
+                //Перевод ленты из одной сети WiFi в другую (лента и телефон сейчас в одной
+                //сети) идёт по инструкции. Всё, где телефон подключается к точке доступа
+                //ленты NodeMCU, выполняет мастер.
+                val betweenNetworks = nameTag == getString(R.string.toHome) ||
+                        nameTag == getString(R.string.toDifferent)
+                if (betweenNetworks) {
                     navigateTo(nameTag, R.id.action_actionFragment_to_syncroFragment)
+                } else {
+                    navigateTo(nameTag, R.id.action_actionFragment_to_provisionFragment)
                 }
             }
         }
