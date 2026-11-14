@@ -56,7 +56,8 @@ class ProvisionViewModel(app: Application) : AndroidViewModel(app) {
         val failure: Failure? = null,
         val ssid: String = "",     //имя сети, к которой привязываем
         val espIp: String = "",    //адрес ленты (при успехе)
-        val espSsid: String = ""   //имя сети, которое сообщила сама лента (при успехе)
+        val espSsid: String = "",  //имя сети, которое сообщила сама лента (при успехе)
+        val wifiHint: Boolean = false //пора подсказать: подключите телефон к этой сети вручную
     )
 
     private val stateLiveData = MutableLiveData(UiState())
@@ -165,7 +166,18 @@ class ProvisionViewModel(app: Application) : AndroidViewModel(app) {
         mainHandler.removeCallbacks(switchTimeout)
         setStep(Step.SEARCHING, 2)
         mainHandler.postDelayed(searchTimeout, SEARCH_TIMEOUT_MS)
+        mainHandler.postDelayed(wifiHintTimer, WIFI_HINT_MS)
         restartDiscovery.run()
+    }
+
+    //Телефон после отключения от NodeMCU сам возвращается в ту сеть WiFi, которую предпочитает
+    //система (обычно домашнюю). Если ленту привязали к другой сети, телефон в неё сам не
+    //попадёт - подсказываем подключить его вручную и продолжаем искать ленту.
+    private val wifiHintTimer = Runnable {
+        val current = stateLiveData.value
+        if (current != null && current.step == Step.SEARCHING && mode == Mode.TO_NETWORK) {
+            stateLiveData.value = current.copy(wifiHint = true)
+        }
     }
 
     private val searchTimeout = Runnable {
@@ -314,6 +326,7 @@ class ProvisionViewModel(app: Application) : AndroidViewModel(app) {
     private fun stopAll() {
         mainHandler.removeCallbacks(switchTimeout)
         mainHandler.removeCallbacks(searchTimeout)
+        mainHandler.removeCallbacks(wifiHintTimer)
         mainHandler.removeCallbacks(restartDiscovery)
         mainHandler.removeCallbacks(checkHotpointOnce)
         stopDiscovery()
@@ -340,8 +353,11 @@ class ProvisionViewModel(app: Application) : AndroidViewModel(app) {
 
         //сколько ждём пропадания точки доступа, если ответ на /home не дошёл
         private const val SWITCH_TIMEOUT_MS = 15_000L
-        //лента подключается к сети до 15 с, плюс возврат телефона в сеть и поиск
-        private const val SEARCH_TIMEOUT_MS = 60_000L
+        //лента подключается к сети до 15 с, плюс возврат телефона в сеть и поиск;
+        //с запасом на то, что телефон придётся подключать к сети вручную
+        private const val SEARCH_TIMEOUT_MS = 180_000L
+        //через сколько подсказать про ручное подключение телефона
+        private const val WIFI_HINT_MS = 25_000L
         private const val DISCOVERY_RESTART_MS = 8_000L
         //проверка ленты после подключения к её точке доступа
         private const val CHECK_ATTEMPTS = 4

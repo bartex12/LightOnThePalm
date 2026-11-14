@@ -174,7 +174,9 @@
     <string name="provDone">Готово</string>
     <string name="provStep1">Подключение к ленте (сеть NodeMCU). Если появится окно системы — подтвердите в нём подключение</string>
     <string name="provStep2">Передача ленте имени и пароля сети</string>
-    <string name="provStep3">Ожидание ленты в сети «%1$s» (до минуты)</string>
+    <string name="provStep3">Ожидание ленты в сети «%1$s»</string>
+    <string name="provWifiHint">Лента пока не найдена. Если по ней бежит бирюзовый огонёк, она уже в сети «%1$s», а телефон вернулся в другую сеть WiFi. Подключите телефон к сети «%1$s» — приложение продолжает искать ленту.</string>
+    <string name="provWifiButton">Выбрать сеть WiFi</string>
     <string name="provSuccess">Готово! Лента подключена к сети «%1$s», её адрес %2$s</string>
     <string name="provErrorAp">Не удалось подключиться к сети NodeMCU. Проверьте, что лента включена и по ней бежит красный или фиолетовый огонёк, и повторите.</string>
     <string name="provErrorSend">Лента не приняла данные. Повторите попытку.</string>
@@ -184,8 +186,8 @@
     <string name="noConnection">Нет связи с лентой</string>
     <string name="sendFailed">Не удалось передать данные в блок управления. Проверьте, что телефон подключен к нужной сети WiFi, и повторите</string>
     <string name="emptyNameOrPass">Имя и пароль не должны быть пустыми</string>
-    <string name="tooLongName">Имя сети слишком длинное: блок управления хранит не более 30 символов</string>
-    <string name="tooLongPass">Пароль слишком длинный: блок управления хранит не более 32 символов</string>
+    <string name="tooLongName">Имя сети слишком длинное: не более 32 символов</string>
+    <string name="tooLongPass">Пароль слишком длинный: не более 63 символов</string>
     <string name="ligthOnHand">Свет на ладони</string>
     <string name="you_net">Введите имя своей WiFi сети</string>
     <string name="you_net_pass">Введите пароль своей WiFi сети</string>

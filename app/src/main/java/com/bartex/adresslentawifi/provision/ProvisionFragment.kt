@@ -1,6 +1,8 @@
 package com.bartex.adresslentawifi.provision
 
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -65,6 +67,14 @@ class ProvisionFragment : Fragment() {
             binding.edName.setText(pref.getString(ssidPrefKey(), ""))
         }
         binding.btnStart.setOnClickListener { onStartClick() }
+        //панель выбора сети WiFi поверх приложения, без ухода в настройки
+        binding.btnWifi.setOnClickListener {
+            try {
+                startActivity(Intent(Settings.Panel.ACTION_WIFI))
+            } catch (e: RuntimeException) {
+                startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+            }
+        }
         binding.btnDone.setOnClickListener {
             findNavController().popBackStack(R.id.listFragment, false)
         }
@@ -98,7 +108,7 @@ class ProvisionFragment : Fragment() {
         val password = binding.edPass.text?.toString() ?: ""
         when {
             name.isEmpty() || password.isEmpty() -> showMessage(R.string.emptyNameOrPass)
-            //в скетче под имя отведено 30 байт EEPROM, под пароль - 32
+            //в скетче (версия 014) под имя отведено 32 байта EEPROM, под пароль - 63
             name.toByteArray().size > MAX_SSID_BYTES -> showMessage(R.string.tooLongName)
             password.toByteArray().size > MAX_PASS_BYTES -> showMessage(R.string.tooLongPass)
             else -> {
@@ -138,6 +148,13 @@ class ProvisionFragment : Fragment() {
         binding.progress.visibility = if (inProgress) View.VISIBLE else View.GONE
         binding.tvSteps.visibility = if (step == Step.FORM) View.GONE else View.VISIBLE
         binding.tvSteps.text = stepsText(state)
+
+        //подсказка: телефон надо подключить к сети ленты вручную
+        val hintVisibility =
+            if (step == Step.SEARCHING && state.wifiHint) View.VISIBLE else View.GONE
+        binding.tvWifiHint.visibility = hintVisibility
+        binding.btnWifi.visibility = hintVisibility
+        binding.tvWifiHint.text = getString(R.string.provWifiHint, state.ssid)
 
         //результат
         binding.btnDone.visibility = if (step == Step.SUCCESS) View.VISIBLE else View.GONE
@@ -205,7 +222,7 @@ class ProvisionFragment : Fragment() {
     }
 
     companion object {
-        private const val MAX_SSID_BYTES = 30
-        private const val MAX_PASS_BYTES = 32
+        private const val MAX_SSID_BYTES = 32
+        private const val MAX_PASS_BYTES = 63
     }
 }

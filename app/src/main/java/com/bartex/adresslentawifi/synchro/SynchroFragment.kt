@@ -108,7 +108,7 @@ class SynchroFragment : Fragment() {
             Log.d(TAG, "SynchroFragment sendNamePassToServerHome name = $name") //пароль в лог не пишем
             when {
                 name.isEmpty() || password.isEmpty() -> showMessage(R.string.emptyNameOrPass)
-                //в скетче под имя отведено 30 байт EEPROM, под пароль - 32
+                //в скетче (версия 014) под имя отведено 32 байта EEPROM, под пароль - 63
                 name.toByteArray().size > MAX_SSID_BYTES -> showMessage(R.string.tooLongName)
                 password.toByteArray().size > MAX_PASS_BYTES -> showMessage(R.string.tooLongPass)
                 else -> sendNameAndPassword(name, password)
@@ -153,7 +153,7 @@ class SynchroFragment : Fragment() {
     }
 
     companion object {
-        private const val MAX_SSID_BYTES = 30
-        private const val MAX_PASS_BYTES = 32
+        private const val MAX_SSID_BYTES = 32
+        private const val MAX_PASS_BYTES = 63
     }
 }
