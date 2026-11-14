@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.bartex.adresslentawifi.SharedViewModel
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.toastNoConnection
@@ -30,6 +32,7 @@ class FlameFragment: Fragment() {
     private  var nameOfEffect:String = ""
     private  var keyWord:String = ""
     private lateinit var pref: SharedPreferences
+    private val model: SharedViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,7 +158,7 @@ class FlameFragment: Fragment() {
             listOf("brightness" to brightness, "height" to heightFlame,
                 "spark" to sparkFlame, "position" to nameOfEffect),
             onError = { toastNoConnection() },
-            onSuccess = { Log.d(Constants.TAG, "FlameFragment ответ = $it") })
+            onSuccess = { if (isAdded) model.updateNameOfEffect(it) })
     }
 
 }

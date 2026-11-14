@@ -401,7 +401,8 @@ class   ListFragment : Fragment() {
                         navigateTo(baseUrl,item,getString(R.string._runningLights),R.id.action_listFragment_to_runningColorsFragment)
                     }
                     getString(R.string.flame) ->{
-                        navigateTo(baseUrl,item,getString(R.string._flame),R.id.action_listFragment_to_dynamicColorsFragment)
+                        //у пламени свой экран: яркость, высота пламени, искры
+                        navigateTo(baseUrl,item,getString(R.string._flame),R.id.action_listFragment_to_flameFragment)
                     }
                     getString(R.string.pride) ->{
                         navigateTo(baseUrl,item,getString(R.string._pride),R.id.action_listFragment_to_dynamicColorsFragment)
@@ -423,6 +424,15 @@ class   ListFragment : Fragment() {
                     }
                     getString(R.string.northern_lights) ->{
                         navigateTo(baseUrl,item,getString(R.string._northernLights),R.id.action_listFragment_to_dynamicColorsFragment)
+                    }
+                    getString(R.string.comet) ->{
+                        navigateTo(baseUrl,item,getString(R.string._comet),R.id.action_listFragment_to_dynamicColorsFragment)
+                    }
+                    getString(R.string.ocean) ->{
+                        navigateTo(baseUrl,item,getString(R.string._ocean),R.id.action_listFragment_to_dynamicColorsFragment)
+                    }
+                    getString(R.string.stars) ->{
+                        navigateTo(baseUrl,item,getString(R.string._stars),R.id.action_listFragment_to_dynamicColorsFragment)
                     }
                     getString(R.string.test) ->{
                         navigateTo(baseUrl,item,getString(R.string._test),R.id.action_listFragment_to_flameFragment)

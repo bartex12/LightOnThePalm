@@ -45,8 +45,10 @@ class PreferenceHelper(val app: App) : IPreferenceHelper {
             app.getString(R.string.rainbow_bias)->edit(RAINBOW_BIAS_SPEED,RAINBOW_BIAS_BRIGHTNESS,speed,brightness)
             app.getString(R.string.rainbow_flash)->edit(RAINBOW_FLASH_SPEED,RAINBOW_FLASH_BRIGHTNESS,speed,brightness)
             app.getString(R.string.random_color)->edit(RANDOM_COLOR_SPEED,RANDOM_COLOR_BRIGHTNESS,speed,brightness)
-            app.getString(R.string.random_color_fade)->edit(RANDOM_COLOR_FADE_SPEED,RANDOM_COLOR_FADE_SPEED,speed,brightness)
+            app.getString(R.string.random_color_fade)->edit(RANDOM_COLOR_FADE_SPEED,RANDOM_COLOR_FADE_BRIGHTNESS,speed,brightness)
             app.getString(R.string.northern_lights)->edit(NORTHERN_LIGHTS_SPEED,NORTHERN_LIGHTS_BRIGHTNESS,speed,brightness)
+            //новые эффекты: ключи настроек строятся из названия эффекта
+            else->edit(speedKey(nameOfEffect), brightnessKey(nameOfEffect), speed, brightness)
         }
     }
 
@@ -72,6 +74,9 @@ class PreferenceHelper(val app: App) : IPreferenceHelper {
         }
     }
 
+    private fun speedKey(nameOfEffect: String) = "SPEED_$nameOfEffect"
+    private fun brightnessKey(nameOfEffect: String) = "BRIGHTNESS_$nameOfEffect"
+
     private fun edit(c_speed:String, c_br:String, speed:String?, br:String?){
         with(editor){
             putString(c_speed, speed)
@@ -93,7 +98,11 @@ class PreferenceHelper(val app: App) : IPreferenceHelper {
             app.getString(R.string.random_color) -> pref.getString(RANDOM_COLOR_SPEED, "200")
             app.getString(R.string.random_color_fade) -> pref.getString(RANDOM_COLOR_FADE_SPEED, "200")
             app.getString(R.string.northern_lights) -> pref.getString(NORTHERN_LIGHTS_SPEED, "200")
-            else ->  pref.getString(PLAY_SPEED, "200")
+            //новые эффекты: у каждого своя начальная скорость (задержка кадра в мс)
+            app.getString(R.string.comet) -> pref.getString(speedKey(nameOfEffect), "40")
+            app.getString(R.string.ocean) -> pref.getString(speedKey(nameOfEffect), "60")
+            app.getString(R.string.stars) -> pref.getString(speedKey(nameOfEffect), "50")
+            else ->  pref.getString(speedKey(nameOfEffect), "50")
         }
     }
 
@@ -110,7 +119,7 @@ class PreferenceHelper(val app: App) : IPreferenceHelper {
             app.getString(R.string.random_color) -> pref.getString(RANDOM_COLOR_BRIGHTNESS, "50")
             app.getString(R.string.random_color_fade) -> pref.getString(RANDOM_COLOR_FADE_BRIGHTNESS, "50")
             app.getString(R.string.northern_lights) -> pref.getString(NORTHERN_LIGHTS_BRIGHTNESS, "50")
-            else ->  pref.getString(PLAY_BRIGHTNESS, "50")
+            else ->  pref.getString(brightnessKey(nameOfEffect), "50")
         }
     }
 
