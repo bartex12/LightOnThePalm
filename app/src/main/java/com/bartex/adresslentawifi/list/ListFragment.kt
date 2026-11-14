@@ -108,6 +108,7 @@ class   ListFragment : Fragment() {
         //наблюдаем за именем (SSID) сети ESP, который получаем от ESP через запрос к ESP после получения его Id
         sharedViewModel.getEspNetworkSsid().observe(viewLifecycleOwner) {espNetworkSsid->
             binding.nameEsp.text = espNetworkSsid
+            requireActivity().invalidateOptionsMenu() //от сети ленты зависит состав меню
             Log.d(TAG, "### ListFragment onViewCreated SSID сети ESP = $espNetworkSsid")
         }
         //наблюдаем за IP адресом телефона - пока нет, так как пока неправильно определяется Ip телефона
@@ -184,6 +185,13 @@ class   ListFragment : Fragment() {
                 val linked = EspLink.state.value == EspLink.State.CONNECTING ||
                         EspLink.state.value == EspLink.State.CONNECTED
                 item.setTitle(if (linked) R.string.directLinkDisconnect else R.string.directLinkConnect)
+                //Пункт нужен, только когда лента работает как точка доступа NodeMCU.
+                //Если лента отвечает из обычной сети WiFi - прячем его, чтобы не путал.
+                val espSsid = sharedViewModel.getEspNetworkSsid().value ?: ""
+                val espInOrdinaryNetwork = espSsid.isNotEmpty() && espSsid != "?" &&
+                        espSsid != getString(R.string.localNetworkName)
+                item.isVisible = linked || LocalMode.isEnabled(requireContext()) ||
+                        !espInOrdinaryNetwork
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
