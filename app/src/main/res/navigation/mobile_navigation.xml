@@ -69,5 +69,10 @@
         android:name="com.bartex.adresslentawifi.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.bartex.adresslentawifi.help.HelpFragment"
+        android:label="@string/help"
+        tools:layout="@layout/fragment_help" />
 
 </navigation>
