@@ -283,6 +283,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     navController.navigate(R.id.settingsFragment)
                 }
             }
+            R.id.nav_help -> {
+                if (navController.currentDestination?.id != R.id.helpFragment) {
+                    navController.navigate(R.id.helpFragment)
+                }
+            }
             //остальные пункты шторки пока ничего не делают
         }
         return false //пункт не остаётся выделенным
