@@ -2,7 +2,6 @@ package com.bartex.adresslentawifi.staticcolor
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +40,6 @@ class StaticColorFragment: Fragment() {
     private lateinit var seekBarStatic: SeekBar
     private lateinit var rvColors: RecyclerView
     private lateinit var colorWheel: ColorWheelView
-    private var lastWheelSend = 0L //когда последний раз отправляли цвет с круга
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,16 +140,12 @@ class StaticColorFragment: Fragment() {
         seekBarStatic = view.findViewById(R.id.seekBarBrStat)
         rvColors = view.findViewById(R.id.rvColorsStat)
         colorWheel = view.findViewById(R.id.colorWheelStat)
-        //Цвет с круга: пока палец ведут по кругу, отправляем не чаще трёх раз в секунду,
-        //чтобы не завалить ленту запросами; когда палец отпущен - отправляем обязательно.
+        //Цвет с круга отправляем на ленту, когда палец отпущен (как и в "Бегущих огнях");
+        //пока палец ведут по кругу, за ним движется только метка.
         colorWheel.onColorChanged = { pickedColor, finished ->
             //скетч ждёт цвет в виде 0xRRGGBB
             color = String.format("0x%06X", pickedColor and 0xFFFFFF)
-            val now = SystemClock.elapsedRealtime()
-            if (finished || now - lastWheelSend >= WHEEL_SEND_INTERVAL_MS) {
-                lastWheelSend = now
-                sendMessageToServer()
-            }
+            if (finished) sendMessageToServer()
         }
     }
 
@@ -161,9 +155,5 @@ class StaticColorFragment: Fragment() {
             listOf("color" to color, "brightness" to brightness, "position" to nameOfEffect),
             onError = { toastNoConnection() },
             onSuccess = { if (isAdded) model.updateNameOfEffect(it) })
-    }
-
-    companion object {
-        private const val WHEEL_SEND_INTERVAL_MS = 300L
     }
 }
