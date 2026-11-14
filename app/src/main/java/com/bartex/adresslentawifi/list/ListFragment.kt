@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
@@ -147,7 +149,15 @@ class   ListFragment : Fragment() {
         if (!isAdded || sharedViewModel.savedNodeMcuHintShown) return
         if (ip == getString(R.string.hotpointIp) && espSsid.trim() == getString(R.string.localNetworkName)) {
             sharedViewModel.savedNodeMcuHintShown = true
-            showMessage(R.string.savedNodeMcuHint)
+            //окно с кнопкой, а не короткое сообщение: здесь от пользователя требуется действие
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.savedNodeMcuTitle)
+                .setMessage(R.string.savedNodeMcuHint)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNeutralButton(R.string.savedNodeMcuSettings) { _, _ ->
+                    startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                }
+                .show()
         }
     }
 

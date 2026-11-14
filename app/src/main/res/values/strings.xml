@@ -149,7 +149,11 @@
     <string name="createHotpoint">Создание локальной WiFi сети NodeMCU</string>
     <string name="toHomeFromLocal">Привязка к домашней сети WiFi из локальной сети</string>
     <string name="toDifferentFromLocal">Привязка к другой сети WiFi из локальной сети</string>
-    <string name="savedNodeMcuHint">Телефон сам подключился к сети NodeMCU: она сохранена в настройках WiFi телефона. Чтобы подключением управляло приложение, удалите («забудьте») сеть NodeMCU в настройках WiFi.</string>
+    <string name="savedNodeMcuTitle">Сеть NodeMCU сохранена в телефоне</string>
+    <string name="savedNodeMcuHint">Телефон сам подключился к сети NodeMCU, потому что она сохранена в его настройках WiFi. Из-за этого пункт «Отключиться от NodeMCU» не работает: телефон тут же подключается обратно.
+
+Чтобы подключением управляло приложение, откройте настройки WiFi, найдите сеть NodeMCU среди сохранённых и удалите («забудьте») её.</string>
+    <string name="savedNodeMcuSettings">Настройки WiFi</string>
     <string name="directLinkConnect">Подключиться к ленте напрямую (NodeMCU)</string>
     <string name="directLinkDisconnect">Отключиться от NodeMCU</string>
     <string name="linkConnecting">Подключение к NodeMCU…</string>
