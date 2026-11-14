@@ -18,6 +18,7 @@ import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
 import com.bartex.adresslentawifi.entity.ButtonColor
+import com.bartex.adresslentawifi.staticcolor.ColorWheelView
 import java.util.*
 
 class RunningColorsFragment: Fragment() {
@@ -40,6 +41,7 @@ class RunningColorsFragment: Fragment() {
     private lateinit var seekBarRunNumber: SeekBar
     private lateinit var rvColors: RecyclerView
     private lateinit var adapter: StaticColorAdapter
+    private lateinit var colorWheel: ColorWheelView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,12 +98,21 @@ class RunningColorsFragment: Fragment() {
         object : StaticColorAdapter.OnItemClickListener{
             override fun onClick(item: ButtonColor) {
                 color = item.color.replace("#", "0x")
+                showColorOnWheel()
                 sendMessageToServer()
             }
         }
 
     private fun initViews(view: View) {
         rvColors = view.findViewById(R.id.rvColorsRunning)
+        colorWheel = view.findViewById(R.id.colorWheelRunning)
+        //Цвет с круга отправляем, только когда палец отпущен: этот эффект занимает ленту
+        //надолго (до двух секунд на проход), и частые запросы она обработать не успевает.
+        colorWheel.onColorChanged = { pickedColor, finished ->
+            //скетч ждёт цвет в виде 0xRRGGBB
+            color = String.format("0x%06X", pickedColor and 0xFFFFFF)
+            if (finished) sendMessageToServer()
+        }
         seekBarRunBrightness = view.findViewById(R.id.seekBarBrRunning)
         seekBarRunBrightness.max = 255
         seekBarRunSpeed = view.findViewById(R.id.seekBarSpeedRunning)
@@ -121,7 +132,14 @@ class RunningColorsFragment: Fragment() {
         seekBarRunNumber.progress = Integer.parseInt(number!!)
 
         color = runningViewModel.getColor(nameOfEffect)
+        showColorOnWheel()
         //Log.d(TAG, "RunningColorsFragment  speed= $speed brightness = $brightness number = $number")
+    }
+
+    //ставим метку на круге на текущий цвет (сохранённый или выбранный кнопкой)
+    private fun showColorOnWheel() {
+        val rgb = color?.trim()?.removePrefix("0x")?.toIntOrNull(16) ?: return
+        colorWheel.setColor(0xFF000000.toInt() or rgb)
     }
 
     private fun initSeekBarBrightness() {

@@ -21,7 +21,7 @@ class RunningViewModel: ViewModel() {
     }
 
     fun loadStaticColors(){
-        colorList.value = staticColorRepo.getShortList()
+        colorList.value = staticColorRepo.getList() //те же 18 цветов, что в "Отдельных цветах"
     }
 
     fun saveSpeedBrightness(nameOfEffect: String, speed: String?, brightness: String?) {
