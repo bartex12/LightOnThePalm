@@ -86,14 +86,6 @@ class   ListFragment : Fragment() {
         getIp()  //получаем ip адрес из преференсис - если лента выключена, будет старый сохранённый ip
 
         initAdapter()  //иначе при отключенной ленте будет пустой экран
-        //todo восстановить запрос по указателю
-//        if (sharedViewModel.isFirstLaunch){
-//            Log.d(TAG, "ListFragment onViewCreated sharedViewModel.isFirstLaunch")
-//            //посылаем 1 раз запрос на имя эффекта чтобы выставить правильный указатель
-//            // при включении приложения при работающей ленте
-//            EspApi.get(getString(R.string.baseUrl, binding.edIpEsp.text.toString()),
-//                getString(R.string._position), onSuccess = { onPositionReceived(it) })
-//        }
 
         //следим за изменением заголовка тулбара и показываем новый заголовок
         listViewModel.getToolbarTitle().observe(viewLifecycleOwner) {
@@ -111,10 +103,12 @@ class   ListFragment : Fragment() {
                 binding.edIpEsp.setText(addressIp)
                 Log.d(TAG, "ListFragment onViewCreated new ESP Ip = $addressIp")
             }
+            askPositionOnce(addressIp)
         }
         //наблюдаем за именем (SSID) сети ESP, который получаем от ESP через запрос к ESP после получения его Id
         sharedViewModel.getEspNetworkSsid().observe(viewLifecycleOwner) {espNetworkSsid->
             binding.nameEsp.text = espNetworkSsid
+            requireActivity().invalidateOptionsMenu() //от сети ленты зависит состав меню
             Log.d(TAG, "### ListFragment onViewCreated SSID сети ESP = $espNetworkSsid")
         }
         //наблюдаем за IP адресом телефона - пока нет, так как пока неправильно определяется Ip телефона
@@ -191,6 +185,13 @@ class   ListFragment : Fragment() {
                 val linked = EspLink.state.value == EspLink.State.CONNECTING ||
                         EspLink.state.value == EspLink.State.CONNECTED
                 item.setTitle(if (linked) R.string.directLinkDisconnect else R.string.directLinkConnect)
+                //Пункт нужен, только когда лента работает как точка доступа NodeMCU.
+                //Если лента отвечает из обычной сети WiFi - прячем его, чтобы не путал.
+                val espSsid = sharedViewModel.getEspNetworkSsid().value ?: ""
+                val espInOrdinaryNetwork = espSsid.isNotEmpty() && espSsid != "?" &&
+                        espSsid != getString(R.string.localNetworkName)
+                item.isVisible = linked || LocalMode.isEnabled(requireContext()) ||
+                        !espInOrdinaryNetwork
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -352,6 +353,7 @@ class   ListFragment : Fragment() {
         object : RvListAdapter.OnItemClickListener{
             override fun onClick(item: ListOfEffects) {
                 nameTag = item.name
+                sharedViewModel.isNotFirstLaunch() //эффект выбран здесь - у ленты уже не спрашиваем
                 listViewModel.updateTitle(item.name) //обновляем имя заголовка тулбара
                 val baseUrl = String.format(getString(R.string.baseUrl), binding.edIpEsp.text.toString())
                 when(item.name){
@@ -404,17 +406,30 @@ class   ListFragment : Fragment() {
         navController.navigate(frag, bundle)
     }
 
-    //ответ ESP на запрос позиции - для установки позиции адаптера при первом включении
-    //(EspApi вызывает колбэки в главном потоке)
+    //Один раз после запуска приложения спрашиваем у ленты, какой эффект на ней включён,
+    //и ставим на него указатель в списке. Дальше указатель двигается только по нажатиям.
+    private fun askPositionOnce(ip: String?) {
+        if (!sharedViewModel.isFirstLaunch) return
+        if (ip.isNullOrEmpty() || ip == getString(R.string.hotpointZero)) return
+        EspApi.get(getString(R.string.baseUrl, ip), getString(R.string._position),
+            onSuccess = { onPositionReceived(it) })
+    }
+
+    //ответ ленты на запрос позиции (EspApi вызывает колбэки в главном потоке)
     private fun onPositionReceived(message: String) {
-        if (!isAdded || _binding == null) return
-        Log.d(TAG, "*****ListFragment onPositionReceived message= $message")
-        sharedViewModel.updateNameOfEffect(message)
+        if (!isAdded || _binding == null || !sharedViewModel.isFirstLaunch) return
+        val name = message.trim()
+        Log.d(TAG, "*****ListFragment onPositionReceived name= $name")
+        //пустой ответ - на ленте пока огонёк состояния; спросим при следующем обнаружении ленты
+        if (name.isEmpty()) return
+        sharedViewModel.isNotFirstLaunch() //больше не спрашиваем
+        sharedViewModel.updateNameOfEffect(name)
+        nameTag = name
         initAdapter()
-        if (sharedViewModel.isFirstLaunch){
-            val position = getAdapterPosition()
+        val position = getAdapterPosition()
+        if (position >= 0) {
             binding.rvEffects.scrollToPosition(position)
-            sharedViewModel.isNotFirstLaunch() //меняем флаг
+            listViewModel.updateTitle(name) //заголовок тулбара - название эффекта
         }
     }
 
