@@ -43,6 +43,7 @@
     <string name="_runningLights">runningLights</string>
     <string name="_test">test</string>
     <string name="_esp">esp</string>
+    <string name="_leds">leds</string>
 
 
     <string name="_1">#FF0000</string>//тон 0°
@@ -169,6 +170,14 @@
 Управлять лентой после этого не получится, пока вы снова не подключитесь к ней или не привяжете её к своей сети WiFi.
 
 При следующих запусках приложение не будет подключаться к ленте само.</string>
+    <string name="settingsLedCount">Количество точек на ленте</string>
+    <string name="settingsLedCountValue">%1$d (не более %2$d)</string>
+    <string name="settingsLoading">запрашиваем у ленты…</string>
+    <string name="settingsNoEsp">нет связи с лентой</string>
+    <string name="settingsOldFirmware">нужна прошивка ленты версии 016 или новее</string>
+    <string name="settingsLedCountMessage">Введите количество точек (светодиодов) на ленте: от 1 до %1$d.\n\nЛента запомнит его и перезагрузится, это займёт несколько секунд.</string>
+    <string name="settingsLedCountWrong">Количество точек должно быть числом от 1 до %1$d</string>
+    <string name="settingsLedCountSaved">Количество точек сохранено. Лента перезагружается и через несколько секунд снова будет на связи.</string>
     <string name="dialogOk">Хорошо</string>
     <string name="dialogCancel">Отмена</string>
     <string name="linkConnecting">Подключение к NodeMCU…</string>
