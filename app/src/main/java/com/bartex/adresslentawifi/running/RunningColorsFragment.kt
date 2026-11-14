@@ -8,16 +8,13 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bartex.adresslentawifi.R
 import com.bartex.adresslentawifi.EspApi
 import com.bartex.adresslentawifi.toastNoConnection
 import com.bartex.adresslentawifi.SharedViewModel
-import com.bartex.adresslentawifi.adapter.StaticColorAdapter
 import com.bartex.adresslentawifi.constants.Constants
 import com.bartex.adresslentawifi.constants.Constants.TAG
-import com.bartex.adresslentawifi.entity.ButtonColor
+import com.bartex.adresslentawifi.staticcolor.ColorWheelView
 import java.util.*
 
 class RunningColorsFragment: Fragment() {
@@ -38,8 +35,7 @@ class RunningColorsFragment: Fragment() {
     private lateinit var seekBarRunBrightness: SeekBar
     private lateinit var seekBarRunSpeed: SeekBar
     private lateinit var seekBarRunNumber: SeekBar
-    private lateinit var rvColors: RecyclerView
-    private lateinit var adapter: StaticColorAdapter
+    private lateinit var colorWheel: ColorWheelView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,14 +60,8 @@ class RunningColorsFragment: Fragment() {
         initSeekBarBrightness()
         initSeekBarSpeed()
         initSeekBarNumber()
-        initAdapter()
 
         sendMessageToServer()
-
-        runningViewModel.loadStaticColors()
-        runningViewModel.getStaticColors().observe(this, {
-            renderData(it)
-        })
     }
 
     override fun onPause() {
@@ -82,26 +72,15 @@ class RunningColorsFragment: Fragment() {
         runningViewModel.saveColor(nameOfEffect, color)
     }
 
-    private fun renderData(data: List<ButtonColor>?) {
-        data?. let{ adapter.listOfButtonColor = it}
-    }
-
-    private fun initAdapter() {
-        rvColors.layoutManager = GridLayoutManager(requireActivity(), 6)
-        adapter = StaticColorAdapter(getOnClickListener())
-        rvColors.adapter = adapter
-    }
-
-    private fun getOnClickListener(): StaticColorAdapter.OnItemClickListener =
-        object : StaticColorAdapter.OnItemClickListener{
-            override fun onClick(item: ButtonColor) {
-                color = item.color.replace("#", "0x")
-                sendMessageToServer()
-            }
-        }
-
     private fun initViews(view: View) {
-        rvColors = view.findViewById(R.id.rvColorsRunning)
+        colorWheel = view.findViewById(R.id.colorWheelRunning)
+        //Цвет с круга отправляем, только когда палец отпущен: этот эффект занимает ленту
+        //надолго (до двух секунд на проход), и частые запросы она обработать не успевает.
+        colorWheel.onColorChanged = { pickedColor, finished ->
+            //скетч ждёт цвет в виде 0xRRGGBB
+            color = String.format("0x%06X", pickedColor and 0xFFFFFF)
+            if (finished) sendMessageToServer()
+        }
         seekBarRunBrightness = view.findViewById(R.id.seekBarBrRunning)
         seekBarRunBrightness.max = 255
         seekBarRunSpeed = view.findViewById(R.id.seekBarSpeedRunning)
@@ -121,7 +100,14 @@ class RunningColorsFragment: Fragment() {
         seekBarRunNumber.progress = Integer.parseInt(number!!)
 
         color = runningViewModel.getColor(nameOfEffect)
+        showColorOnWheel()
         //Log.d(TAG, "RunningColorsFragment  speed= $speed brightness = $brightness number = $number")
+    }
+
+    //ставим метку на круге на сохранённый цвет
+    private fun showColorOnWheel() {
+        val rgb = color?.trim()?.removePrefix("0x")?.toIntOrNull(16) ?: return
+        colorWheel.setColor(0xFF000000.toInt() or rgb)
     }
 
     private fun initSeekBarBrightness() {
