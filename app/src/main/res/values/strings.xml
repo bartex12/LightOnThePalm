@@ -154,8 +154,22 @@
 
 Чтобы подключением управляло приложение, откройте настройки WiFi, найдите сеть NodeMCU среди сохранённых и удалите («забудьте») её.</string>
     <string name="savedNodeMcuSettings">Настройки WiFi</string>
-    <string name="directLinkConnect">Подключиться к ленте напрямую (NodeMCU)</string>
-    <string name="directLinkDisconnect">Отключиться от NodeMCU</string>
+    <string name="directLinkConnect">Подключиться к ленте</string>
+    <string name="directLinkDisconnect">Отключиться от ленты</string>
+    <string name="directLinkOnTitle">Подключиться к ленте напрямую</string>
+    <string name="directLinkOnMessage">Телефон подключится к сети WiFi самой ленты (NodeMCU) и будет управлять ею без роутера.
+
+Это нужно, когда лента работает как точка доступа: по ней бежит красный или фиолетовый огонёк.
+
+Пока телефон подключен к ленте, интернета через WiFi на нём не будет. При следующих запусках приложение будет подключаться к ленте само.</string>
+    <string name="directLinkOffTitle">Отключиться от ленты</string>
+    <string name="directLinkOffMessage">Телефон отключится от сети ленты (NodeMCU) и вернётся в обычную сеть WiFi.
+
+Управлять лентой после этого не получится, пока вы снова не подключитесь к ней или не привяжете её к своей сети WiFi.
+
+При следующих запусках приложение не будет подключаться к ленте само.</string>
+    <string name="dialogOk">Хорошо</string>
+    <string name="dialogCancel">Отмена</string>
     <string name="linkConnecting">Подключение к NodeMCU…</string>
     <string name="linkConnected">Подключено к NodeMCU. Лента отвечает, её сеть: %1$s</string>
     <string name="linkConnectedNoAnswer">Подключено к NodeMCU, но лента не ответила на запрос</string>
