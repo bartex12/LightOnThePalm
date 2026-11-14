@@ -275,11 +275,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //меню шторки
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        //todo
-        // Выделяем выбранный пункт меню в шторке
-        item.isChecked = true
         binding.drawerLayout.closeDrawer(GravityCompat.START)
-        return false
+        when (item.itemId) {
+            R.id.nav_setting -> {
+                //открываем экран настроек, если мы ещё не на нём
+                if (navController.currentDestination?.id != R.id.settingsFragment) {
+                    navController.navigate(R.id.settingsFragment)
+                }
+            }
+            //остальные пункты шторки пока ничего не делают
+        }
+        return false //пункт не остаётся выделенным
     }
 
     companion object {

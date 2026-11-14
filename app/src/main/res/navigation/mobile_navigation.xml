@@ -64,5 +64,10 @@
         android:name="com.bartex.adresslentawifi.provision.ProvisionFragment"
         android:label="@string/provLabel"
         tools:layout="@layout/fragment_provision" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.bartex.adresslentawifi.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>
