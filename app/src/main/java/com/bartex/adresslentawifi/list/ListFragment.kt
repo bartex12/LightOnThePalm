@@ -172,6 +172,20 @@ class   ListFragment : Fragment() {
         }
     }
 
+    //Перед подключением/отключением объясняем, что произойдёт, и спрашиваем согласие
+    private fun confirmDirectLink() {
+        val linked = EspLink.state.value == EspLink.State.CONNECTING ||
+                EspLink.state.value == EspLink.State.CONNECTED
+        //В окне Android "отрицательная" кнопка стоит слева, "положительная" - справа.
+        //Нужно "Хорошо" слева и "Отмена" справа, поэтому действие висит на левой кнопке.
+        AlertDialog.Builder(requireContext())
+            .setTitle(if (linked) R.string.directLinkOffTitle else R.string.directLinkOnTitle)
+            .setMessage(if (linked) R.string.directLinkOffMessage else R.string.directLinkOnMessage)
+            .setNegativeButton(R.string.dialogOk) { _, _ -> toggleDirectLink() }
+            .setPositiveButton(R.string.dialogCancel, null)
+            .show()
+    }
+
     //пункт меню: подключить телефон к точке доступа ленты NodeMCU или отключить от неё
     //(сообщения о результате показывает MainActivity)
     private fun toggleDirectLink() {
@@ -215,7 +229,7 @@ class   ListFragment : Fragment() {
                 // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.directLink -> {
-                        toggleDirectLink()
+                        confirmDirectLink()
                         true
                     }
                     R.id.sync -> {
