@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">Свет на ладони</string>
-    <string name="_0_u00b0c">0 °C</string>
-    <string name="led1_on">LED1: ON</string>
     <string name="no_data">Нет данных.</string>
-    <string name="save_ip">Сохранить Ip</string>
     <string name="name_eff">Название</string>
-    <string name="description">Описание</string>
 
     <string name="staticColors">Отдельные цвета</string>
     <string name="playOfColors">Переливы цвета</string>
@@ -29,7 +25,6 @@
 
 
     <string name="_home">home</string>
-    <string name="_different">different</string>
     <string name="_hotpoint">hotpoint</string>
     <string name="_position">position</string>
     <string name="_static">static</string>
@@ -71,27 +66,10 @@
     <string name="_17">#FFFFFF</string> //White
     <string name="_18">#000000</string>//Black
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Свет на ладони</string>
     <string name="nav_header_subtitle">Управление адресной светодиодной лентой</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="list">Список</string>
-    <string name="details">Детали</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
-    <string name="textview">TextView</string>
-    <string name="todo">image From Internet</string>
-    <string name="name_000">Name 000</string>
-    <string name="employeeName">employeeName</string>
-    <string name="frag_det">Фрагмент детализации</string>
-
-    <string name="statesOfWorld">Страны мира</string>
-    <string name="quiz">Викторина</string>
     <string name="settings">Настройки</string>
     <string name="help">Справка</string>
     <string name="addition">Дополнительно</string>
@@ -102,51 +80,24 @@
     <string name="choose_any_color">Цветовой круг</string>
     <string name="choose_speed">Скорость</string>
     <string name="choose_number">Количество точек</string>
-    <string name="var_test">вариант- тест</string>
-    <string name="name_of_effect">Название эффекта</string>
     <string name="height_flame">Высота пламени</string>
     <string name="spark">Искры</string>
     <string name="save_">Передать на сервер</string>
-    <string name="ssid_">Имя сети</string>
 
-    <string name="permission">Разрешение получено</string>
-    <string name="notPermission">Приложение не имеет разрешения на определение местонахождения</string>
-    <string name="StartScan">Поиск WiFi сетей…</string>
-    <string name="wifi_name">Имя WiFi сети</string>
     <string name="bottom_shit_descr1">Для подключения блока управления к домашней сети WiFi нужно сделать следующее:\n\n 1 Перейдите в настройки WiFi телефона. Для этого нужно нажать на кнопку \"Перейти в настройки\" в нижней части инструкции\n\n 2 Подключитесь к WiFi сети с именем NodeMCU.\nПри необходимости введите пароль 12345678\n\n 3 Вернитесь обратно в приложение \"Свет на ладони\" и перейдите к следующему шагу инструкции кнопкой \"Вперед\""</string>
-    <string name="bottom_shit_descr2">1 Вы сейчас подключены к локальной WiFi сети NodeMCU без доступа к интернету\n\n 2 Введите имя и пароль от домашней сети в поля ввода ниже и нажмите кнопку
-    \"Передать на сервер\".\n Это нужно для того, чтобы блок управления адресной лентой смог подключиться к вашей домашней сети\n\n 3 После этого нажмите кнопку \"Перейти в настройки\" и вручную переключитесь на домашнюю сеть WiFi, если это не произошло автоматически\n\n  4 Вернитесь назад в приложение \"Свет на ладони\"</string>
     <string name="bottom_shit_descr_different">1 Введите имя и пароль WiFi сети, к которой хотите подключиться, в поля ввода ниже и нажмите кнопку \"Передать на сервер\".\n Это нужно для того, чтобы блок управления адресной лентой смог подключиться к выбранной сети\n\n 2 После этого нажмите кнопку \"Перейти в настройки\" и вручную переключитесь на выбранную сеть WiFi\n\n   3 Вернитесь назад в приложение \"Свет на ладони\"</string>
     <string name="bottom_shit_descr_home">1 Введите имя и пароль своей домашней WiFi сети  в поля ввода ниже и нажмите кнопку \"Передать на сервер\".\n Это нужно для того, чтобы блок управления адресной лентой смог подключиться к вашей сети\n\n 2 После этого нажмите кнопку  \"Перейти в настройки\" и вручную переключитесь на вашу домашнюю сеть WiFi, если это не произошло автоматически\n\n   3 Вернитесь назад в приложение \"Свет на ладони\"</string>
-    <string name="bottom_shit_descr_local">Для создания локальной сети WiFi с именем NodeMCU и паролем 12345678 нужно сделать следующее:\n\n 1 Нажмите кнопку \"Передать на сервер\", чтобы передать в блок управления название и пароль локальной сети\n\n 2 Перейдите в настройки WiFi телефона. Для этого нужно нажать на кнопку \"Перейти в настройки\" в нижней части инструкции\n\n 3 Подключитесь к WiFi сети с именем NodeMCU.\nПри необходимости введите пароль 12345678\n\n 4 Вернитесь обратно в приложение \"Свет на ладони\"  </string>
 
-    <string name="bottom_shit_title12">Инструкция Шаг 1 из 2</string>
-    <string name="bottom_shit_title22">Инструкция Шаг 2 из 2</string>
-    <string name="bottom_shit_title">Инструкция</string>
     <string name="bottom_shit_title_home">Порядок подключения к домашней сети WiFi</string>
-    <string name="bottom_shit_title_home_from_local">Порядок подключения к домашней сети WiFi из локальной сети</string>
     <string name="bottom_shit_title_different">Порядок подключения к произвольной сети WiFi</string>
-    <string name="bottom_shit_title_different_from_local">Порядок подключения к произвольной сети WiFi из локальной сети</string>
-    <string name="bottom_shit_title_local">Порядок создания локальной сети WiFi</string>
     <string name="goToSettings">Перейти в настройки</string>
-    <string name="wifi_list">Список доступных WiFi сетей…</string>
-    <string name="wifiHomeName">Имя домашней WiFi сети</string>
-    <string name="passHome">Пароль домашней WiFi сети</string>
-    <string name="nameDifferent">Имя WiFi сети</string>
-    <string name="passDifferent">Пароль WiFi сети</string>
-    <string name="wifiLocalName">Имя локальной WiFi сети</string>
-    <string name="wifiLocalPass">Пароль локальной WiFi сети</string>
     <string name="inputName">Имя WiFi сети</string>
-    <string name="inputPass">Введите пароль</string>
     <string name="inputPassWiFi">Пароль WiFi сети</string>
-    <string name="inputIp">Введите IP</string>
     <string name="localNetworkPass">12345678</string>
     <string name="localNetworkName">NodeMCU</string>
     <string name="hotpointIp">192.168.1.1</string>
     <string name="hotpointZero">0.0.0.0</string>
 
-    <string name="topic_user_bartex_test">/user/bartex/test</string>
-    <string name="topic_user_bartex_test_hive">testtt</string>
     <string name="chooseAction">Выберите необходимое действие</string>
     <string name="prev">Назад</string>
     <string name="next">Вперёд</string>
