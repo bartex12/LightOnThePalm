@@ -133,6 +133,23 @@ class   ListFragment : Fragment() {
         initMenu()
     }
 
+    //Лента ответила через обычную сеть телефона (не через прямое подключение приложения)
+    private fun onEspAnsweredFromNetwork(ip: String, espSsid: String) {
+        if (!isAdded) return
+        val ssid = espSsid.trim()
+        if (ssid.isNotEmpty() && ssid != getString(R.string.localNetworkName)) {
+            //Лента в обычной сети WiFi, значит локальный режим уже не действует, даже если
+            //он остался включённым (например, ленту вернули в сеть не через мастер).
+            //Сбрасываем его, чтобы приложение не пыталось подключаться к NodeMCU при запуске.
+            if (LocalMode.isEnabled(requireContext())) {
+                Log.d(TAG, "ListFragment: лента в сети $ssid - локальный режим сброшен")
+                LocalMode.setEnabled(requireContext(), false)
+                requireActivity().invalidateOptionsMenu()
+            }
+        }
+        hintIfSystemOnNodeMcu(ip, espSsid)
+    }
+
     //Лента ответила как точка доступа NodeMCU, хотя приложение к ней не подключалось.
     //Значит, телефон подключился к NodeMCU сам - эта сеть сохранена в настройках WiFi
     //телефона. Тогда "Отключиться от NodeMCU" не помогает: система тут же подключается
@@ -275,7 +292,7 @@ class   ListFragment : Fragment() {
                     sharedViewModel.updateEspNetworkSsid(it)
                     rememberHomeIp(ip)
                     if (byUser) showMessage(getString(R.string.espAnswers, it))
-                    if (!viaDirectLink) hintIfSystemOnNodeMcu(ip, it)
+                    if (!viaDirectLink) onEspAnsweredFromNetwork(ip, it)
                 }
             })
     }
@@ -496,7 +513,7 @@ class   ListFragment : Fragment() {
                             EspApi.get(getString(R.string.baseUrl, ip), getString(R.string._esp),
                                 onSuccess = {
                                     sharedViewModel.updateEspNetworkSsid(it)
-                                    if (!viaDirectLink) hintIfSystemOnNodeMcu(ip, it)
+                                    if (!viaDirectLink) onEspAnsweredFromNetwork(ip, it)
                                 })
                         }
                     }
