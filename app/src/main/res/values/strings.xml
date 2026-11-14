@@ -92,6 +92,7 @@
     <string name="send">Оценить</string>
     <string name="choose_br">Яркость</string>
     <string name="choose_color">Цвет</string>
+    <string name="choose_any_color">Цветовой круг</string>
     <string name="choose_speed">Скорость</string>
     <string name="choose_number">Количество точек</string>
     <string name="var_test">вариант- тест</string>

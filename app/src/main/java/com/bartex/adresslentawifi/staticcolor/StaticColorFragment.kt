@@ -2,6 +2,7 @@ package com.bartex.adresslentawifi.staticcolor
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,8 @@ class StaticColorFragment: Fragment() {
     private lateinit var pref: SharedPreferences
     private lateinit var seekBarStatic: SeekBar
     private lateinit var rvColors: RecyclerView
+    private lateinit var colorWheel: ColorWheelView
+    private var lastWheelSend = 0L //когда последний раз отправляли цвет с круга
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +94,7 @@ class StaticColorFragment: Fragment() {
         object : StaticColorAdapter.OnItemClickListener{
             override fun onClick(item: ButtonColor) {
                 color = item.color.replace("#", "0x")
+                showColorOnWheel()
                 sendMessageToServer()
             }
         }
@@ -125,11 +129,30 @@ class StaticColorFragment: Fragment() {
         color = pref.getString(COLOR, "0x00FFFF")
         brightness = pref.getString(BRIGHTNESS, "5")
         seekBarStatic.progress = Integer.parseInt(brightness!!)
+        showColorOnWheel()
+    }
+
+    //ставим метку на круге на текущий цвет (сохранённый или выбранный кнопкой)
+    private fun showColorOnWheel() {
+        val rgb = color?.trim()?.removePrefix("0x")?.toIntOrNull(16) ?: return
+        colorWheel.setColor(0xFF000000.toInt() or rgb)
     }
 
     private fun initViews(view: View) {
         seekBarStatic = view.findViewById(R.id.seekBarBrStat)
         rvColors = view.findViewById(R.id.rvColorsStat)
+        colorWheel = view.findViewById(R.id.colorWheelStat)
+        //Цвет с круга: пока палец ведут по кругу, отправляем не чаще трёх раз в секунду,
+        //чтобы не завалить ленту запросами; когда палец отпущен - отправляем обязательно.
+        colorWheel.onColorChanged = { pickedColor, finished ->
+            //скетч ждёт цвет в виде 0xRRGGBB
+            color = String.format("0x%06X", pickedColor and 0xFFFFFF)
+            val now = SystemClock.elapsedRealtime()
+            if (finished || now - lastWheelSend >= WHEEL_SEND_INTERVAL_MS) {
+                lastWheelSend = now
+                sendMessageToServer()
+            }
+        }
     }
 
     private fun sendMessageToServer() {
@@ -138,5 +161,9 @@ class StaticColorFragment: Fragment() {
             listOf("color" to color, "brightness" to brightness, "position" to nameOfEffect),
             onError = { toastNoConnection() },
             onSuccess = { if (isAdded) model.updateNameOfEffect(it) })
+    }
+
+    companion object {
+        private const val WHEEL_SEND_INTERVAL_MS = 300L
     }
 }
