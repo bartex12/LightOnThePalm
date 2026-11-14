@@ -18,6 +18,9 @@
     <string name="random_color">Цветное конфетти</string>
     <string name="random_color_fade">Цветное конфетти с затуханием</string>
     <string name="northern_lights">Северное сияние</string>
+    <string name="comet">Комета</string>
+    <string name="ocean">Океан</string>
+    <string name="stars">Мерцающие звёзды</string>
     <string name="running_lights">Бегущие огни</string>
     <string name="test">Проверка</string>
 
@@ -40,6 +43,9 @@
     <string name="_random">random</string>
     <string name="_randomFade">randomFade</string>
     <string name="_northernLights">northernLights</string>
+    <string name="_comet">comet</string>
+    <string name="_ocean">ocean</string>
+    <string name="_stars">stars</string>
     <string name="_runningLights">runningLights</string>
     <string name="_test">test</string>
     <string name="_esp">esp</string>

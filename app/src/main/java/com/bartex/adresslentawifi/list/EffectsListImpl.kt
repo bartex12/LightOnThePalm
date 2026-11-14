@@ -11,14 +11,17 @@ class EffectsListImpl(private val application: Application) : IEffectsList {
             ListOfEffects(icon = R.drawable.play200, name = application.resources.getString(R.string.playOfColors)),
             ListOfEffects(icon = R.drawable.play_flash200, name = application.resources.getString(R.string.playOfColorsFlash)),
             ListOfEffects(icon = R.drawable.physics100, name = application.resources.getString(R.string.running_lights)),
-            ListOfEffects(icon = R.drawable.flame200, name = application.resources.getString(R.string.flame)),
+            ListOfEffects(icon = R.drawable.flame_fire200, name = application.resources.getString(R.string.flame)),
             ListOfEffects(icon = R.drawable.rainbow200, name = application.resources.getString(R.string.rainbow)) ,
             ListOfEffects(icon = R.drawable.rainbow_fade200, name = application.resources.getString(R.string.pride)),
             ListOfEffects(icon = R.drawable.rainbow_bias200, name = application.resources.getString(R.string.rainbow_bias)),
             ListOfEffects(icon = R.drawable.rainbow_flash100, name = application.resources.getString(R.string.rainbow_flash)),
             ListOfEffects(icon = R.drawable.konfetti200, name = application.resources.getString(R.string.random_color)),
             ListOfEffects(icon = R.drawable.konfetti_fade200, name = application.resources.getString(R.string.random_color_fade)),
-            ListOfEffects(icon = R.drawable.nothflash, name = application.resources.getString(R.string.northern_lights))/*,
+            ListOfEffects(icon = R.drawable.nothflash, name = application.resources.getString(R.string.northern_lights)),
+            ListOfEffects(icon = R.drawable.comet200, name = application.resources.getString(R.string.comet)),
+            ListOfEffects(icon = R.drawable.ocean200, name = application.resources.getString(R.string.ocean)),
+            ListOfEffects(icon = R.drawable.stars200, name = application.resources.getString(R.string.stars))/*,
             ListOfEffects(icon = R.drawable.physics100, name = application.resources.getString(R.string.test))*/
         )
     }
