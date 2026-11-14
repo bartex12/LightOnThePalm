@@ -75,6 +75,7 @@ class HelpFragment : Fragment() {
             R.string.helpS6Title to R.string.helpS6Text,
             R.string.helpS7Title to R.string.helpS7Text,
             R.string.helpS8Title to R.string.helpS8Text,
+            R.string.helpS9Title to R.string.helpS9Text,
         )
     }
 }
